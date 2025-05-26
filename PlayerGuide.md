@@ -33,7 +33,6 @@ Create a catalog of game elements. These may be referred to as Pieces (as in pie
 interchangeably. You will need to create the following:
 
 Player character (UNCPlayer) - This is the character that the player controls.
-Enemies should be visually distinct from each other and should vary in either movement and/or collision consequences.
 
 Enemy - Easy - Students (UNCStudent_Enemy)- Mind-controlled students have less will, leading to simple movement back and
 forth in a predetermined path, and will have a simple attack pattern. Drops a pencil (buff).
@@ -54,7 +53,7 @@ Negative Buff - A collectible item that modifies the player's character in some 
 UNCHomework_Debuff): will be littered across the map making the player choose between fighting enemies or weakening
 themselves by picking up homework that decreases health and attack.
 
-Treasure - A collectible item that increases the score: Money ((UNCMoney_Treasure): Which college student doesn’t like
+Treasure - A collectible item that increases the score: Money (UNCMoney_Treasure): Which college student doesn’t like
 free money? Picking up this item will increase the score
 
 Exit - An asset that ends the level when reached (e.g., door, castle): UNC Logo (UNCLogo_Exit): The exit will be marked

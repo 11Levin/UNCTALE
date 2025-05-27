@@ -3,6 +3,6 @@
 
 ## [Overview]
 
-## [Quickstart Guide]
+## Quickstart Guide
 
-## [Known Issues / Incomplete Features / other]
+## Known Issues / Incomplete Features / other

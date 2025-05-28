@@ -32,8 +32,8 @@ Create a requirements doc by describing the key ideas behind your game. For each
 - **Enemy behavior**: How do enemies move or act?
 - **Gameplay loop**: What happens during gameplay, and what core actions repeat?
 - **Level progression**:
-    - How does a level end?
-    - How are levels different from one another?
+  - How does a level end?
+  - How are levels different from one another?
 - **Game structure**: Is there a win condition (must be reachable for grading) or is gameplay endless?
 
 ---

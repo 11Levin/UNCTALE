@@ -20,6 +20,9 @@ public class CollisionEvent {
   public enum Result {
     CONTINUE,
     GAME_OVER,
-    NEXT_LEVEL
+    NEXT_LEVEL,
+    PICK_ITEM,
+    ATTACK,
+    HIT
   }
 }

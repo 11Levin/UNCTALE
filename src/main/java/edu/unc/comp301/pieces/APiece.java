@@ -11,6 +11,7 @@ public abstract class APiece implements Piece {
   public APiece(String name, String resourcePath) {
     this.name = name;
     this.resourcePath = resourcePath;
+    this.position = new Posn(0,0);
   }
 
   @Override

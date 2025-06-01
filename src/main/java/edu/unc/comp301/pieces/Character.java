@@ -4,6 +4,13 @@ import edu.unc.comp301.board.Posn;
 
 public class Character extends APiece implements MovablePiece{
     private int health;
+    public enum Direction {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT,
+    }
+
     public Character(String name, String resourcePath, int health){
         super(name,resourcePath);
         this.health = health;

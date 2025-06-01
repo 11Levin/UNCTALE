@@ -57,4 +57,9 @@ public abstract class APiece implements Piece {
   public void setPosn(Posn posn) {
     this.position = posn;
   }
+
+  @Override
+  public String toString() {
+    return getName();
+  }
 }

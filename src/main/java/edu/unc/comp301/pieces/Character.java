@@ -9,6 +9,24 @@ public class Character extends APiece implements MovablePiece{
         this.health = health;
     }
 
+    public int getHealth(){
+        return this.health;
+    }
+
+    public void setHealth(int health){
+        this.health = health;
+        if (health < 0){
+            this.health = 0;
+        }
+    }
+
+    public boolean validMove(CollisionEvent movement){
+        if ((movement.getResults().equals(CollisionEvent.Result.BLOCK) || (movement.getResults().equals(CollisionEvent.Result.ATTACK)) || (movement.getResults().equals(CollisionEvent.Result.HIT)))){
+            return false;
+        }
+        return true;
+    }
+
     public CollisionEvent collide(Piece other){
         return null;
     }

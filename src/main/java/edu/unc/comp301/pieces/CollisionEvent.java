@@ -23,6 +23,7 @@ public class CollisionEvent {
     NEXT_LEVEL,
     PICK_ITEM,
     ATTACK,
-    HIT
+    HIT,
+    BLOCK
   }
 }

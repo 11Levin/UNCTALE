@@ -181,7 +181,12 @@ public class BoardImpl implements Board {
     StringBuilder sb = new StringBuilder();
     for (Piece[] row : board) {
       for (Piece piece : row) {
-        sb.append(piece);
+        if (piece == null){
+          sb.append(" ");
+        }else{
+          sb.append(piece);
+        }
+
         sb.append(' ');
       }
       sb.append('\n');
@@ -220,6 +225,7 @@ public class BoardImpl implements Board {
       board[newPosn.getRow()][newPosn.getCol()] = player;
       board[oldPosn.getRow()][oldPosn.getCol()] = null;
     }
+
     System.out.println(this);
     return true;
   }

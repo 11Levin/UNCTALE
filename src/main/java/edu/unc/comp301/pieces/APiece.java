@@ -63,6 +63,6 @@ public abstract class APiece implements Piece {
 
   @Override
   public String toString() {
-    return getName();
+    return getName().substring(0, 1);
   }
 }

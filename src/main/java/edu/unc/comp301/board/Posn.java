@@ -18,6 +18,12 @@ public class Posn {
   }
 
   @Override
+  public boolean equals(Object other) {
+    Posn oth = (Posn) other;
+    return (row == oth.getRow()) && (col == oth.getCol());
+  }
+
+  @Override
   public String toString() {
     return row + "," + col;
   }

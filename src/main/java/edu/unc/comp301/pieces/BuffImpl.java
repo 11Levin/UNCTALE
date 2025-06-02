@@ -1,4 +1,9 @@
 package edu.unc.comp301.pieces;
 
-public class BuffImpl {
+import edu.unc.comp301.pieces.requirements.Buff;
+
+public class BuffImpl implements Buff {
+  void increaseHealth() {}
+
+  void increaseAttack() {}
 }

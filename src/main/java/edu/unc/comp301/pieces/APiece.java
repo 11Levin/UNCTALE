@@ -8,9 +8,13 @@ public abstract class APiece implements Piece {
   private Posn position;
 
   public APiece(String name, String resourcePath) {
+    this(name, resourcePath, new Posn(0, 0));
+  }
+
+  public APiece(String name, String resourcePath, Posn posn) {
     this.name = name;
     this.resourcePath = resourcePath;
-    this.position = new Posn(0, 0);
+    this.position = posn;
   }
 
   public CollisionEvent.Result determineCollision(Piece other) {

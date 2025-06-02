@@ -11,10 +11,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
 
+/**
+ * Run code from here and open the terminal. Type H for help.
+ */
 public class Main {
   public static void main(String[] args) throws FileNotFoundException {
     BoardImpl board = new BoardImpl(1, 1);
     board.init(1);
     System.out.println(board);
+    while (board.makeMove());
   }
 }

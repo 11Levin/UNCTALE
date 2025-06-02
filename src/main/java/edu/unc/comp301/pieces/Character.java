@@ -1,5 +1,6 @@
 package edu.unc.comp301.pieces;
 
+import edu.unc.comp301.board.Board;
 import edu.unc.comp301.board.Posn;
 
 public class Character extends APiece implements MovablePiece{
@@ -35,18 +36,47 @@ public class Character extends APiece implements MovablePiece{
     }
 
     public CollisionEvent collide(Piece other){
-        return null;
+        Posn collision = other.getPosn();
+        if (collision == null){
+            return new CollisionEvent(0, CollisionEvent.Result.CONTINUE);
+        }
+        return new CollisionEvent(0, this.determineCollision(other));
     }
-    public Posn moveRight(Posn move){
-        return new Posn(move.getRow(),move.getCol()+1);
+    public Posn moveRight(Posn move, Board pos){
+        Posn movingTo = new Posn(move.getRow(),move.getCol()+1);
+        Piece collide = pos.getPiece(movingTo);
+        CollisionEvent type = collide(collide);
+        if(validMove(type)){
+            return new Posn(move.getRow(),move.getCol()+1);
+        }
+        return new Posn(move.getRow(),move.getCol());
     }
-    public Posn moveLeft(Posn move){
-        return new Posn(move.getRow(),move.getCol()-1);
+    public Posn moveLeft(Posn move, Board pos){
+        Posn movingTo = new Posn(move.getRow(),move.getCol()-1);
+        Piece collide = pos.getPiece(movingTo);
+        CollisionEvent type = collide(collide);
+        if(validMove(type)){
+            return new Posn(move.getRow(),move.getCol()-1);
+        }
+        return new Posn(move.getRow(),move.getCol());
+
     }
-    public Posn moveUp(Posn move){
-        return new Posn(move.getRow()-1,move.getCol());
+    public Posn moveUp(Posn move, Board pos){
+        Posn movingTo = new Posn(move.getRow()-1,move.getCol());
+        Piece collide = pos.getPiece(movingTo);
+        CollisionEvent type = collide(collide);
+        if(validMove(type)){
+            return new Posn(move.getRow()-1,move.getCol());
+        }
+        return new Posn(move.getRow(),move.getCol());
     }
-    public Posn moveDown(Posn move){
-        return new Posn(move.getRow()+1,move.getCol());
+    public Posn moveDown(Posn move, Board pos){
+        Posn movingTo = new Posn(move.getRow()+1,move.getCol());
+        Piece collide = pos.getPiece(movingTo);
+        CollisionEvent type = collide(collide);
+        if(validMove(type)){
+            return new Posn(move.getRow()+1,move.getCol());
+        }
+        return new Posn(move.getRow(),move.getCol());
     }
 }

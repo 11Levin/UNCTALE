@@ -105,7 +105,7 @@ public class BoardImpl implements Board{
     }
 
     @Override
-    public Piece get(Posn posn) {
+    public Piece getPiece(Posn posn) {
         return board[posn.getRow()][posn.getCol()];
     }
 

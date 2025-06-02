@@ -5,9 +5,13 @@ Authors: Vincent Wang and Levin Wu
 
 ## Overview
 
-Briefly describe your game and its current implementation status for Part 2. Include:
-- A 2–3 sentence summary of the game concept.
-- What has been implemented so far (e.g., pieces, board logic, collisions).
+The player spawns in a grid representing the UNC campus. The school has been taken over by evil rams and
+brainwashed students and professors. The player's goal is to avoid these enemies while collecting money
+to save their bank account.
+
+Board, CollisionEvent, and Character have been implemented. The board can generate a random level or a preset one
+stored in a text file. CollisionEvent handles collision logic. Character is the implementation of movable piece and will represent the player, 
+student enemies, and professors.
 
 ---
 
@@ -28,7 +32,9 @@ Briefly describe your game and its current implementation status for Part 2. Inc
 - [ ] Design limitation: *[e.g., treasure only appears in top row for now]*
 
 ## Notes
-Using OpenJDK 24.
+Using OpenJDK 24. I (Vincent) tried implemented a basic UI to test the game features but ran into complications. In the
+process, I updated to JDK 24, though with the current game this is of no use. I later realized we are to test the game
+by using toString(). 
 
 ## Sources Used
 Keybind demo: https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/uiswing/examples/events/KeyEventDemoProject/src/events/KeyEventDemo.java

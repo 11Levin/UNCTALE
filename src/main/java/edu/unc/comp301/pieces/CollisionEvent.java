@@ -24,6 +24,6 @@ public class CollisionEvent {
     PICK_ITEM,
     ATTACK,
     HIT,
-    BLOCK
+    BLOCK,
   }
 }

@@ -1,6 +1,5 @@
 package edu.unc.comp301.board;
 
-
 import edu.unc.comp301.pieces.CollisionEvent;
 import edu.unc.comp301.pieces.Piece;
 

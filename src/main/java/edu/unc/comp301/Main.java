@@ -12,9 +12,9 @@ import java.awt.*;
 import java.io.FileNotFoundException;
 
 public class Main {
-    public static void main(String[] args) throws FileNotFoundException {
-        BoardImpl board = new BoardImpl(1, 1);
-        board.init(1);
-        System.out.println(board);
-    }
+  public static void main(String[] args) throws FileNotFoundException {
+    BoardImpl board = new BoardImpl(1, 1);
+    board.init(1);
+    System.out.println(board);
+  }
 }

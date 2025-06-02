@@ -17,19 +17,20 @@ student enemies, and professors.
 
 ## Quickstart Guide
 
-- The player is trying to: *[insert game objective here]*  
-- The player can move: *[describe allowed directions/actions]*  
-- Enemies will stop you by: *[describe enemy behavior]*  
-- This will happen when an enemy is successful: *[e.g., game over, lose points]*  
-- Other game mechanics include: *[e.g., buffs, traps, gravity, etc.]*
+- The player is trying to: rescue the school from Ramses by navigating the maze and collecting money along the way.
+- The player can move: by using WASD to play this side scroller.
+- Enemies will stop you by: lowering your health until you die.
+- This will happen when an enemy is successful: when you're health reaches 0, it will be game over.  
+- Other game mechanics include: pencils and apples can increase health and attack. Homework decreases attack and score.
+- Money increases score.
 
 ---
 
 ## Known Issues / Incomplete Features
 
-- [ ] Feature not yet implemented: *[e.g., enemy AI pathfinding]*  
-- [ ] Known bug: *[e.g., player occasionally walks through walls]*  
-- [ ] Design limitation: *[e.g., treasure only appears in top row for now]*
+- [ ] Feature not yet implemented: a bullet class so enemies can shoot bullets and basic enemy AI.  
+- [ ] Known bug: characters can't move.
+- [ ] Design limitation: we're trying to configure this game around being turn-based, which we didn't previously expect.
 
 ## Notes
 Using OpenJDK 24. I (Vincent) tried implemented a basic UI to test the game features but ran into complications. In the

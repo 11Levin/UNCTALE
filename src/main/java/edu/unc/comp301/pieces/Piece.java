@@ -1,6 +1,5 @@
 package edu.unc.comp301.pieces;
 
-
 import edu.unc.comp301.board.Posn;
 
 public interface Piece {

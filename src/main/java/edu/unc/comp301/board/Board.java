@@ -13,7 +13,7 @@ public interface Board {
 
   int getHeight();
 
-  Piece get(Posn posn);
+  Piece getPiece(Posn posn);
 
   CollisionEvent moveHero(int drow, int dcol);
 

@@ -1,5 +1,6 @@
 package edu.unc.comp301.board;
 
+import edu.unc.comp301.Exceptions.LevelNotLoadedException;
 import edu.unc.comp301.Exceptions.PlayerAlreadyFoundException;
 import edu.unc.comp301.pieces.*;
 import edu.unc.comp301.pieces.requirements.Enemy;
@@ -15,6 +16,7 @@ public class BoardImpl implements Board {
   private int height;
   private PlayerImpl player;
   private int points = 0;
+  private int level = 1;
 
 
   public BoardImpl(int width, int height) {
@@ -202,31 +204,45 @@ public class BoardImpl implements Board {
    */
   private boolean move(String dir) {
     dir = dir.toLowerCase();
-    Posn oldPosn = player.getPosn();
+    CollisionEvent collisionEvent;
+    Posn prevPosn = player.getPosn();
     switch (dir){
       case "w":
-        player.moveUp(this);
+        collisionEvent = player.moveUp(this);
         break;
       case "a":
-        player.moveLeft(this);
+        collisionEvent = player.moveLeft(this);
         break;
       case "s":
-        player.moveDown(this);
+        collisionEvent = player.moveDown(this);
         break;
       case "d":
-        player.moveRight(this);
+        collisionEvent = player.moveRight(this);
         break;
       default:
         System.out.println("Invalid move");
         return false;
     }
-
-    Posn newPosn = player.getPosn();
-    if (!oldPosn.equals(newPosn)) {
-      board[newPosn.getRow()][newPosn.getCol()] = player;
-      board[oldPosn.getRow()][oldPosn.getCol()] = null;
+    if (!player.getPosn().equals(prevPosn)) {
+      board[prevPosn.getRow()][prevPosn.getCol()] = null;
+      board[player.getPosn().getRow()][player.getPosn().getCol()] = player;
     }
-
+    switch (collisionEvent.getResults()) {
+      case CollisionEvent.Result.PICK_ITEM:
+        setPoints(getPoints() + collisionEvent.getPoints());
+        System.out.println("Treasure collected.");
+        break;
+      case CollisionEvent.Result.NEXT_LEVEL:
+        System.out.println("Exit entered.");
+        level++;
+        setPoints(getPoints() + collisionEvent.getPoints());
+        try {
+          init(level);
+          break;
+        } catch (FileNotFoundException e){
+          throw new LevelNotLoadedException("level cannot be loaded");
+        }
+    }
     System.out.println(this);
     System.out.println("Points: " + points);
     return true;
@@ -284,6 +300,25 @@ public class BoardImpl implements Board {
    */
   public int getPoints() {
     return points;
+  }
+
+  /**
+   * Sets the level (positive integer)
+   * @param level
+   * @return
+   */
+  public boolean setLevel(int level) {
+    if (level <= 0) return false;
+    this.level = level;
+    return true;
+  }
+
+  /**
+   * Gives the current level
+   * @return
+   */
+  public int getLevel() {
+    return level;
   }
 
 

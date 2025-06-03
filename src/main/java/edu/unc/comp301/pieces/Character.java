@@ -1,8 +1,11 @@
 package edu.unc.comp301.pieces;
 
+import edu.unc.comp301.Exceptions.LevelNotLoadedException;
 import edu.unc.comp301.board.Board;
 import edu.unc.comp301.board.BoardImpl;
 import edu.unc.comp301.board.Posn;
+
+import java.io.FileNotFoundException;
 
 public class Character extends APiece implements MovablePiece {
   int health;
@@ -34,6 +37,8 @@ public class Character extends APiece implements MovablePiece {
         return new CollisionEvent(10, 0, 0, CollisionEvent.Result.PICK_ITEM);
       case "enemy":
         return new CollisionEvent(0, 0, 0, CollisionEvent.Result.GAME_OVER);
+      case "exit":
+        return new CollisionEvent(20, 0, 0, CollisionEvent.Result.NEXT_LEVEL);
       default:
         return new CollisionEvent(0, 0, 0, CollisionEvent.Result.CONTINUE);
     }
@@ -48,23 +53,18 @@ public class Character extends APiece implements MovablePiece {
    */
   private CollisionEvent move(int dr, int dc, Board board) {
     // check board bounds, and if out of bounds, do nothing.
-    if (dr < 0 && getPosn().getRow() == 0) return null;
-    if (dr > 0 && getPosn().getRow() == board.getHeight() - 1) return null;
-    if (dc < 0 && getPosn().getCol() == 0) return null;
-    if (dc > 0 && getPosn().getCol() == board.getWidth() - 1) return null;
+    if (dr < 0 && getPosn().getRow() == 0) return new CollisionEvent(0, 0, 0, CollisionEvent.Result.BLOCK);
+    if (dr > 0 && getPosn().getRow() == board.getHeight() - 1) return new CollisionEvent(0, 0, 0, CollisionEvent.Result.BLOCK);
+    if (dc < 0 && getPosn().getCol() == 0) return new CollisionEvent(0, 0, 0, CollisionEvent.Result.BLOCK);
+    if (dc > 0 && getPosn().getCol() == board.getWidth() - 1) return new CollisionEvent(0, 0, 0, CollisionEvent.Result.BLOCK);
 
     int nr = getPosn().getRow() + dr;
     int nc = getPosn().getCol() + dc;
     Posn nPos = new Posn(nr, nc);
     CollisionEvent res = collide(board.getPiece(nPos));
-
     // update position if no obstacle
     if (res.getResults() != CollisionEvent.Result.BLOCK) {
       setPosn(nPos);
-    }
-    if (res.getResults() == CollisionEvent.Result.PICK_ITEM) {
-      BoardImpl boardImpl = (BoardImpl) board;
-      boardImpl.setPoints(boardImpl.getPoints() + res.getPoints());
     }
     return res;
   }

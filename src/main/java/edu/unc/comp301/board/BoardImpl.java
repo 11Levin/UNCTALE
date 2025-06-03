@@ -115,7 +115,7 @@ public class BoardImpl implements Board {
    */
   public void init(int level) throws FileNotFoundException {
     Scanner scanner = new Scanner(new File("resources/UNCLevel_1"));
-    System.out.println(nameToPiece("obstacle"));
+    //System.out.println(nameToPiece("obstacle"));
     height = scanner.nextInt();
     width = scanner.nextInt();
     board = new Piece[height][width];
@@ -136,6 +136,7 @@ public class BoardImpl implements Board {
         }
       }
     }
+    board[2][3] = nameToPiece("enemy", new Posn(2, 3));
   }
 
   /**

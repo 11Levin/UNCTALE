@@ -12,4 +12,8 @@ public class PlayerImpl extends Character implements Player {
     super("player", "resources/UNCPlayer.png", posn, health);
   }
 
+  public void attack(){
+
+  }
+
 }

@@ -1,6 +1,7 @@
 package edu.unc.comp301.pieces;
 
 import edu.unc.comp301.board.Board;
+import edu.unc.comp301.board.BoardImpl;
 import edu.unc.comp301.board.Posn;
 
 public class Character extends APiece implements MovablePiece {
@@ -25,14 +26,16 @@ public class Character extends APiece implements MovablePiece {
    */
   @Override
   public CollisionEvent collide(Piece other) {
-    if (other == null) return new CollisionEvent(0, CollisionEvent.Result.CONTINUE);
+    if (other == null) return new CollisionEvent(0, 0, 0, CollisionEvent.Result.CONTINUE);
     switch (other.getName()) {
       case "obstacle":
-        return new CollisionEvent(0, CollisionEvent.Result.BLOCK);
+        return new CollisionEvent(0, 0, 0, CollisionEvent.Result.BLOCK);
+      case "treasure":
+        return new CollisionEvent(10, 0, 0, CollisionEvent.Result.PICK_ITEM);
       case "enemy":
-        return new CollisionEvent(0, CollisionEvent.Result.GAME_OVER);
+        return new CollisionEvent(0, 0, 0, CollisionEvent.Result.GAME_OVER);
       default:
-        return new CollisionEvent(0, CollisionEvent.Result.CONTINUE);
+        return new CollisionEvent(0, 0, 0, CollisionEvent.Result.CONTINUE);
     }
   }
 
@@ -58,6 +61,10 @@ public class Character extends APiece implements MovablePiece {
     // update position if no obstacle
     if (res.getResults() != CollisionEvent.Result.BLOCK) {
       setPosn(nPos);
+    }
+    if (res.getResults() == CollisionEvent.Result.PICK_ITEM) {
+      BoardImpl boardImpl = (BoardImpl) board;
+      boardImpl.setPoints(boardImpl.getPoints() + res.getPoints());
     }
     return res;
   }

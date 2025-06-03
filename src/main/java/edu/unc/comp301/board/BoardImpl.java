@@ -14,6 +14,7 @@ public class BoardImpl implements Board {
   private int width;
   private int height;
   private PlayerImpl player;
+  private int points = 0;
 
 
   public BoardImpl(int width, int height) {
@@ -227,6 +228,7 @@ public class BoardImpl implements Board {
     }
 
     System.out.println(this);
+    System.out.println("Points: " + points);
     return true;
   }
 
@@ -264,4 +266,25 @@ public class BoardImpl implements Board {
         return true;
     }
   }
+
+  /**
+   * Sets the player's points to a nonnegative value
+   * @param points
+   * @return if the change was made
+   */
+  public boolean setPoints(int points) {
+    if (points < 0) return false;
+    this.points = points;
+    return true;
+  }
+
+  /**
+   * Accesses the player's points
+   * @return
+   */
+  public int getPoints() {
+    return points;
+  }
+
+
 }

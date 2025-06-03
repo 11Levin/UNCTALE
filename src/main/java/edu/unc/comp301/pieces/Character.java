@@ -30,11 +30,7 @@ public class Character extends APiece implements MovablePiece {
       case "obstacle":
         return new CollisionEvent(0, CollisionEvent.Result.BLOCK);
       case "enemy":
-        switch (this.getName()){
-          case "player":
-            return new CollisionEvent(0, CollisionEvent.Result.ATTACK); //players will attack enemies
-        }
-        return new CollisionEvent(0, CollisionEvent.Result.BLOCK); //enemies will not move over each other
+        return new CollisionEvent(0, CollisionEvent.Result.GAME_OVER);
       default:
         return new CollisionEvent(0, CollisionEvent.Result.CONTINUE);
     }
@@ -59,37 +55,12 @@ public class Character extends APiece implements MovablePiece {
     Posn nPos = new Posn(nr, nc);
     CollisionEvent res = collide(board.getPiece(nPos));
 
-    // player attacks enemy if enemy is in the way. Makes enemy lose 10 health
-    // If enemy health reaches 0, player can move into the spot.
-    if (res.getResults() == CollisionEvent.Result.ATTACK) {
-      Character enemy = upcastPieceToCharacter(board.getPiece(nPos));
-      PlayerImpl player = upcastPieceToPlayer(board.getPiece(getPosn()));
-      player.attack(player.getAttack(), enemy);
-      System.out.println("Enemy Hurt! Health is at: " +enemy.getHealth());
-      if (enemy.getHealth() > 0){
-        res = new CollisionEvent(0,CollisionEvent.Result.BLOCK);
-      }
-    }
-    // update position if no obstacle or enemy is in the way
+    // update position if no obstacle
     if (res.getResults() != CollisionEvent.Result.BLOCK) {
       setPosn(nPos);
     }
     return res;
   }
-
-//upcasts pieces to characters to use character methods.
-  public Character upcastPieceToCharacter(Piece character){
-    Character UPcharacter = (Character) character;
-    return UPcharacter;
-  }
-
-  //upcasts pieces to player to use player methods and fields.
-  public PlayerImpl upcastPieceToPlayer(Piece character){
-    PlayerImpl UPcharacter = (PlayerImpl) character;
-    return UPcharacter;
-  }
-
-
 
   public CollisionEvent moveUp(Board board) {
     return move(-1, 0, board);
@@ -118,12 +89,4 @@ public class Character extends APiece implements MovablePiece {
   public void setHealth(int health) {
     this.health = Math.max(health, 0);
   }
-
-  //Takes attack value and lowers opponent health value.
-  public void attack(int attack, Character Opponent){
-    Opponent.setHealth(Opponent.getHealth()-attack);
-  }
-
-
-
 }

@@ -63,7 +63,8 @@ public class Character extends APiece implements MovablePiece {
     // If enemy health reaches 0, player can move into the spot.
     if (res.getResults() == CollisionEvent.Result.ATTACK) {
       Character enemy = upcastPieceToCharacter(board.getPiece(nPos));
-      enemy.setHealth(enemy.getHealth()-25);
+      PlayerImpl player = upcastPieceToPlayer(board.getPiece(getPosn()));
+      player.attack(player.getAttack(), enemy);
       System.out.println("Enemy Hurt! Health is at: " +enemy.getHealth());
       if (enemy.getHealth() > 0){
         res = new CollisionEvent(0,CollisionEvent.Result.BLOCK);
@@ -76,8 +77,15 @@ public class Character extends APiece implements MovablePiece {
     return res;
   }
 
+//upcasts pieces to characters to use character methods.
   public Character upcastPieceToCharacter(Piece character){
     Character UPcharacter = (Character) character;
+    return UPcharacter;
+  }
+
+  //upcasts pieces to player to use player methods and fields.
+  public PlayerImpl upcastPieceToPlayer(Piece character){
+    PlayerImpl UPcharacter = (PlayerImpl) character;
     return UPcharacter;
   }
 
@@ -110,6 +118,12 @@ public class Character extends APiece implements MovablePiece {
   public void setHealth(int health) {
     this.health = Math.max(health, 0);
   }
+
+  //Takes attack value and lowers opponent health value.
+  public void attack(int attack, Character Opponent){
+    Opponent.setHealth(Opponent.getHealth()-attack);
+  }
+
 
 
 }

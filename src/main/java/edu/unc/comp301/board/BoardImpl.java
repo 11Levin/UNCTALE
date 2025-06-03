@@ -89,13 +89,15 @@ public class BoardImpl implements Board {
    * @param posn position of piece
    * @return the created piece
    */
-  private Piece nameToPiece(String name, Posn posn) {
+  public Piece nameToPiece(String name, Posn posn) {
     return switch (name) {
       case "obstacle" -> new ObstacleImpl(posn);
       case "enemy" -> new EnemyImpl(posn, 100);
       case "treasure" -> new TreasureImpl(posn);
       case "player" -> new PlayerImpl(posn, 100);
       case "exit" -> new ExitImpl(posn);
+      case "apple" -> new BuffAppleImpl(posn);
+      case "pencil" -> new BuffPencilImpl(posn);
       default -> null;
     };
   }
@@ -137,6 +139,8 @@ public class BoardImpl implements Board {
         }
       }
     }
+    board[2][3] = nameToPiece("enemy", new Posn(2, 3));
+    board[4][1] = nameToPiece("enemy", new Posn(4, 1));
   }
 
   /**
@@ -284,6 +288,14 @@ public class BoardImpl implements Board {
    */
   public int getPoints() {
     return points;
+  }
+
+  /**
+   * Accesses the board
+   * @return
+   */
+  public Piece[][] getBoard() {
+    return board;
   }
 
 

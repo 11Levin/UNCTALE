@@ -15,6 +15,7 @@ public class BoardImpl implements Board {
   private int height;
   private PlayerImpl player;
   private int points = 0;
+  private int level = 1;
 
 
   public BoardImpl(int width, int height) {
@@ -66,7 +67,9 @@ public class BoardImpl implements Board {
       toShuffle.add(nameToPiece("obstacle"));
     }
     toShuffle.add(nameToPiece("exit"));
-    player = (PlayerImpl) nameToPiece("player");
+    if(!player.getNext_Level()){
+      player = (PlayerImpl) nameToPiece("player");
+    }
     toShuffle.add(player);
     while (toShuffle.size() < width * height) {
       toShuffle.add(null);
@@ -98,6 +101,7 @@ public class BoardImpl implements Board {
       case "exit" -> new ExitImpl(posn);
       case "apple" -> new BuffAppleImpl(posn);
       case "pencil" -> new BuffPencilImpl(posn);
+      case "homework" -> new DebuffHomeworkImpl(posn);
       default -> null;
     };
   }
@@ -119,6 +123,7 @@ public class BoardImpl implements Board {
   public void init(int level) throws FileNotFoundException {
     Scanner scanner = new Scanner(new File("resources/UNCLevel_" + level));
 //    System.out.println(nameToPiece("exit"));
+    clearBoard();
     height = scanner.nextInt();
     width = scanner.nextInt();
     board = new Piece[height][width];
@@ -131,7 +136,7 @@ public class BoardImpl implements Board {
       //            System.out.println(line);
       String[] splitted = line.split(",");
       for (int j = 0; j < width; j++) {
-        board[i][j] = nameToPiece(splitted[j], new Posn(i, j));
+          board[i][j] = nameToPiece(splitted[j], new Posn(i, j));
         if (splitted[j].equals("player")) {
           if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
           playerFound = true;
@@ -139,9 +144,67 @@ public class BoardImpl implements Board {
         }
       }
     }
-    board[2][3] = nameToPiece("enemy", new Posn(2, 3));
-    board[4][1] = nameToPiece("enemy", new Posn(4, 1));
+    //board[2][3] = nameToPiece("enemy", new Posn(2, 3));
+    //board[4][1] = nameToPiece("enemy", new Posn(4, 1));
   }
+
+
+  public void init(int level, PlayerImpl player) throws FileNotFoundException {
+    Scanner scanner = new Scanner(new File("resources/UNCLevel_" + level));
+//    System.out.println(nameToPiece("exit"));
+    clearBoard();
+    height = scanner.nextInt();
+    width = scanner.nextInt();
+    board = new Piece[height][width];
+    String line;
+    scanner.nextLine();
+    boolean playerFound = false;
+    for (int i = 0; i < height; i++) {
+      line = scanner.nextLine().strip().replace(" ", "");
+      if (line.charAt(line.length() - 1) == ',') line = line.substring(0, line.length() - 1);
+      //            System.out.println(line);
+      String[] splitted = line.split(",");
+      for (int j = 0; j < width; j++) {
+        if (!splitted[j].equals("player")) {//prevents out of bound errors when switching levels
+          board[i][j] = nameToPiece(splitted[j], new Posn(i, j));
+        }
+        if (splitted[j].equals("player")) {
+          if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
+          playerFound = true;
+          board[i][j] = (Piece) player;//moves player to new position when switching levels
+          player.setPosn(new Posn(i,j));
+
+
+        }
+      }
+    }
+    //board[2][3] = nameToPiece("enemy", new Posn(2, 3));
+    //board[4][1] = nameToPiece("enemy", new Posn(4, 1));
+  }
+
+
+
+  //returns the intial position of the player for the level
+  public Posn getIntialPosn(int level) throws FileNotFoundException {
+    Scanner scanner = new Scanner(new File("resources/UNCLevel_" + level));
+    height = scanner.nextInt();
+    width = scanner.nextInt();
+    String line;
+    scanner.nextLine();
+    for (int i = 0; i < height; i++) {
+      line = scanner.nextLine().strip().replace(" ", "");
+      if (line.charAt(line.length() - 1) == ',') line = line.substring(0, line.length() - 1);
+      //            System.out.println(line);
+      String[] splitted = line.split(",");
+      for (int j = 0; j < width; j++) {
+        if (splitted[j].equals("player")) {
+          return new Posn(i,j);
+        }
+      }
+    }
+    return null;
+  }
+
 
   /**
    * Gives the width or number of columns of the grid
@@ -227,8 +290,14 @@ public class BoardImpl implements Board {
 
     Posn newPosn = player.getPosn();
     if (!oldPosn.equals(newPosn)) {
-      board[newPosn.getRow()][newPosn.getCol()] = player;
-      board[oldPosn.getRow()][oldPosn.getCol()] = null;
+      System.out.println(player.getNext_Level());
+      if (!player.getNext_Level()) {
+        board[newPosn.getRow()][newPosn.getCol()] = player;
+        board[oldPosn.getRow()][oldPosn.getCol()] = null;
+      }else{
+        System.out.println(player.getNext_Level());
+        player.toggleNext_level();
+      }
     }
 
     System.out.println(this);
@@ -288,6 +357,23 @@ public class BoardImpl implements Board {
    */
   public int getPoints() {
     return points;
+  }
+
+  /**
+   * increases the level
+   * @return
+   */
+  public int increaseLevel() {
+    level += 1;
+    return level;
+  }
+
+  /**
+   * gets level
+   * @return
+   */
+  public int getLevel() {
+    return level;
   }
 
   /**

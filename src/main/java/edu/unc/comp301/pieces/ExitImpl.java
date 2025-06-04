@@ -8,4 +8,5 @@ public class ExitImpl extends APiece implements Exit {
   public ExitImpl(Posn posn) {
     super("exit", "resources/UNCLogo_Exit.png", posn);
   }
+
 }

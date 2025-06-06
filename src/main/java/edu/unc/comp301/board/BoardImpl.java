@@ -1,12 +1,17 @@
 package edu.unc.comp301.board;
 
-import edu.unc.comp301.Exceptions.PlayerAlreadyFoundException;
+import edu.unc.comp301.exceptions.InvalidMoveException;
+import edu.unc.comp301.exceptions.LevelNotLoadedException;
+import edu.unc.comp301.exceptions.PlayerAlreadyFoundException;
 import edu.unc.comp301.pieces.*;
-import edu.unc.comp301.pieces.requirements.Enemy;
 import edu.unc.comp301.pieces.requirements.Player;
+import edu.unc.comp301.ui.GameView;
+import edu.unc.comp301.ui.View;
+import javafx.scene.input.KeyCode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.Character;
 import java.util.*;
 
 public class BoardImpl implements Board {
@@ -16,18 +21,32 @@ public class BoardImpl implements Board {
   private PlayerImpl player;
   private int points = 0;
   private int level = 1;
-
+  private GameView gameView;
 
   public BoardImpl(int width, int height) {
     this.width = Math.max(1, width);
     this.height = Math.max(1, height);
     board = new Piece[height][width];
+    try {
+      loadKey();
+    } catch (FileNotFoundException e) {
+      throw new LevelNotLoadedException("invalid key to load map");
+    }
   }
 
   public BoardImpl(Piece[][] board) {
     this.board = board;
     width = board[0].length;
     height = board.length;
+    try {
+      loadKey();
+    } catch (FileNotFoundException e) {
+      throw new LevelNotLoadedException("invalid key to load map");
+    }
+  }
+
+  public void setGameView(GameView gameView) {
+    this.gameView = gameView;
   }
 
   /**
@@ -115,6 +134,18 @@ public class BoardImpl implements Board {
     return nameToPiece(name, new Posn(0, 0));
   }
 
+  private Map<Character, String> fullName;
+  private void loadKey() throws FileNotFoundException {
+    fullName = new HashMap<>();
+    Scanner scanner = new Scanner(new File("resources/keyToName"));
+    while (scanner.hasNext()) {
+      String line = scanner.nextLine();
+      line = line.replace(" ", "");
+      String[] splitted = line.split(",");
+      fullName.put(splitted[0].charAt(0), splitted[1]);
+    }
+//    System.out.println(fullName);
+  }
   /**
    * Generates a specified level
    * @param level the level to generate (positive integer)
@@ -122,30 +153,51 @@ public class BoardImpl implements Board {
    */
   public void init(int level) throws FileNotFoundException {
     Scanner scanner = new Scanner(new File("resources/UNCLevel_" + level));
+    System.out.println("Loading level " + level);
 //    System.out.println(nameToPiece("exit"));
     clearBoard();
     height = scanner.nextInt();
     width = scanner.nextInt();
+
+    // to build map: type = 1, full name; type = 2, capital letter representation
+    int load_type = scanner.nextInt();
     board = new Piece[height][width];
-    String line;
-    scanner.nextLine();
     boolean playerFound = false;
-    for (int i = 0; i < height; i++) {
-      line = scanner.nextLine().strip().replace(" ", "");
-      if (line.charAt(line.length() - 1) == ',') line = line.substring(0, line.length() - 1);
-      //            System.out.println(line);
-      String[] splitted = line.split(",");
-      for (int j = 0; j < width; j++) {
+    scanner.nextLine();
+    String line;
+    if (load_type == 1) {
+      for (int i = 0; i < height; i++) {
+        line = scanner.nextLine().strip().replace(" ", "");
+        if (line.charAt(line.length() - 1) == ',') line = line.substring(0, line.length() - 1);
+        String[] splitted = line.split(",");
+        for (int j = 0; j < width; j++) {
           board[i][j] = nameToPiece(splitted[j], new Posn(i, j));
-        if (splitted[j].equals("player")) {
-          if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
-          playerFound = true;
-          player = (PlayerImpl) board[i][j];
+          if (splitted[j].equals("player")) {
+            if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
+            playerFound = true;
+            player = (PlayerImpl) board[i][j];
+          }
+        }
+      }
+    } else {
+      System.out.println(fullName);
+      for (int i = 0; i < height; i++) {
+        line = scanner.nextLine().toLowerCase();
+        for (int j = 0; j < width; j++) {
+          String name = fullName.get(line.charAt(j));
+          board[i][j] = nameToPiece(name, new Posn(i, j));
+          if (name.equals("player")) {
+            if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
+            playerFound = true;
+            player = (PlayerImpl) board[i][j];
+          }
         }
       }
     }
-    //board[2][3] = nameToPiece("enemy", new Posn(2, 3));
-    //board[4][1] = nameToPiece("enemy", new Posn(4, 1));
+    if (gameView != null) {
+      System.out.println("Rendered level");
+
+    }
   }
 
 
@@ -265,27 +317,30 @@ public class BoardImpl implements Board {
   /**
    * Moves the player in a specified direction
    * @param dir one of WASD
-   * @return whether the move is valid
+   * @return a list of board positions involved with the player
+   * (touching player for example)
    */
-  private boolean move(String dir) {
-    dir = dir.toLowerCase();
+  public CollisionEvent move(KeyCode dir) {
+    CollisionEvent collisionEvent;
+    Posn prevPosn = player.getPosn();
     Posn oldPosn = player.getPosn();
-    switch (dir){
-      case "w":
-        player.moveUp(this);
+    // move the player
+    switch (dir) {
+      case KeyCode.W, KeyCode.UP:
+        collisionEvent = player.moveUp(this);
         break;
-      case "a":
-        player.moveLeft(this);
+      case KeyCode.A, KeyCode.LEFT:
+        collisionEvent = player.moveLeft(this);
         break;
-      case "s":
-        player.moveDown(this);
+      case KeyCode.S, KeyCode.DOWN:
+        collisionEvent = player.moveDown(this);
         break;
-      case "d":
-        player.moveRight(this);
+      case KeyCode.D, KeyCode.RIGHT:
+        collisionEvent = player.moveRight(this);
         break;
+
       default:
-        System.out.println("Invalid move");
-        return false;
+        throw new InvalidMoveException("Move should be WASD");
     }
 
     Posn newPosn = player.getPosn();
@@ -294,51 +349,40 @@ public class BoardImpl implements Board {
       if (!player.getNext_Level()) {
         board[newPosn.getRow()][newPosn.getCol()] = player;
         board[oldPosn.getRow()][oldPosn.getCol()] = null;
-      }else{
+      } else {
         System.out.println(player.getNext_Level());
         player.toggleNext_level();
       }
-    }
+      if (!player.getPosn().equals(prevPosn)) {
+        board[prevPosn.getRow()][prevPosn.getCol()] = null;
+        board[player.getPosn().getRow()][player.getPosn().getCol()] = player;
+      }
 
-    System.out.println(this);
-    System.out.println("Points: " + points);
-    return true;
-  }
-
-  /**
-   * Prompts the user to make a move from the terminal.
-   * @return whether more moves are to be made
-   */
-  public boolean makeMove() {
-    Scanner scanner = new Scanner(System.in);
-    System.out.println("Player at position: " + player.getPosn());
-    System.out.println("Make a move (type H for help): ");
-    String res = scanner.next().toLowerCase();
-    switch (res) {
-      case "h":
-        System.out.println("H: help");
-        System.out.println("W: move up");
-        System.out.println("A: move left");
-        System.out.println("S: move down");
-        System.out.println("D: move right");
-        System.out.println("E: exit");
-        return true;
-      case "e":
-        System.out.println("Game exited");
-        return false;
-      case "w":
-        return move("w");
-      case "a":
-        return move("a");
-      case "s":
-        return move("s");
-      case "d":
-        return move("d");
-      default:
-        System.out.println("Invalid move");
-        return true;
+      // handle collision types
+      switch (collisionEvent.getResults()) {
+        case CollisionEvent.Result.PICK_ITEM:
+          setPoints(getPoints() + collisionEvent.getPoints());
+          System.out.println("Treasure collected");
+          break;
+        case CollisionEvent.Result.NEXT_LEVEL:
+          System.out.println("Exit entered");
+          level++;
+          setPoints(getPoints() + collisionEvent.getPoints());
+          try {
+            init(level);
+            break;
+          } catch (FileNotFoundException e) {
+            throw new LevelNotLoadedException("level cannot be loaded");
+          }
+      }
+      List<Posn> toUpdate = new ArrayList<>();
+      toUpdate.add(player.getPosn());
+      toUpdate.add(prevPosn);
+      collisionEvent.setToUpdate(toUpdate);
+      return collisionEvent;
     }
-  }
+    return null;
+    }
 
   /**
    * Sets the player's points to a nonnegative value

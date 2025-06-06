@@ -5,6 +5,6 @@ import edu.unc.comp301.pieces.requirements.Treasure;
 
 public class TreasureImpl extends APiece implements Treasure {
   public TreasureImpl(Posn posn) {
-    super("treasure", "resources/UNCMoney_Treasure.png", posn);
+    super("treasure", "UNCMoney_Treasure.png", posn);
   }
 }

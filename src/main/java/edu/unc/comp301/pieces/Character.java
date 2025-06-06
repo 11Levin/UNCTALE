@@ -6,6 +6,9 @@ import edu.unc.comp301.board.Posn;
 
 import java.io.FileNotFoundException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Character extends APiece implements MovablePiece {
   int health;
 
@@ -31,6 +34,9 @@ public class Character extends APiece implements MovablePiece {
    */
   @Override
   public CollisionEvent collide(Piece other) {
+    List<Posn> toUpdate = new ArrayList<>();
+    toUpdate.add(getPosn());
+    if (other != null) toUpdate.add(other.getPosn());
     if (other == null) return new CollisionEvent(0, CollisionEvent.Result.CONTINUE);
     switch (other.getName()) {
       case "obstacle":
@@ -94,10 +100,13 @@ public class Character extends APiece implements MovablePiece {
    */
   private CollisionEvent move(int dr, int dc, Board board) {
     // check board bounds, and if out of bounds, do nothing.
-    if (dr < 0 && getPosn().getRow() == 0) return null;
-    if (dr > 0 && getPosn().getRow() == board.getHeight() - 1) return null;
-    if (dc < 0 && getPosn().getCol() == 0) return null;
-    if (dc > 0 && getPosn().getCol() == board.getWidth() - 1) return null;
+    List<Posn> toUpdate = new ArrayList<>();
+    toUpdate.add(getPosn());
+    toUpdate.add(new Posn(getPosn().getRow() + dr, getPosn().getCol() + dc));
+    if (dr < 0 && getPosn().getRow() == 0) return new CollisionEvent(0, CollisionEvent.Result.BLOCK);
+    if (dr > 0 && getPosn().getRow() == board.getHeight() - 1) return new CollisionEvent(0,  CollisionEvent.Result.BLOCK);
+    if (dc < 0 && getPosn().getCol() == 0) return new CollisionEvent(0, CollisionEvent.Result.BLOCK);
+    if (dc > 0 && getPosn().getCol() == board.getWidth() - 1) return new CollisionEvent(0, CollisionEvent.Result.BLOCK);
 
     int nr = getPosn().getRow() + dr;
     int nc = getPosn().getCol() + dc;

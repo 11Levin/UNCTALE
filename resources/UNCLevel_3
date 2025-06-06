@@ -1,6 +1,21 @@
-5 5
-obstacle, obstacle, obstacle, obstacle, obstacle,
-obstacle, null, null, null, obstacle,
-obstacle, player, enemy, exit, obstacle,
-obstacle, null, null, null, obstacle,
-obstacle, obstacle, obstacle, obstacle, obstacle,
+20 20 2
+o.oooooooooooooooooo
+opo...o............o
+o.o.o.o.oooooooooo.o
+o.o.o.o.o..........o
+o...o.o.o.o.oooooooo
+o.ooo.o.o.o.o......o
+o.o...o.ooo.ooo.oo.o
+o.o.ooooo.....oooo.o
+o.o.o......t.......o
+o.ooo.ooo.....oooo.o
+o.....ooooo.ooo..o.o
+ooooooo...o.o......o
+o.......ooo.oooooo.o
+o.ooooo.....ooot.o.o
+o.o...ooooo.ooot.o.o
+o.ooo.....o.oooo.o.o
+o.....ooo.o......o.o
+o.ooooo.o.oooooooooo
+o.....o...........e.
+oooooooooooooooooooo

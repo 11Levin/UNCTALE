@@ -1,4 +1,4 @@
-10 10
+10 10 1
 obstacle, null, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle,
 obstacle, player, obstacle, null, homework, null, null, null, null, obstacle,
 obstacle, null, null, null, treasure, apple, enemy, obstacle, exit, obstacle,

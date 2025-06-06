@@ -79,7 +79,7 @@ public class GameView implements FXComponent{
         }
         vBox.getChildren().addAll(gameBar.render(), gridPane);
         gameBar.updateStats(board.getHealth(), board.getPoints(), board.getLevel());
-        update(new CollisionEvent(0, 0, 0, CollisionEvent.Result.CONTINUE));
+        update(new CollisionEvent(0,  CollisionEvent.Result.CONTINUE));
         return vBox;
     }
 
@@ -117,7 +117,7 @@ public class GameView implements FXComponent{
 
         // update game stats bar
         if (gameBar != null) {
-            if (collisionEvent.getHealth() != 0) {
+            if (board.getHealth() != 0) {
                 gameBar.setHealth(board.getHealth());
             }
             if (collisionEvent.getPoints() != 0) {

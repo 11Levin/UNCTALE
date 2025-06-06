@@ -429,4 +429,13 @@ public class BoardImpl implements Board {
   }
 
 
+  public int getHealth() {
+    if (player == null) return 0;
+    return player.getHealth();
+  }
+
+  public PlayerImpl getPlayer() {
+    return player;
+  }
+
 }

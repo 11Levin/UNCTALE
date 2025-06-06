@@ -37,7 +37,7 @@ public class GameController {
             while (true) {
                 // check movement
                 CollisionEvent res = null;
-                KeyCode[] directions = {KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D};
+                KeyCode[] directions = {KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT};
                 for (KeyCode direction : directions) {
                     if (pressed.contains(direction)) {
                         pressed.remove(direction);

@@ -11,6 +11,7 @@ import javafx.scene.input.KeyCode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.Character;
 import java.util.*;
 
 public class BoardImpl implements Board {
@@ -26,12 +27,22 @@ public class BoardImpl implements Board {
     this.width = Math.max(1, width);
     this.height = Math.max(1, height);
     board = new Piece[height][width];
+    try {
+      loadKey();
+    } catch (FileNotFoundException e) {
+      throw new LevelNotLoadedException("invalid key to load map");
+    }
   }
 
   public BoardImpl(Piece[][] board) {
     this.board = board;
     width = board[0].length;
     height = board.length;
+    try {
+      loadKey();
+    } catch (FileNotFoundException e) {
+      throw new LevelNotLoadedException("invalid key to load map");
+    }
   }
 
   public void setGameView(GameView gameView) {
@@ -118,6 +129,18 @@ public class BoardImpl implements Board {
     return nameToPiece(name, new Posn(0, 0));
   }
 
+  private Map<Character, String> fullName;
+  private void loadKey() throws FileNotFoundException {
+    fullName = new HashMap<>();
+    Scanner scanner = new Scanner(new File("resources/keyToName"));
+    while (scanner.hasNext()) {
+      String line = scanner.nextLine();
+      line = line.replace(" ", "");
+      String[] splitted = line.split(",");
+      fullName.put(splitted[0].charAt(0), splitted[1]);
+    }
+//    System.out.println(fullName);
+  }
   /**
    * Generates a specified level
    * @param level the level to generate (positive integer)
@@ -128,21 +151,39 @@ public class BoardImpl implements Board {
     System.out.println("Loading level " + level);
     height = scanner.nextInt();
     width = scanner.nextInt();
+
+    // to build map: type = 1, full name; type = 2, capital letter representation
+    int load_type = scanner.nextInt();
     board = new Piece[height][width];
-    String line;
-    scanner.nextLine();
     boolean playerFound = false;
-    for (int i = 0; i < height; i++) {
-      line = scanner.nextLine().strip().replace(" ", "");
-      if (line.charAt(line.length() - 1) == ',') line = line.substring(0, line.length() - 1);
-      //            System.out.println(line);
-      String[] splitted = line.split(",");
-      for (int j = 0; j < width; j++) {
-        board[i][j] = nameToPiece(splitted[j], new Posn(i, j));
-        if (splitted[j].equals("player")) {
-          if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
-          playerFound = true;
-          player = (PlayerImpl) board[i][j];
+    scanner.nextLine();
+    String line;
+    if (load_type == 1) {
+      for (int i = 0; i < height; i++) {
+        line = scanner.nextLine().strip().replace(" ", "");
+        if (line.charAt(line.length() - 1) == ',') line = line.substring(0, line.length() - 1);
+        String[] splitted = line.split(",");
+        for (int j = 0; j < width; j++) {
+          board[i][j] = nameToPiece(splitted[j], new Posn(i, j));
+          if (splitted[j].equals("player")) {
+            if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
+            playerFound = true;
+            player = (PlayerImpl) board[i][j];
+          }
+        }
+      }
+    } else {
+      System.out.println(fullName);
+      for (int i = 0; i < height; i++) {
+        line = scanner.nextLine().toLowerCase();
+        for (int j = 0; j < width; j++) {
+          String name = fullName.get(line.charAt(j));
+          board[i][j] = nameToPiece(name, new Posn(i, j));
+          if (name.equals("player")) {
+            if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
+            playerFound = true;
+            player = (PlayerImpl) board[i][j];
+          }
         }
       }
     }
@@ -219,18 +260,19 @@ public class BoardImpl implements Board {
     Posn prevPosn = player.getPosn();
     // move the player
     switch (dir){
-      case KeyCode.W:
+      case KeyCode.W, KeyCode.UP:
         collisionEvent = player.moveUp(this);
         break;
-      case KeyCode.A:
+      case KeyCode.A, KeyCode.LEFT:
         collisionEvent = player.moveLeft(this);
         break;
-      case KeyCode.S:
+      case KeyCode.S, KeyCode.DOWN:
         collisionEvent = player.moveDown(this);
         break;
-      case KeyCode.D:
+      case KeyCode.D, KeyCode.RIGHT:
         collisionEvent = player.moveRight(this);
         break;
+
       default:
         throw new InvalidMoveException("Move should be WASD");
     }
@@ -243,10 +285,10 @@ public class BoardImpl implements Board {
     switch (collisionEvent.getResults()) {
       case CollisionEvent.Result.PICK_ITEM:
         setPoints(getPoints() + collisionEvent.getPoints());
-        System.out.println("Treasure collected.");
+        System.out.println("Treasure collected");
         break;
       case CollisionEvent.Result.NEXT_LEVEL:
-        System.out.println("Exit entered.");
+        System.out.println("Exit entered");
         level++;
         setPoints(getPoints() + collisionEvent.getPoints());
         try {

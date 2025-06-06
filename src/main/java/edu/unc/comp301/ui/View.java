@@ -1,0 +1,37 @@
+package edu.unc.comp301.ui;
+
+import edu.unc.comp301.board.BoardImpl;
+import edu.unc.comp301.board.Posn;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+
+import java.util.List;
+
+public class View implements FXComponent{
+    private final BoardImpl board;
+    private Scene scene;
+    private final GameView gameView;
+
+    /**
+     * Only call after board has been initialized
+     * @param board
+     */
+    public View(BoardImpl board) {
+        this.board = board;
+        gameView = new GameView(board);
+    }
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
+    }
+
+    public void update(List<Posn> toUpdate) {
+        gameView.update(toUpdate);
+    }
+
+    @Override
+    public Parent render() {
+        return gameView.render();
+    }
+
+}

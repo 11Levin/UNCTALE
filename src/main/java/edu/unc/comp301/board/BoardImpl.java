@@ -1,10 +1,12 @@
 package edu.unc.comp301.board;
 
-import edu.unc.comp301.Exceptions.LevelNotLoadedException;
-import edu.unc.comp301.Exceptions.PlayerAlreadyFoundException;
+import edu.unc.comp301.exceptions.InvalidMoveException;
+import edu.unc.comp301.exceptions.LevelNotLoadedException;
+import edu.unc.comp301.exceptions.PlayerAlreadyFoundException;
 import edu.unc.comp301.pieces.*;
-import edu.unc.comp301.pieces.requirements.Enemy;
-import edu.unc.comp301.pieces.requirements.Player;
+import edu.unc.comp301.ui.GameView;
+import edu.unc.comp301.ui.View;
+import javafx.scene.input.KeyCode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,7 +19,7 @@ public class BoardImpl implements Board {
   private PlayerImpl player;
   private int points = 0;
   private int level = 1;
-
+  private GameView gameView;
 
   public BoardImpl(int width, int height) {
     this.width = Math.max(1, width);
@@ -29,6 +31,10 @@ public class BoardImpl implements Board {
     this.board = board;
     width = board[0].length;
     height = board.length;
+  }
+
+  public void setGameView(GameView gameView) {
+    this.gameView = gameView;
   }
 
   /**
@@ -118,7 +124,7 @@ public class BoardImpl implements Board {
    */
   public void init(int level) throws FileNotFoundException {
     Scanner scanner = new Scanner(new File("resources/UNCLevel_" + level));
-//    System.out.println(nameToPiece("exit"));
+    System.out.println("Loading level " + level);
     height = scanner.nextInt();
     width = scanner.nextInt();
     board = new Piece[height][width];
@@ -138,6 +144,10 @@ public class BoardImpl implements Board {
           player = (PlayerImpl) board[i][j];
         }
       }
+    }
+    if (gameView != null) {
+      System.out.println("Rendered level");
+
     }
   }
 
@@ -200,33 +210,35 @@ public class BoardImpl implements Board {
   /**
    * Moves the player in a specified direction
    * @param dir one of WASD
-   * @return whether the move is valid
+   * @return a list of board positions involved with the player
+   * (touching player for example)
    */
-  private boolean move(String dir) {
-    dir = dir.toLowerCase();
+  public CollisionEvent move(KeyCode dir) {
     CollisionEvent collisionEvent;
     Posn prevPosn = player.getPosn();
+    // move the player
     switch (dir){
-      case "w":
+      case KeyCode.W:
         collisionEvent = player.moveUp(this);
         break;
-      case "a":
+      case KeyCode.A:
         collisionEvent = player.moveLeft(this);
         break;
-      case "s":
+      case KeyCode.S:
         collisionEvent = player.moveDown(this);
         break;
-      case "d":
+      case KeyCode.D:
         collisionEvent = player.moveRight(this);
         break;
       default:
-        System.out.println("Invalid move");
-        return false;
+        throw new InvalidMoveException("Move should be WASD");
     }
     if (!player.getPosn().equals(prevPosn)) {
       board[prevPosn.getRow()][prevPosn.getCol()] = null;
       board[player.getPosn().getRow()][player.getPosn().getCol()] = player;
     }
+
+    // handle collision types
     switch (collisionEvent.getResults()) {
       case CollisionEvent.Result.PICK_ITEM:
         setPoints(getPoints() + collisionEvent.getPoints());
@@ -243,44 +255,11 @@ public class BoardImpl implements Board {
           throw new LevelNotLoadedException("level cannot be loaded");
         }
     }
-    System.out.println(this);
-    System.out.println("Points: " + points);
-    return true;
-  }
-
-  /**
-   * Prompts the user to make a move from the terminal.
-   * @return whether more moves are to be made
-   */
-  public boolean makeMove() {
-    Scanner scanner = new Scanner(System.in);
-    System.out.println("Player at position: " + player.getPosn());
-    System.out.println("Make a move (type H for help): ");
-    String res = scanner.next().toLowerCase();
-    switch (res) {
-      case "h":
-        System.out.println("H: help");
-        System.out.println("W: move up");
-        System.out.println("A: move left");
-        System.out.println("S: move down");
-        System.out.println("D: move right");
-        System.out.println("E: exit");
-        return true;
-      case "e":
-        System.out.println("Game exited");
-        return false;
-      case "w":
-        return move("w");
-      case "a":
-        return move("a");
-      case "s":
-        return move("s");
-      case "d":
-        return move("d");
-      default:
-        System.out.println("Invalid move");
-        return true;
-    }
+    List<Posn> toUpdate = new ArrayList<>();
+    toUpdate.add(player.getPosn());
+    toUpdate.add(prevPosn);
+    collisionEvent.setToUpdate(toUpdate);
+    return collisionEvent;
   }
 
   /**

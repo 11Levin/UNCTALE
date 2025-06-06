@@ -5,6 +5,6 @@ import edu.unc.comp301.pieces.requirements.Obstacle;
 
 public class ObstacleImpl extends APiece implements Obstacle {
   public ObstacleImpl(Posn posn) {
-    super("obstacle", "resources/UNCRam_Obstacle.png", posn);
+    super("obstacle", "UNCRam_Obstacle.png", posn);
   }
 }

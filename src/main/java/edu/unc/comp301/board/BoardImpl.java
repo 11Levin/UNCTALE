@@ -300,5 +300,9 @@ public class BoardImpl implements Board {
     return level;
   }
 
+  public int getHealth() {
+    if (player == null) return 0;
+    return player.getHealth();
+  }
 
 }

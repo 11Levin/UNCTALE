@@ -2,8 +2,10 @@ package edu.unc.comp301.ui;
 
 import edu.unc.comp301.board.BoardImpl;
 import edu.unc.comp301.board.Posn;
+import edu.unc.comp301.pieces.CollisionEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
 
@@ -25,7 +27,7 @@ public class View implements FXComponent{
         this.scene = scene;
     }
 
-    public void update(List<Posn> toUpdate) {
+    public void update(CollisionEvent toUpdate) {
         gameView.update(toUpdate);
     }
 

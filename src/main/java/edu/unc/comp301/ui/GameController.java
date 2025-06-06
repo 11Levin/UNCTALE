@@ -30,34 +30,34 @@ public class GameController {
         });
 
         scene.setOnKeyReleased(keyEvent -> {
-            pressed.remove(keyEvent.getCode());
+//            pressed.remove(keyEvent.getCode());
         });
 
         Thread gameTick = new Thread(() -> {
             while (true) {
                 // check movement
-//                System.out.println(pressed);
-                List<Posn> toUpdate = null;
                 CollisionEvent res = null;
                 KeyCode[] directions = {KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D};
                 for (KeyCode direction : directions) {
                     if (pressed.contains(direction)) {
+                        pressed.remove(direction);
                         res = board.move(direction);
-                        toUpdate = res.getToUpdate();
                         break;
                     }
                 }
-                if (res != null && res.getResults().equals(CollisionEvent.Result.NEXT_LEVEL)) {
-                    scene.setRoot(view.render());
-                }
-                if (toUpdate != null) {
-                    final List<Posn> temp = toUpdate;
+
+                if (res != null) { // redraw screen
+                    // next level, redraw completely
+                    if (res.getResults().equals(CollisionEvent.Result.NEXT_LEVEL)) {
+                        scene.setRoot(view.render());
+                    }
+                    final CollisionEvent temp = res;
                     Platform.runLater(() -> {
                         view.update(temp);
                     });
                 }
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(200);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

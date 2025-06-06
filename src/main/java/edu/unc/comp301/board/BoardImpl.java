@@ -4,6 +4,7 @@ import edu.unc.comp301.exceptions.InvalidMoveException;
 import edu.unc.comp301.exceptions.LevelNotLoadedException;
 import edu.unc.comp301.exceptions.PlayerAlreadyFoundException;
 import edu.unc.comp301.pieces.*;
+import edu.unc.comp301.pieces.requirements.Player;
 import edu.unc.comp301.ui.GameView;
 import edu.unc.comp301.ui.View;
 import javafx.scene.input.KeyCode;
@@ -303,6 +304,10 @@ public class BoardImpl implements Board {
   public int getHealth() {
     if (player == null) return 0;
     return player.getHealth();
+  }
+
+  public PlayerImpl getPlayer() {
+    return player;
   }
 
 }

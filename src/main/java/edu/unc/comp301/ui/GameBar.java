@@ -67,7 +67,7 @@ public class GameBar implements FXComponent{
         for (int i = 0; i < health / 10; i++) {
             healthBar.getChildren().add(getView("UNCHeart.png"));
         }
-        System.out.println("loaded health");
+//        System.out.println("loaded health");
     }
 
     public void setLevel(int level) {

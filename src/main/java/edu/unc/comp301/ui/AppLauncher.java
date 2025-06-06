@@ -9,7 +9,8 @@ import javafx.stage.Stage;
 import java.io.FileNotFoundException;
 
 public class AppLauncher extends Application {
-
+    private final int[] dims = {9, 9};
+    private final int tileSize = 64;
   public static void main(String[] args) {
     launch(args);
   }
@@ -23,13 +24,15 @@ public class AppLauncher extends Application {
           throw new LevelNotLoadedException("level couldn't be loaded");
       }
       View view = new View(board);
-      Scene scene = new Scene(view.render(), 640, 704);
+      Scene scene = new Scene(view.render(), tileSize * dims[0], tileSize * (dims[1] + 1));
       view.setScene(scene);
+
       GameController gameController = new GameController(board, view);
       gameController.init(scene);
+
       primaryStage.setScene(scene);
       primaryStage.setTitle("UNCTale");
-      primaryStage.setResizable(false);
+      primaryStage.setResizable(true);
       primaryStage.show();
   }
 }

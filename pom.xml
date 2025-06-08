@@ -29,7 +29,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.5</version>
                 <configuration>
-                    <mainClass>com.example.sidescroller.AppLauncher</mainClass>
+                    <mainClass>edu.unc.comp301.ui.AppLauncher</mainClass>
                 </configuration>
             </plugin>
         </plugins>

@@ -5,6 +5,6 @@ import edu.unc.comp301.pieces.requirements.Enemy;
 
 public class EnemyImpl extends Character implements Enemy {
   public EnemyImpl(Posn posn, int health) {
-    super("enemy", "resources/UNCStudent_Enemy.png", posn, health);
+    super("enemy", "UNCStudent_Enemy.png", posn, health);
   }
 }

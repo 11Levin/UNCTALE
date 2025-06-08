@@ -5,7 +5,7 @@ import edu.unc.comp301.pieces.requirements.Buff;
 
 public class BuffImpl extends APiece implements Buff {
   public BuffImpl(String name, Posn posn){
-    super("pencil", "resources/UNCPencil_Buff.png", posn);
+    super("pencil", "UNCPencil_Buff.png", posn);
   }
 
   public void increaseHealth(PlayerImpl player) {

@@ -5,7 +5,7 @@ import edu.unc.comp301.pieces.requirements.Buff;
 
 public class DebuffHomeworkImpl extends APiece implements Buff {
     public DebuffHomeworkImpl(Posn posn){
-        super("homework", "resources/UNCHomework_Debuff.jpg", posn);
+        super("homework", "UNCHomework_Debuff.jpg", posn);
     }
 
     public void decreaseStats(PlayerImpl player) {

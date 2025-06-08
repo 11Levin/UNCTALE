@@ -408,7 +408,6 @@ public class BoardImpl implements Board {
    * @return
    */
   public int increaseLevel() {
-    level += 1;
     return level;
   }
 
@@ -436,6 +435,10 @@ public class BoardImpl implements Board {
 
   public PlayerImpl getPlayer() {
     return player;
+  }
+
+  public GameView getGameView(){
+    return this.gameView;
   }
 
 }

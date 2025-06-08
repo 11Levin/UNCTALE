@@ -4,6 +4,7 @@ import edu.unc.comp301.board.Board;
 import edu.unc.comp301.board.BoardImpl;
 import edu.unc.comp301.board.Posn;
 
+
 import java.io.FileNotFoundException;
 
 import java.util.ArrayList;
@@ -122,6 +123,8 @@ public class Character extends APiece implements MovablePiece {
       if (enemy.getHealth() == 0) { // enemy will drop buff when killed
         BoardImpl boardImpl = (BoardImpl) board;
         boardImpl.getBoard()[nr][nc] = boardImpl.nameToPiece("pencil", new Posn(nr, nc));
+        //res = new CollisionEvent(0, CollisionEvent.Result.CONTINUE);
+        //((BoardImpl) board).getGameView().update(res);
       }
       res = new CollisionEvent(0, CollisionEvent.Result.BLOCK);
     }
@@ -134,7 +137,7 @@ public class Character extends APiece implements MovablePiece {
       if (board.getPiece(nPos).getName().equals("treasure")) {
         boardImpl.setPoints(boardImpl.getPoints() + res.getPoints());
       } else if (board.getPiece(nPos).getName().equals("apple")) {
-        player.setHealth(player.getHealth() + 5); // increase health by 5
+        player.setHealth(player.getHealth() + 20); // increase health by 5
       } else if (board.getPiece(nPos).getName().equals("pencil")) {
         player.setAttack(player.getAttack() + 5); // increase attack by 5
       } else if (board.getPiece(nPos).getName().equals("homework")) {

@@ -1,6 +1,6 @@
 10 10 1
 obstacle, null, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle,
-obstacle, player, obstacle, null, homework, null, null, null, null, obstacle,
+obstacle, player, pencil, null, homework, null, null, null, null, obstacle,
 obstacle, null, null, null, treasure, apple, enemy, obstacle, exit, obstacle,
 obstacle, treasure, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, null, obstacle,
 obstacle, enemy, null, null, null, null, null, obstacle, null, obstacle,

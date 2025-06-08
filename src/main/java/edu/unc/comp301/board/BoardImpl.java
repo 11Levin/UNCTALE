@@ -20,8 +20,12 @@ public class BoardImpl implements Board {
   private int height;
   private PlayerImpl player;
   private int points = 0;
+  private int attack = 20;
+  private int health = 100;
   private int level = 1;
   private GameView gameView;
+  private ArrayList<edu.unc.comp301.pieces.Character> enemyList = new ArrayList<>();
+  private boolean enemyLoad = false;
 
   public BoardImpl(int width, int height) {
     this.width = Math.max(1, width);
@@ -109,13 +113,18 @@ public class BoardImpl implements Board {
    * @param posn position of piece
    * @return the created piece
    */
-  private Piece nameToPiece(String name, Posn posn) {
+  public Piece nameToPiece(String name, Posn posn) {
     return switch (name) {
       case "obstacle" -> new ObstacleImpl(posn);
       case "enemy" -> new EnemyImpl(posn, 100);
+      case "student" -> new EnemyImpl(posn, 100);
+      case "professor" -> new EnemyImpl(posn, 120);
       case "treasure" -> new TreasureImpl(posn);
       case "player" -> new PlayerImpl(posn, 100);
       case "exit" -> new ExitImpl(posn);
+      case "apple" -> new BuffAppleImpl(posn);
+      case "pencil" -> new BuffPencilImpl(posn);
+      case "homework" -> new DebuffHomeworkImpl(posn);
       default -> null;
     };
   }
@@ -151,6 +160,7 @@ public class BoardImpl implements Board {
     System.out.println("Loading level " + level);
     height = scanner.nextInt();
     width = scanner.nextInt();
+    enemyList.clear();
 
     // to build map: type = 1, full name; type = 2, capital letter representation
     int load_type = scanner.nextInt();
@@ -165,6 +175,11 @@ public class BoardImpl implements Board {
         String[] splitted = line.split(",");
         for (int j = 0; j < width; j++) {
           board[i][j] = nameToPiece(splitted[j], new Posn(i, j));
+          if (splitted[j].equals("enemy") || splitted[j].equals("bullet")|| splitted[j].equals("student")|| splitted[j].equals("professor")) {
+            edu.unc.comp301.pieces.Character enemy = (edu.unc.comp301.pieces.Character) board[i][j];
+            enemyList.add(enemy);
+            System.out.println();
+          }
           if (splitted[j].equals("player")) {
             if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
             playerFound = true;
@@ -179,6 +194,10 @@ public class BoardImpl implements Board {
         for (int j = 0; j < width; j++) {
           String name = fullName.get(line.charAt(j));
           board[i][j] = nameToPiece(name, new Posn(i, j));
+          if (name.equals("enemy") || name.equals("bullet")|| name.equals("student")|| name.equals("professor")) {
+            edu.unc.comp301.pieces.Character enemy = (edu.unc.comp301.pieces.Character) board[i][j];
+            enemyList.add(enemy);
+          }
           if (name.equals("player")) {
             if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
             playerFound = true;
@@ -191,7 +210,73 @@ public class BoardImpl implements Board {
       System.out.println("Rendered level");
 
     }
+    this.setEnemyLoad(true);
   }
+
+
+  public void init(int level, PlayerImpl player) throws FileNotFoundException {
+    Scanner scanner = new Scanner(new File("resources/UNCLevel_" + level));
+    System.out.println("Loading level " + level);
+    height = scanner.nextInt();
+    width = scanner.nextInt();
+    enemyList.clear();
+
+    // to build map: type = 1, full name; type = 2, capital letter representation
+    int load_type = scanner.nextInt();
+    board = new Piece[height][width];
+    boolean playerFound = false;
+    scanner.nextLine();
+    String line;
+    if (load_type == 1) {
+      for (int i = 0; i < height; i++) {
+        line = scanner.nextLine().strip().replace(" ", "");
+        if (line.charAt(line.length() - 1) == ',') line = line.substring(0, line.length() - 1);
+        String[] splitted = line.split(",");
+        for (int j = 0; j < width; j++) {
+          if (!splitted[j].equals("player")) {
+            board[i][j] = nameToPiece(splitted[j], new Posn(i, j));
+          }
+          if (splitted[j].equals("enemy") || splitted[j].equals("bullet")|| splitted[j].equals("student")|| splitted[j].equals("professor")) {
+            edu.unc.comp301.pieces.Character enemy = (edu.unc.comp301.pieces.Character) board[i][j];
+            enemyList.add(enemy);
+          }
+          if (splitted[j].equals("player")) {
+            if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
+            playerFound = true;
+            board[i][j] = player;
+
+          }
+        }
+      }
+    } else {
+      System.out.println(fullName);
+      for (int i = 0; i < height; i++) {
+        line = scanner.nextLine().toLowerCase();
+        for (int j = 0; j < width; j++) {
+          String name = fullName.get(line.charAt(j));
+          if (!name.equals("player")) {
+            board[i][j] = nameToPiece(name, new Posn(i, j));
+          }
+          if (name.equals("enemy") || name.equals("bullet")|| name.equals("student")|| name.equals("professor")) {
+            edu.unc.comp301.pieces.Character enemy = (edu.unc.comp301.pieces.Character) board[i][j];
+            enemyList.add(enemy);
+          }
+
+          if (name.equals("player")) {
+            if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
+            playerFound = true;
+          }
+        }
+      }
+    }
+    if (gameView != null) {
+      System.out.println("Rendered level");
+
+    }
+    this.setEnemyLoad(true);
+  }
+
+
 
   /**
    * Gives the width or number of columns of the grid
@@ -285,6 +370,7 @@ public class BoardImpl implements Board {
     switch (collisionEvent.getResults()) {
       case CollisionEvent.Result.PICK_ITEM:
         setPoints(getPoints() + collisionEvent.getPoints());
+        setPoints(getPoints() + collisionEvent.getPoints());
         System.out.println("Treasure collected");
         break;
       case CollisionEvent.Result.NEXT_LEVEL:
@@ -324,6 +410,49 @@ public class BoardImpl implements Board {
     return points;
   }
 
+
+  public Posn getIntialPosn(int level) throws FileNotFoundException {
+    Scanner scanner = new Scanner(new File("resources/UNCLevel_" + level));
+    System.out.println("Loading level " + level);
+    height = scanner.nextInt();
+    width = scanner.nextInt();
+
+    // to build map: type = 1, full name; type = 2, capital letter representation
+    int load_type = scanner.nextInt();
+    board = new Piece[height][width];
+    boolean playerFound = false;
+    scanner.nextLine();
+    String line;
+    if (load_type == 1) {
+      for (int i = 0; i < height; i++) {
+        line = scanner.nextLine().strip().replace(" ", "");
+        if (line.charAt(line.length() - 1) == ',') line = line.substring(0, line.length() - 1);
+        String[] splitted = line.split(",");
+        for (int j = 0; j < width; j++) {
+          if (splitted[j].equals("player")) {
+            return new Posn(i, j);
+          }
+        }
+      }
+    } else {
+      System.out.println(fullName);
+      for (int i = 0; i < height; i++) {
+        line = scanner.nextLine().toLowerCase();
+        for (int j = 0; j < width; j++) {
+          String name = fullName.get(line.charAt(j));
+          if (name.equals("player")) {
+            return new Posn(i, j);
+          }
+        }
+      }
+    }
+    if (gameView != null) {
+      System.out.println("Rendered level");
+
+    }
+    return null;
+  }
+
   /**
    * Sets the level (positive integer)
    * @param level
@@ -343,13 +472,44 @@ public class BoardImpl implements Board {
     return level;
   }
 
+  public int getAttack(){
+    return this.attack;
+  }
+
+  public void setAttack(int attack){
+    this.attack = attack;
+  }
+
   public int getHealth() {
-    if (player == null) return 0;
-    return player.getHealth();
+    return health;
+  }
+
+  /**
+   * Sets the character's health to the largest of parameter health and 0.
+   * @param health
+   */
+  public void setHealth(int health) {
+    this.health = Math.max(health, 0);
   }
 
   public PlayerImpl getPlayer() {
     return player;
   }
 
+  public Piece[][] getBoard() {
+    return board;
+  }
+
+  public ArrayList<edu.unc.comp301.pieces.Character> getEnemyList(){
+    return this.enemyList;
+  }
+
+  public void setEnemyLoad(boolean load){
+    this.enemyLoad = load;
+    System.out.println("THIS IS NOW "+enemyLoad);
+  }
+
+  public boolean getEnemyLoad() {
+    return this.enemyLoad;
+  }
 }

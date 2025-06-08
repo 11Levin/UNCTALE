@@ -2,7 +2,10 @@ package edu.unc.comp301.ui;
 
 import edu.unc.comp301.board.BoardImpl;
 import edu.unc.comp301.board.Posn;
+import edu.unc.comp301.pieces.APiece;
+import edu.unc.comp301.pieces.Character;
 import edu.unc.comp301.pieces.CollisionEvent;
+import edu.unc.comp301.pieces.EnemyImpl;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -64,6 +67,62 @@ public class GameController {
             }
         });
         gameTick.start();
+
+
+        Thread enemyLoad = new Thread(() -> {
+            while (true) {
+                boolean el = board.getEnemyLoad();
+                if(el){
+                    ArrayList<Character> enemyList = board.getEnemyList();
+                    System.out.println(enemyList);
+                    if (enemyList != null){
+                        System.out.println("WORK?");
+                        for (Character enemy: enemyList){
+                            newEnemy(enemy);
+                        }
+                    }
+                    board.setEnemyLoad(false);
+                    System.out.println(el);
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        });
+        enemyLoad.start();
+
+
+
+
+    }
+
+    public void newEnemy(Character enemy){
+        Thread enemyMove = new Thread(() -> {
+            while (enemy.getHealth() > 0) {
+
+                CollisionEvent res = null;
+                res = enemy.moveUp(board);
+                System.out.println(res);
+                System.out.println(enemy.getPosn());
+
+                if (res != null) { // redraw screen
+                    final CollisionEvent temp = res;
+                    Platform.runLater(() -> {
+                        view.update(temp, enemy.getPosn());
+                    });
+                }
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            board.getEnemyList().remove(enemy);
+        });
+        enemyMove.start();
     }
 
 }

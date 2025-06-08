@@ -55,6 +55,11 @@ public class CollisionEvent {
     BLOCK,
   }
 
+  @Override
+  public String toString(){
+    return "The move is "+res.name();
+  }
+
   public void setToUpdate(List<Posn> toUpdate) {
     this.toUpdate = toUpdate;
   }

@@ -31,6 +31,10 @@ public class View implements FXComponent{
         gameView.update(toUpdate);
     }
 
+    public void update(CollisionEvent toUpdate, Posn posn) {
+        gameView.update(toUpdate, posn);
+    }
+
     @Override
     public Parent render() {
         return gameView.render();

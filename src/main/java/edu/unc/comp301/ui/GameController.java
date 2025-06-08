@@ -111,7 +111,7 @@ public class GameController {
                 if (res != null) { // redraw screen
                     final CollisionEvent temp = res;
                     Platform.runLater(() -> {
-                        view.update(temp, enemy.getPosn());
+                        view.update(temp);
                     });
                 }
                 try {

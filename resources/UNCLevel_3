@@ -1,6 +1,11 @@
-5 5
-null, null, null, null, null,
-null, null, null, null, null,
-null, null, player, null, null,
-null, null, null, null, null,
-null, null, null, null, null,
+10 10 1
+obstacle, null, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle,
+obstacle, player, obstacle, null, null, null, null, null, null, obstacle,
+obstacle, null, enemy, null, exit, null, obstacle, obstacle, null, obstacle,
+obstacle, treasure, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, treasure, obstacle,
+obstacle, null, null, null, null, null, null, obstacle, null, obstacle,
+obstacle, null, obstacle, obstacle, null, null, obstacle, obstacle, null, obstacle,
+obstacle, null, obstacle, obstacle, null, null, obstacle, obstacle, null, obstacle,
+obstacle, null, obstacle, obstacle, null, null, obstacle, obstacle, null, obstacle,
+obstacle, null, null, null, null, null, null, null, null, obstacle,
+obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle,

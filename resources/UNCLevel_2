@@ -1,10 +1,10 @@
-10 10
+10 10 1
 obstacle, null, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle,
 obstacle, player, obstacle, null, null, null, null, null, null, obstacle,
-obstacle, null, obstacle, null, exit, null, obstacle, obstacle, null, obstacle,
+obstacle, null, enemy, enemy, exit, null, obstacle, obstacle, null, obstacle,
 obstacle, treasure, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, treasure, obstacle,
-obstacle, null, null, null, null, null, null, obstacle, null, obstacle,
-obstacle, null, obstacle, obstacle, null, null, obstacle, obstacle, null, obstacle,
+obstacle, apple, null, null, null, null, null, obstacle, null, obstacle,
+obstacle, homework, obstacle, obstacle, null, null, obstacle, obstacle, null, obstacle,
 obstacle, null, obstacle, obstacle, null, null, obstacle, obstacle, null, obstacle,
 obstacle, null, obstacle, obstacle, null, null, obstacle, obstacle, null, obstacle,
 obstacle, null, null, null, null, null, null, null, null, obstacle,

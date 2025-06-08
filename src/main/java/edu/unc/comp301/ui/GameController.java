@@ -104,20 +104,14 @@ public class GameController {
             while (enemy.getHealth() > 0) {
 
                 CollisionEvent res = null;
-                int moveNum = (int)(Math.random() * 2);
-                if (moveNum == 0){
-                    res = enemy.moveUp(board);
-                } else {
-                    res = enemy.moveDown(board);
-                }
-
+                res = enemy.moveUp(board);
                 System.out.println(res);
                 System.out.println(enemy.getPosn());
 
                 if (res != null) { // redraw screen
                     final CollisionEvent temp = res;
                     Platform.runLater(() -> {
-                        view.update(temp);
+                        view.update(temp, enemy.getPosn());
                     });
                 }
                 try {

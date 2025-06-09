@@ -17,8 +17,8 @@ public class StartView implements FXComponent{
     public Parent render() {
         Label titleLabel = new Label("UNC Tale");
         titleLabel.getStyleClass().add("text");
-        Font font = Font.loadFont(getClass().getResourceAsStream("fonts/joystix_monospace.otf"), 14);
-        titleLabel.setFont(font);
+//        Font font = Font.loadFont(getClass().getResourceAsStream("fonts/joystix_monospace.otf"), 14);
+//        titleLabel.setFont(font);
         Button startButton = new Button("Start");
         VBox vBox = new VBox();
         vBox.getChildren().addAll(titleLabel, startButton);

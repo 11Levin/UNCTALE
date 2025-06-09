@@ -26,10 +26,8 @@ public class AppLauncher extends Application {
       View view = new View(board);
       Scene scene = new Scene(view.render(), tileSize * dims[0], tileSize * (dims[1] + 1));
       view.setScene(scene);
-
-      GameController gameController = new GameController(board, view);
-      gameController.init(scene);
-
+//      scene.getStylesheets().add("main.css");
+//      scene.getStylesheets().add(getClass().getResource("/fontstyle.css").toExternalForm());
       primaryStage.setScene(scene);
       primaryStage.setTitle("UNCTale");
       primaryStage.setResizable(true);

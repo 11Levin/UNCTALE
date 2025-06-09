@@ -100,6 +100,11 @@ public class Character extends APiece implements MovablePiece {
     Posn nPos = new Posn(nr, nc);
     CollisionEvent res = collide(board.getPiece(nPos));
     // player attacks enemy if enemy is in the way. Makes enemy lose 10 health
+    if (res.getResults() == CollisionEvent.Result.HIT) {
+      res = new CollisionEvent(0, 0,0,CollisionEvent.Result.BLOCK);
+    }
+
+
     if (res.getResults() == CollisionEvent.Result.ATTACK) {
       BoardImpl boardImpl = (BoardImpl) board;
       Character enemy = upcastPieceToCharacter(board.getPiece(nPos));

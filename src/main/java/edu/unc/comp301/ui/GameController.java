@@ -29,12 +29,9 @@ public class GameController {
         // set keybinds
         scene.setOnKeyPressed(keyEvent -> {
             pressed.add(keyEvent.getCode());
-//            System.out.println("Pressed " + keyEvent.getCode());
         });
 
-        scene.setOnKeyReleased(keyEvent -> {
-//            pressed.remove(keyEvent.getCode());
-        });
+
 
         Thread gameTick = new Thread(() -> {
             while (true) {
@@ -53,6 +50,7 @@ public class GameController {
                     // next level, redraw completely
                     if (res.getResults().equals(CollisionEvent.Result.NEXT_LEVEL)) {
                         scene.setRoot(view.render());
+                        if (board.getLevel() == 4) view.endGame();
                     }
                     final CollisionEvent temp = res;
                     Platform.runLater(() -> {

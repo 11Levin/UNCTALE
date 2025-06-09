@@ -46,6 +46,7 @@ public class CollisionEvent {
   public List<Posn> getToUpdate() {return toUpdate;}
 
   public enum Result {
+    GAME_START,
     CONTINUE,
     GAME_OVER,
     NEXT_LEVEL,

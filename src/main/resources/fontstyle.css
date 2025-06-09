@@ -1,0 +1,9 @@
+@font-face{
+    font-family: 'pixel';
+    src: url('fonts/joystix_monospace.otf');
+}
+
+.text{
+    -fx-font-family: 'pixel';
+    -fx-font-size: 30px;
+}

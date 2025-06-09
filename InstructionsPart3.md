@@ -332,7 +332,7 @@ Things your game does not yet implement:
 Update your readme to reflect your current progress.  In particular, update the [Known Issues / Incomplete Features].
 
 - [Known Issues / Incomplete Features]
-  If there are any features not yet implemented, partially working, or known bugs that affect gameplay, describe them here. Be honest — noting limitations will not automatically reduce your score, but it helps us understand your current progress and intentions.
+  Need to update names of files to fit with the requirements.
 
 
 

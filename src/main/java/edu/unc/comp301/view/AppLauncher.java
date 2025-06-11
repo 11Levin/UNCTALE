@@ -1,7 +1,7 @@
 package edu.unc.comp301.view;
 
-import edu.unc.comp301.board.BoardImpl;
-import edu.unc.comp301.exceptions.LevelNotLoadedException;
+import edu.unc.comp301.model.board.BoardImpl;
+import edu.unc.comp301.model.exceptions.LevelNotLoadedException;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

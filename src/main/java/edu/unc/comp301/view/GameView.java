@@ -1,9 +1,9 @@
 package edu.unc.comp301.view;
 
-import edu.unc.comp301.board.BoardImpl;
-import edu.unc.comp301.board.Posn;
-import edu.unc.comp301.pieces.CollisionEvent;
-import edu.unc.comp301.pieces.Piece;
+import edu.unc.comp301.model.board.BoardImpl;
+import edu.unc.comp301.model.board.Posn;
+import edu.unc.comp301.model.pieces.CollisionEvent;
+import edu.unc.comp301.model.pieces.Piece;
 import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;

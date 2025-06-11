@@ -1,4 +1,4 @@
-10 10
+10 10 1
 obstacle, null, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle,
 obstacle, player, obstacle, null, null, null, null, null, null, obstacle,
 obstacle, null, obstacle, null, exit, null, obstacle, obstacle, null, obstacle,

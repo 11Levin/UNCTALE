@@ -1,4 +1,4 @@
-package edu.unc.comp301.ui;
+package edu.unc.comp301.view;
 
 import javafx.scene.Parent;
 

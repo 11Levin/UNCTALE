@@ -1,10 +1,9 @@
-package edu.unc.comp301.ui;
+package edu.unc.comp301.view;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 
 public class StartView implements FXComponent{
     View view;
@@ -17,8 +16,6 @@ public class StartView implements FXComponent{
     public Parent render() {
         Label titleLabel = new Label("UNC Tale");
         titleLabel.getStyleClass().add("text");
-//        Font font = Font.loadFont(getClass().getResourceAsStream("fonts/joystix_monospace.otf"), 14);
-//        titleLabel.setFont(font);
         Button startButton = new Button("Start");
         VBox vBox = new VBox();
         vBox.getChildren().addAll(titleLabel, startButton);

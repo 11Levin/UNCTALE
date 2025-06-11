@@ -1,4 +1,4 @@
-package edu.unc.comp301.ui;
+package edu.unc.comp301.view;
 
 import edu.unc.comp301.board.BoardImpl;
 import edu.unc.comp301.exceptions.LevelNotLoadedException;

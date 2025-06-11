@@ -1,18 +1,12 @@
-package edu.unc.comp301.ui;
+package edu.unc.comp301.view;
 
 import edu.unc.comp301.board.BoardImpl;
-import edu.unc.comp301.board.Posn;
-import edu.unc.comp301.pieces.APiece;
 import edu.unc.comp301.pieces.Character;
 import edu.unc.comp301.pieces.CollisionEvent;
-import edu.unc.comp301.pieces.EnemyImpl;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
 
-import java.security.Key;
 import java.util.*;
 
 public class GameController {

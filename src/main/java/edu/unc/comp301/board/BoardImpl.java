@@ -4,13 +4,11 @@ import edu.unc.comp301.exceptions.InvalidMoveException;
 import edu.unc.comp301.exceptions.LevelNotLoadedException;
 import edu.unc.comp301.exceptions.PlayerAlreadyFoundException;
 import edu.unc.comp301.pieces.*;
-import edu.unc.comp301.pieces.requirements.Player;
-import edu.unc.comp301.ui.GameView;
-import edu.unc.comp301.ui.View;
+import edu.unc.comp301.view.GameView;
 import javafx.scene.input.KeyCode;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.lang.Character;
 import java.util.*;
 
@@ -141,7 +139,9 @@ public class BoardImpl implements Board {
   private Map<Character, String> fullName;
   private void loadKey() throws FileNotFoundException {
     fullName = new HashMap<>();
-    Scanner scanner = new Scanner(new File("resources/keyToName"));
+    System.out.println("loading");
+    InputStream inputStream = BoardImpl.class.getClassLoader().getResourceAsStream("keyToName.txt");
+    Scanner scanner = new Scanner(inputStream);
     while (scanner.hasNext()) {
       String line = scanner.nextLine();
       line = line.replace(" ", "");
@@ -156,7 +156,7 @@ public class BoardImpl implements Board {
    * @throws FileNotFoundException
    */
   public void init(int level) throws FileNotFoundException {
-    Scanner scanner = new Scanner(new File("resources/UNCLevel_" + level));
+    Scanner scanner = new Scanner(BoardImpl.class.getClassLoader().getResourceAsStream("UNCLevel_" + level));
     System.out.println("Loading level " + level);
     height = scanner.nextInt();
     width = scanner.nextInt();
@@ -215,7 +215,7 @@ public class BoardImpl implements Board {
 
 
   public void init(int level, PlayerImpl player) throws FileNotFoundException {
-    Scanner scanner = new Scanner(new File("resources/UNCLevel_" + level));
+    Scanner scanner = new Scanner(getClass().getClassLoader().getResourceAsStream("UNCLevel_" + level));
     System.out.println("Loading level " + level);
     height = scanner.nextInt();
     width = scanner.nextInt();
@@ -412,7 +412,7 @@ public class BoardImpl implements Board {
 
 
   public Posn getIntialPosn(int level) throws FileNotFoundException {
-    Scanner scanner = new Scanner(new File("resources/UNCLevel_" + level));
+    Scanner scanner = new Scanner(getClass().getClassLoader().getResourceAsStream("UNCLevel_" + level));
     System.out.println("Loading level " + level);
     height = scanner.nextInt();
     width = scanner.nextInt();

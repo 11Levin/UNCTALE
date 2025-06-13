@@ -7,9 +7,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
+
 import java.util.*;
 
-public class GameBar implements FXComponent{
+public class GameBar implements FXComponent {
     private final Label scoreNumber = new Label("0");
     private final Label levelNumber = new Label("1");
     private final HBox healthBar = new HBox();

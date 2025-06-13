@@ -5,15 +5,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-public class EndView implements FXComponent{
+public class EndView implements FXComponent {
     private int score, high, time;
 
 
     /**
      * Displays the game end screen
+     *
      * @param score the player's current score
-     * @param high the high score
-     * @param time the time taken to beat the game
+     * @param high  the high score
+     * @param time  the time taken to beat the game
      */
     public EndView(int score, int high, int time) {
         this.score = score;

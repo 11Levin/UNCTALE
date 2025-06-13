@@ -1,30 +1,30 @@
 package edu.unc.comp301.model.board;
 
 public class Posn {
-  private final int row;
-  private final int col;
+    private final int row;
+    private final int col;
 
-  public Posn(int row, int col) {
-    this.row = row;
-    this.col = col;
-  }
+    public Posn(int row, int col) {
+        this.row = row;
+        this.col = col;
+    }
 
-  public int getRow() {
-    return row;
-  }
+    public int getRow() {
+        return row;
+    }
 
-  public int getCol() {
-    return col;
-  }
+    public int getCol() {
+        return col;
+    }
 
-  @Override
-  public boolean equals(Object other) {
-    Posn oth = (Posn) other;
-    return (row == oth.getRow()) && (col == oth.getCol());
-  }
+    @Override
+    public boolean equals(Object other) {
+        Posn oth = (Posn) other;
+        return (row == oth.getRow()) && (col == oth.getCol());
+    }
 
-  @Override
-  public String toString() {
-    return row + "," + col;
-  }
+    @Override
+    public String toString() {
+        return row + "," + col;
+    }
 }

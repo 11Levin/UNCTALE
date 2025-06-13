@@ -7,22 +7,21 @@ import edu.unc.comp301.model.piece.Piece;
 
 import java.util.*;
 
-public class Model implements Subject{
-    private List<Observer> views = new ArrayList<>();
-    private Board board;
-
-    // player stats
-    private int score;
-    private int highScore;
-    private int level = 1;
-
+public class Model implements Subject {
     public enum STATUS {
         GAME_START,
         GAME_CONTINUE,
         GAME_END,
     }
 
+    private final List<Observer> views = new ArrayList<>();
+    private final Board board;
     private STATUS status = STATUS.GAME_END;
+
+    // player stats
+    private int score;
+    private int highScore;
+    private int level = 1;
 
     public Model(int width, int height) {
         board = new Board(width, height);
@@ -69,6 +68,7 @@ public class Model implements Subject{
         score = 0;
         level = 1;
         status = STATUS.GAME_CONTINUE;
+        updateViews();
     }
 
     public void endGame() {
@@ -79,29 +79,39 @@ public class Model implements Subject{
     }
 
     public void moveUp() {
+        move(-1, 0);
     }
 
     public void moveDown() {
+        move(1, 0);
     }
 
     public void moveLeft() {
+        move(0, -1);
     }
 
     public void moveRight() {
+        move(0, 1);
     }
 
     private void move(int drow, int dcol) {
+        System.out.println("trying to move");
         CollisionEvent collisionEvent = board.movePlayer(drow, dcol);
         score += collisionEvent.getPoints();
-
     }
 
     @Override
     public void addView(Observer view) {
-
+        views.add(view);
     }
 
-    private void updateViews() {
+    public void updateViews() {
+        for (Observer observer : views) {
+            observer.update();
+        }
+    }
 
+    public String[][] getToDraw() {
+        return board.getToDraw();
     }
 }

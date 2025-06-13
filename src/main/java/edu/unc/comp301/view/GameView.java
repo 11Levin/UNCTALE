@@ -1,35 +1,46 @@
 package edu.unc.comp301.view;
 
-import edu.unc.comp301.model.board.BoardImpl;
+import edu.unc.comp301.controller.Controller;
+import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.board.Posn;
 import edu.unc.comp301.model.piece.CollisionEvent;
 import edu.unc.comp301.model.piece.Piece;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.util.*;
 
-public class GameView implements FXComponent{
-    private final BoardImpl board;
+public class GameView extends View {
+    // visual constants
     private final int tileSize = 64;
+    private final int viewRadius = 4;
+    private boolean isRendered = false;
+
     Map<String, Image> images = new HashMap<>();
-    private GridPane gridPane;
-    private GameBar gameBar;
-    Map<String, Parent>[][] rendered;
-    int viewRadius = 4;
-    private String[] toLoad = {"buff/UNCApple_Buff.png", "immovable/UNCGrass.png", "buff/UNCHomework_Debuff.jpg", "immovable/UNCLogo_Exit.png", "immovable/UNCMoney_Treasure.png",
+    private final GameBar gameBar;
+    private final VBox vBox;
+
+    // grid of pre-rendered stackpanes for each tile in the view area to reduce re-rendering
+    private final Map<String, Parent>[][] rendered;
+
+    // resource paths of all images
+    private final String[] toLoad = {"buff/UNCApple_Buff.png", "immovable/UNCGrass.png", "buff/UNCHomework_Debuff.jpg", "immovable/UNCLogo_Exit.png", "immovable/UNCMoney_Treasure.png",
             "buff/UNCPencil_Buff.png", "movable/UNCPlayer.png", "immovable/UNCPortal.png", "movable/UNCProfessor_Enemy.png", "immovable/UNCRam_Obstacle.png", "movable/UNCRamses_Enemy.png",
             "movable/UNCStudent_Enemy.png", "immovable/UNCTile_1.jpg", "immovable/UNCTile_2.jpg", "immovable/UNCTile_3.jpg", "immovable/UNCWall.png", "immovable/UNCUnloaded.png"};
-    Parent nodes[][];
 
-    public GameView(BoardImpl board) {
-        this.board = board;
+    public GameView(Controller controller, Model model, Stage stage) {
+        super(controller, model, stage);
+        gameBar = new GameBar();
+        vBox = new VBox();
+        rendered = new HashMap[2 * viewRadius + 1][2 * viewRadius + 1];
         loadImages();
-        board.setGameView(this);
+        render();
     }
 
     private void loadImages() {
@@ -45,17 +56,10 @@ public class GameView implements FXComponent{
         return rtn;
     }
 
-    /**
-     * Do not put in loop
-     * @return
-     */
     @Override
     public Parent render() {
-        VBox vBox = new VBox();
-        gameBar = new GameBar();
-        gridPane = new GridPane();
-        rendered = new HashMap[2 * viewRadius + 1][2 * viewRadius + 1];
-        nodes = new Parent[2 * viewRadius + 1][2 * viewRadius + 1];
+        if (isRendered) return vBox;
+        isRendered = true;
 
         // create all tiles beforehand
         for (int i = 0; i < 2 * viewRadius + 1; i++) {
@@ -76,59 +80,23 @@ public class GameView implements FXComponent{
                 }
             }
         }
-        vBox.getChildren().addAll(gameBar.render(), gridPane);
-        gameBar.updateStats(board.getHealth(), board.getPoints(), board.getLevel());
-        update(new CollisionEvent(0, 0, 0, CollisionEvent.Result.CONTINUE));
+        vBox.getChildren().addAll(gameBar.render(), new GridPane());
         return vBox;
     }
 
-
-    /**
-     * Call to update visuals
-     * @param collisionEvent
-     */
-    public void update(CollisionEvent collisionEvent) {
-        Posn posn = board.getPlayer().getPosn();
-        int r = posn.getRow();
-        int c = posn.getCol();
-//        System.out.println("Board dims: " + board.getHeight() + ", " + board.getWidth());
-        for (int i = r - viewRadius; i <= r + viewRadius; i++) {
-            for (int j = c - viewRadius; j <= c + viewRadius; j++) {
-                // visual piece row and column wrt player
-                int visualR = i - r + viewRadius;
-                int visualC = j - c + viewRadius;
-
-                Parent toAdd = rendered[visualR][visualC].get("immovable/UNCWall.png");
-                if (nodes[visualC][visualR] != null) gridPane.getChildren().remove(nodes[visualR][visualC]);
-
-                // Check piece at (i, j) is within board bounds
-                if (i >= 0 && i < board.getHeight() && j >= 0 && j < board.getWidth()) {
-                    Piece piece = board.getPiece(new Posn(i, j));
-                    toAdd = rendered[visualR][visualC].get("immovable/UNCGrass.png");
-                    if (piece != null) {
-                        toAdd = rendered[visualR][visualC].get(piece.getResourcePath());
-                    }
-                }
-                nodes[visualR][visualC] = toAdd;
-                gridPane.add(toAdd, visualC, visualR);
+    @Override
+    public void update() {
+        if (model.getStatus() != Model.STATUS.GAME_CONTINUE) return;
+        GridPane gridPane = new GridPane();
+        String[][] toDraw = model.getToDraw();
+        for (int i = 0; i < 2 * viewRadius + 1; i++) {
+            for (int j = 0; j < 2 * viewRadius + 1; j++) {
+                Parent toAdd = rendered[i][j].get(toDraw[i][j]);
+                gridPane.add(toAdd, j, i);
             }
         }
-
-        // update game stats bar
-        if (gameBar != null) {
-            if (collisionEvent.getHealth() != 0) {
-                gameBar.setHealth(board.getHealth());
-            }
-            if (collisionEvent.getPoints() != 0) {
-                gameBar.setScore(board.getPoints());
-            }
-            if (collisionEvent.getResults().equals(CollisionEvent.Result.NEXT_LEVEL)) {
-                gameBar.setLevel(board.getLevel());
-            }
-        }
-
-
+        vBox.getChildren().removeLast();
+        vBox.getChildren().add(gridPane);
+        stage.getScene().setRoot(render());
     }
-
-
 }

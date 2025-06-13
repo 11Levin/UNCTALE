@@ -1,60 +1,35 @@
 package edu.unc.comp301.view;
 
-import edu.unc.comp301.model.board.BoardImpl;
-import edu.unc.comp301.controller.GameController;
-import edu.unc.comp301.model.piece.CollisionEvent;
+import edu.unc.comp301.controller.Controller;
+import edu.unc.comp301.model.Model;
+import edu.unc.comp301.model.Observer;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
-public class View implements FXComponent{
-    private final BoardImpl board;
-    private Scene scene;
-    private final GameView gameView;
-    private CollisionEvent.Result gameState = CollisionEvent.Result.GAME_START;
-    private EndView endView;
 
-    /**
-     * Only call after board has been initialized
-     * @param board
-     */
-    public View(BoardImpl board) {
-        this.board = board;
-        gameView = new GameView(board);
+public class View implements FXComponent, Observer {
+    protected final Controller controller;
+    protected final Model model;
+    protected final Stage stage;
+
+    public View(Controller controller, Model model, Stage stage) {
+        this.controller = controller;
+        this.model = model;
+        this.stage = stage;
     }
-
-    public void setScene(Scene scene) {
-        this.scene = scene;
-    }
-
-    public void update(CollisionEvent toUpdate) {
-        gameView.update(toUpdate);
-    }
-
 
     @Override
     public Parent render() {
-        switch (gameState) {
-            case CollisionEvent.Result.GAME_START:
-                return (new StartView(this)).render();
-            case CollisionEvent.Result.CONTINUE:
-                return gameView.render();
-            case CollisionEvent.Result.GAME_OVER:
-                return endView.render();
-            default:
-                throw new IllegalArgumentException("gameState should be GAME_START, CONTINUE, GAME_OVER");
-        }
+        StackPane layout = new StackPane();
+        Label label = new Label("Hello World");
+        layout.getChildren().add(label);
+        return layout;
     }
 
-    public void startGame() {
-        gameState = CollisionEvent.Result.CONTINUE;
-        GameController gameController = new GameController(board, this);
-        gameController.init(scene);
-        scene.setRoot(gameView.render());
-    }
-
-    public void endGame() {
-        gameState = CollisionEvent.Result.GAME_OVER;
-        endView = new EndView(board.getPoints(), board.getPoints(), 0);
-        scene.setRoot(endView.render());
+    @Override
+    public void update() {
+        stage.getScene().setRoot(render());
     }
 }

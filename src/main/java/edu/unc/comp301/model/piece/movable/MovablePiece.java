@@ -49,4 +49,8 @@ public abstract class MovablePiece extends APiece {
     public void setAttack(int attack) {
         this.attack = Math.max(attack, 0);
     }
+
+    public void attack(int attack, MovablePiece Opponent) {
+        Opponent.setHealth(Opponent.getHealth() - attack);
+    }
 }

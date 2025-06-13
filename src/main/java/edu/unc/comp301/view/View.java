@@ -1,5 +1,6 @@
 package edu.unc.comp301.view;
 
+import edu.unc.comp301.GameElement;
 import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.Observer;
@@ -10,7 +11,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 
-public class View implements FXComponent, Observer {
+public class View extends GameElement implements FXComponent, Observer {
     protected final Controller controller;
     protected final Model model;
     protected final Stage stage;

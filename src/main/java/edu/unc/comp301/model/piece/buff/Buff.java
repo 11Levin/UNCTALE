@@ -2,10 +2,10 @@ package edu.unc.comp301.model.piece.buff;
 
 import edu.unc.comp301.model.board.Posn;
 import edu.unc.comp301.model.piece.APiece;
+import edu.unc.comp301.model.piece.CollisionEvent;
 
 public abstract class Buff extends APiece {
-    private final int attack;
-    private final int health;
+    private final CollisionEvent collisionEvent;
 
     /**
      * Creates a buff
@@ -13,20 +13,13 @@ public abstract class Buff extends APiece {
      * @param name         the buff's name
      * @param resourcePath (name).png or (name).jpg
      * @param posn         the buff's position
-     * @param attack       change in attack if player were to pick up this buff
-     * @param health       change in health
      */
-    public Buff(String name, String resourcePath, Posn posn, int attack, int health) {
+    public Buff(String name, String resourcePath, Posn posn, CollisionEvent collisionEvent) {
         super(name, resourcePath, posn, Type.BUFF);
-        this.attack = attack;
-        this.health = health;
+        this.collisionEvent = collisionEvent;
     }
 
-    public int getAttack() {
-        return attack;
-    }
-
-    public int getHealth() {
-        return health;
+    public CollisionEvent getCollisionEvent() {
+        return collisionEvent;
     }
 }

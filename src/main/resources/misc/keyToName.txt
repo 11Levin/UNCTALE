@@ -1,0 +1,6 @@
+o, obstacle
+., null
+t, treasure
+p, player
+e, exit
+s, student

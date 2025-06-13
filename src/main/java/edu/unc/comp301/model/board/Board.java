@@ -1,5 +1,6 @@
 package edu.unc.comp301.model.board;
 
+import edu.unc.comp301.GameElement;
 import edu.unc.comp301.model.exception.LevelNotLoadedException;
 import edu.unc.comp301.model.exception.PieceOutOfBoundsException;
 import edu.unc.comp301.model.exception.PlayerAlreadyFoundException;
@@ -14,18 +15,14 @@ import edu.unc.comp301.model.piece.immovable.Obstacle;
 import edu.unc.comp301.model.piece.immovable.Treasure;
 import edu.unc.comp301.model.piece.movable.*;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
 
-public class Board {
+public class Board extends GameElement {
     // board info
     private Piece[][] board;
     private int width;
     private int height;
-    private final int viewRadius = 4;
-    private final Random random;
-    private final String[] enemyNames = {"student", "professor"};
 
     // entity info
     private Player player;
@@ -41,34 +38,15 @@ public class Board {
         this.width = Math.max(1, width);
         this.height = Math.max(1, height);
         board = new Piece[height][width];
-        random = new Random();
-        try {
-            loadKey();
-        } catch (FileNotFoundException e) {
-            throw new LevelNotLoadedException("invalid key to load map");
-        }
     }
 
     public Board(Piece[][] board) {
         this.board = board;
-        random = new Random();
         width = board[0].length;
         height = board.length;
-        try {
-            loadKey();
-        } catch (FileNotFoundException e) {
-            throw new LevelNotLoadedException("invalid key to load map");
-        }
     }
 
-    public Board() {
-      try {
-        loadKey();
-      } catch (FileNotFoundException e) {
-        throw new LevelNotLoadedException("invalid key to load map");
-      }
-      random = new Random();
-    }
+    public Board() {}
 
     /**
      * gives a Piece object from a string representing the piece.
@@ -93,22 +71,6 @@ public class Board {
         };
     }
 
-    private Map<Character, String> fullName;
-
-    private void loadKey() throws FileNotFoundException {
-        fullName = new HashMap<>();
-        System.out.println("loading");
-        InputStream inputStream = Board.class.getClassLoader().getResourceAsStream("misc/keyToName.txt");
-        if (inputStream == null) throw new LevelNotLoadedException("Error loading key.");
-        Scanner scanner = new Scanner(inputStream);
-        while (scanner.hasNext()) {
-            String line = scanner.nextLine();
-            line = line.replace(" ", "");
-            String[] splitted = line.split(",");
-            fullName.put(splitted[0].charAt(0), splitted[1]);
-        }
-        scanner.close();
-    }
 
     /**
      * Generates a specified level
@@ -132,7 +94,7 @@ public class Board {
         for (int i = 0; i < height; i++) {
             line = scanner.nextLine().toLowerCase();
             for (int j = 0; j < width; j++) {
-                String name = fullName.get(line.charAt(j));
+                String name = fullName(line.charAt(j));
                 if (name.equals("player")) {
                   if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
                   playerFound = true;
@@ -185,16 +147,38 @@ public class Board {
         int c = movable.getPosn().getCol();
         int nr = r + drow;
         int nc = c + dcol;
+        Posn nPos = new Posn(nr, nc);
 
         // out of bounds
         if (nr < 0 || nr >= height || nc < 0 || nc >= width)
-            return new CollisionEvent(0, 0, 0, CollisionEvent.Result.BLOCK);
-        CollisionEvent collisionEvent = movable.collide(getPiece(new Posn(nr, nc)));
+            return CollisionEvent.BLOCK;
+        CollisionEvent collisionEvent = movable.collide(getPiece(nPos));
+
+        // update player
+        player.setHealth(player.getHealth() + collisionEvent.getHealth());
+        player.setAttack(player.getAttack() + collisionEvent.getAttack());
 
         // handle collision types
         CollisionEvent.Result res = collisionEvent.getResult();
         boolean updatePosition = true;
         CollisionEvent.Result[] ignore = {CollisionEvent.Result.NEXT_LEVEL, CollisionEvent.Result.BLOCK, CollisionEvent.Result.GAME_OVER};
+        if (res == CollisionEvent.Result.ATTACK) {
+            Enemy enemy = (Enemy)getPiece(nPos);
+            player.attack(player.getAttack(), enemy);
+            System.out.println("Enemy Hurt! Health is at: " + enemy.getHealth());
+            if (enemy.getHealth() == 0) { // enemy will drop buff when killed
+                board[nr][nc] = nameToPiece("pencil", new Posn(nr, nc));
+                enemyList.remove(enemy);
+            }
+            return CollisionEvent.BLOCK;
+        }
+
+        // update position if no obstacle or enemy is in the way
+        if (res == CollisionEvent.Result.PICK_ITEM) {
+            player.setAttack(player.getAttack() + collisionEvent.getAttack());
+            player.setHealth(player.getHealth() + collisionEvent.getHealth());
+        }
+
         for (CollisionEvent.Result ig : ignore) {
             if (res == ig) updatePosition = false;
         }
@@ -238,31 +222,28 @@ public class Board {
 
     /**
      * Returns a string representation of grid components that need to be drawn
-     *
      * @return
      */
-    public String[][] getToDraw() {
-        String[][] rtn = new String[2 * viewRadius + 1][2 * viewRadius + 1];
+    public String[] getToDraw() {
+        String[] rtn = new String[2 * viewRadius + 1];
         int r = player.getPosn().getRow();
         int c = player.getPosn().getCol();
         for (int i = r - viewRadius; i <= r + viewRadius; i++) {
+            StringBuilder sb = new StringBuilder();
             for (int j = c - viewRadius; j <= c + viewRadius; j++) {
-                // visual piece row and column wrt player
-                int visualR = i - r + viewRadius;
-                int visualC = j - c + viewRadius;
-
-                String toAdd = "immovable/UNCWall.png";
+                Character toAdd = 'w';
 
                 // Check piece at (i, j) is within board bounds
                 if (i >= 0 && i < getHeight() && j >= 0 && j < getWidth()) {
                     Piece piece = getPiece(new Posn(i, j));
-                    toAdd = "immovable/UNCGrass.png";
+                    toAdd = 'g';
                     if (piece != null) {
-                        toAdd = piece.getResourcePath();
+                        toAdd = shortName(piece.getName());
                     }
                 }
-                rtn[visualR][visualC] = toAdd;
+                sb.append(toAdd);
             }
+            rtn[i + viewRadius - r] = sb.toString();
         }
         return rtn;
     }

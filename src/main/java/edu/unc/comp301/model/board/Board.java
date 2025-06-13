@@ -23,6 +23,8 @@ public class Board {
     private int width;
     private int height;
     private final int viewRadius = 4;
+    private final Random random;
+    private final String[] enemyNames = {"student", "professor"};
 
     // entity info
     private Player player;
@@ -38,6 +40,7 @@ public class Board {
         this.width = Math.max(1, width);
         this.height = Math.max(1, height);
         board = new Piece[height][width];
+        random = new Random();
         try {
             loadKey();
         } catch (FileNotFoundException e) {
@@ -47,6 +50,7 @@ public class Board {
 
     public Board(Piece[][] board) {
         this.board = board;
+        random = new Random();
         width = board[0].length;
         height = board.length;
         try {
@@ -91,16 +95,6 @@ public class Board {
         };
     }
 
-    /**
-     * Same behavior as nameToPiece except position is initialized to (0, 0)
-     *
-     * @param name
-     * @return
-     */
-    private Piece nameToPiece(String name) {
-        return nameToPiece(name, new Posn(0, 0));
-    }
-
     private Map<Character, String> fullName;
 
     private void loadKey() throws FileNotFoundException {
@@ -124,7 +118,7 @@ public class Board {
      * @param level the level to generate (positive integer)
      */
     public void init(int level) {
-        InputStream inputStream = Board.class.getClassLoader().getResourceAsStream("UNCLevel_" + level);
+        InputStream inputStream = Board.class.getClassLoader().getResourceAsStream("level/UNCLevel_" + level);
         if (inputStream == null) throw new LevelNotLoadedException("Error loading level");
         Scanner scanner = new Scanner(inputStream);
         System.out.println("Loading level " + level);
@@ -149,13 +143,14 @@ public class Board {
                         if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
                         playerFound = true;
                         player = (Player) board[i][j];
-                    } else if (splitted[j].equals("enemy")) {
-                        enemyList.add((Enemy) board[i][j]);
+                    } else {
+                        for (String enemyName : enemyNames) {
+                          if (enemyName.equals(splitted[j])) enemyList.add((Enemy) board[i][j]);
+                        }
                     }
                 }
             }
         } else {
-            System.out.println(fullName);
             for (int i = 0; i < height; i++) {
                 line = scanner.nextLine().toLowerCase();
                 for (int j = 0; j < width; j++) {
@@ -165,8 +160,10 @@ public class Board {
                         if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
                         playerFound = true;
                         player = (Player) board[i][j];
-                    } else if (name.equals("enemy")) {
-                        enemyList.add((Enemy) board[i][j]);
+                    } else {
+                      for (String enemyName : enemyNames) {
+                        if (enemyName.equals(name)) enemyList.add((Enemy) board[i][j]);
+                      }
                     }
                 }
             }
@@ -235,8 +232,12 @@ public class Board {
         return moveMovable(player, drow, dcol);
     }
 
-    public CollisionEvent moveEnemies() {
-        return null;
+    public void moveEnemies() {
+        for (Enemy enemy : enemyList) {
+          int[][] dir = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+          int idx = Math.abs(random.nextInt()) % 4;
+          moveMovable(enemy, dir[idx][0], dir[idx][1]);
+        }
     }
 
     @Override

@@ -20,7 +20,7 @@ public abstract class Enemy extends MovablePiece {
                 return block;
             case Type.MOVABLE:
                 if (other.getName().equals("player")) {
-                    return new CollisionEvent(0, 0, 0, CollisionEvent.Result.HIT);
+                    return new CollisionEvent(0, 0, 0, CollisionEvent.Result.BLOCK);
                 } else {
                     return block;
                 }

@@ -16,7 +16,7 @@ public class Model implements Subject {
 
     private final List<Observer> views = new ArrayList<>();
     private final Board board;
-    private STATUS status = STATUS.GAME_END;
+    private volatile STATUS status = STATUS.GAME_END;
 
     // player stats
     private int score;
@@ -94,9 +94,15 @@ public class Model implements Subject {
         move(0, 1);
     }
 
+    public void moveEnemies() {
+        board.moveEnemies();
+    }
+
     private void move(int drow, int dcol) {
-        System.out.println("trying to move");
         CollisionEvent collisionEvent = board.movePlayer(drow, dcol);
+        if (collisionEvent.getResult() == CollisionEvent.Result.NEXT_LEVEL) {
+            board.init(++level);
+        }
         score += collisionEvent.getPoints();
     }
 

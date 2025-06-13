@@ -3,3 +3,4 @@ o, obstacle
 t, treasure
 p, player
 e, exit
+s, student

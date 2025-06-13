@@ -10,6 +10,7 @@ import java.util.*;
 public class Controller {
     private final Model model;
     private final Set<KeyCode> pressed = new HashSet<>();
+    private int tick;
 
     public Controller(Model model) {
         this.model = model;
@@ -43,28 +44,39 @@ public class Controller {
 
         Thread gameTick = new Thread(() -> {
             while (true) {
-                if (pressed.contains(KeyCode.UP) || pressed.contains(KeyCode.W)) {
-                    model.moveUp();
-                    pressed.remove(KeyCode.UP);
-                    pressed.remove(KeyCode.W);
-                } else if (pressed.contains(KeyCode.LEFT) || pressed.contains(KeyCode.A)) {
-                    model.moveLeft();
-                    pressed.remove(KeyCode.LEFT);
-                    pressed.remove(KeyCode.A);
-                } else if (pressed.contains(KeyCode.DOWN) || pressed.contains(KeyCode.S)) {
-                    model.moveDown();
-                    pressed.remove(KeyCode.DOWN);
-                    pressed.remove(KeyCode.S);
-                } else if (pressed.contains(KeyCode.RIGHT) || pressed.contains(KeyCode.D)) {
-                    model.moveRight();
-                    pressed.remove(KeyCode.RIGHT);
-                    pressed.remove(KeyCode.D);
-                }
-                Platform.runLater(model::updateViews);
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                if (model.getStatus() == Model.STATUS.GAME_CONTINUE) {
+                    // check for player input
+                    if (pressed.contains(KeyCode.UP) || pressed.contains(KeyCode.W)) {
+                        moveUp();
+                        pressed.remove(KeyCode.UP);
+                        pressed.remove(KeyCode.W);
+                    } else if (pressed.contains(KeyCode.LEFT) || pressed.contains(KeyCode.A)) {
+                        moveLeft();
+                        pressed.remove(KeyCode.LEFT);
+                        pressed.remove(KeyCode.A);
+                    } else if (pressed.contains(KeyCode.DOWN) || pressed.contains(KeyCode.S)) {
+                        moveDown();
+                        pressed.remove(KeyCode.DOWN);
+                        pressed.remove(KeyCode.S);
+                    } else if (pressed.contains(KeyCode.RIGHT) || pressed.contains(KeyCode.D)) {
+                        moveRight();
+                        pressed.remove(KeyCode.RIGHT);
+                        pressed.remove(KeyCode.D);
+                    }
+
+                    // move enemies
+                    if (tick++ % 20 == 0) {
+                        System.out.println("Enemies moved!");
+                        model.moveEnemies();
+                    }
+
+                    // update views
+                    Platform.runLater(model::updateViews);
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });

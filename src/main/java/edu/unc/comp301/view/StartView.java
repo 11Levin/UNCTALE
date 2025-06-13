@@ -20,7 +20,7 @@ public class StartView extends View {
         VBox vBox = new VBox();
         vBox.getChildren().addAll(titleLabel, startButton);
         startButton.setOnAction((event) -> {
-            model.startGame();
+            controller.startGame();
         });
         return vBox;
     }

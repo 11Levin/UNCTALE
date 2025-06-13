@@ -5,13 +5,14 @@ import edu.unc.comp301.model.exception.PieceOutOfBoundsException;
 import edu.unc.comp301.model.exception.PlayerAlreadyFoundException;
 import edu.unc.comp301.model.piece.CollisionEvent;
 import edu.unc.comp301.model.piece.Piece;
+import edu.unc.comp301.model.piece.PlayerStats;
 import edu.unc.comp301.model.piece.buff.Apple;
 import edu.unc.comp301.model.piece.buff.Homework;
 import edu.unc.comp301.model.piece.buff.Pencil;
 import edu.unc.comp301.model.piece.immovable.Exit;
+import edu.unc.comp301.model.piece.immovable.Obstacle;
 import edu.unc.comp301.model.piece.immovable.Treasure;
 import edu.unc.comp301.model.piece.movable.*;
-import javafx.scene.Parent;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -28,7 +29,7 @@ public class Board {
 
     // entity info
     private Player player;
-    private ArrayList<Enemy> enemyList = new ArrayList<>();
+    private final ArrayList<Enemy> enemyList = new ArrayList<>();
 
     /**
      * Initializes an empty board with size (height, width)
@@ -60,15 +61,13 @@ public class Board {
         }
     }
 
-    /**
-     * Sets everything in the board to null
-     */
-    private void clearBoard() {
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                board[i][j] = null;
-            }
-        }
+    public Board() {
+      try {
+        loadKey();
+      } catch (FileNotFoundException e) {
+        throw new LevelNotLoadedException("invalid key to load map");
+      }
+      random = new Random();
     }
 
     /**
@@ -81,12 +80,11 @@ public class Board {
      */
     private Piece nameToPiece(String name, Posn posn) {
         return switch (name) {
-            case "obstacle" -> new edu.unc.comp301.model.piece.immovable.Obstacle(posn);
+            case "obstacle" -> new Obstacle(posn);
             case "enemy" -> new Student(posn, 100);
             case "student" -> new Student(posn, 100);
             case "professor" -> new Professor(posn, 120);
             case "treasure" -> new Treasure(posn);
-            case "player" -> new Player(posn, 100, 20);
             case "exit" -> new Exit(posn);
             case "apple" -> new Apple(posn);
             case "pencil" -> new Pencil(posn);
@@ -116,8 +114,9 @@ public class Board {
      * Generates a specified level
      *
      * @param level the level to generate (positive integer)
+     * @param playerStats the player's attack and health
      */
-    public void init(int level) {
+    public void init(int level, PlayerStats playerStats) {
         InputStream inputStream = Board.class.getClassLoader().getResourceAsStream("level/UNCLevel_" + level);
         if (inputStream == null) throw new LevelNotLoadedException("Error loading level");
         Scanner scanner = new Scanner(inputStream);
@@ -126,45 +125,24 @@ public class Board {
         width = scanner.nextInt();
         enemyList.clear();
 
-        // to build map: type = 1, full name; type = 2, capital letter representation
-        int load_type = scanner.nextInt();
         board = new Piece[height][width];
         boolean playerFound = false;
         scanner.nextLine();
         String line;
-        if (load_type == 1) {
-            for (int i = 0; i < height; i++) {
-                line = scanner.nextLine().strip().replace(" ", "");
-                if (line.charAt(line.length() - 1) == ',') line = line.substring(0, line.length() - 1);
-                String[] splitted = line.split(",");
-                for (int j = 0; j < width; j++) {
-                    board[i][j] = nameToPiece(splitted[j], new Posn(i, j));
-                    if (splitted[j].equals("player")) {
-                        if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
-                        playerFound = true;
-                        player = (Player) board[i][j];
-                    } else {
-                        for (String enemyName : enemyNames) {
-                          if (enemyName.equals(splitted[j])) enemyList.add((Enemy) board[i][j]);
-                        }
-                    }
+        for (int i = 0; i < height; i++) {
+            line = scanner.nextLine().toLowerCase();
+            for (int j = 0; j < width; j++) {
+                String name = fullName.get(line.charAt(j));
+                if (name.equals("player")) {
+                  if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
+                  playerFound = true;
+                  board[i][j] = new Player(new Posn(i, j), playerStats.getHealth(), playerStats.getAttack());
+                  player = (Player) board[i][j];
+                  continue;
                 }
-            }
-        } else {
-            for (int i = 0; i < height; i++) {
-                line = scanner.nextLine().toLowerCase();
-                for (int j = 0; j < width; j++) {
-                    String name = fullName.get(line.charAt(j));
-                    board[i][j] = nameToPiece(name, new Posn(i, j));
-                    if (name.equals("player")) {
-                        if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
-                        playerFound = true;
-                        player = (Player) board[i][j];
-                    } else {
-                      for (String enemyName : enemyNames) {
-                        if (enemyName.equals(name)) enemyList.add((Enemy) board[i][j]);
-                      }
-                    }
+                board[i][j] = nameToPiece(name, new Posn(i, j));
+                for (String enemyName : enemyNames) {
+                  if (enemyName.equals(name)) enemyList.add((Enemy) board[i][j]);
                 }
             }
         }
@@ -287,5 +265,9 @@ public class Board {
             }
         }
         return rtn;
+    }
+
+  public PlayerStats getPlayerStats() {
+      return new PlayerStats(player.getAttack(), player.getHealth());
     }
 }

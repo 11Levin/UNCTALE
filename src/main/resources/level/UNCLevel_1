@@ -1,6 +1,6 @@
-5 5 1
-obstacle, obstacle, obstacle, obstacle, obstacle,
-obstacle, null, null, null, obstacle,
-obstacle, player, null, exit, obstacle,
-obstacle, null, null, null, obstacle,
-obstacle, obstacle, obstacle, obstacle, obstacle,
+5 5
+ooooo
+o...o
+op.eo
+o...o
+ooooo

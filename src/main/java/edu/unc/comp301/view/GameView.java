@@ -4,6 +4,7 @@ import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.board.Posn;
 import edu.unc.comp301.model.piece.CollisionEvent;
+import edu.unc.comp301.model.piece.GameStats;
 import edu.unc.comp301.model.piece.Piece;
 import javafx.application.Platform;
 import javafx.scene.Parent;
@@ -85,8 +86,10 @@ public class GameView extends View {
     }
 
     @Override
-    public void update() {
+    public void update(GameStats gameStats) {
         if (model.getStatus() != Model.STATUS.GAME_CONTINUE) return;
+
+        // update grid
         GridPane gridPane = new GridPane();
         String[][] toDraw = model.getToDraw();
         for (int i = 0; i < 2 * viewRadius + 1; i++) {
@@ -97,6 +100,10 @@ public class GameView extends View {
         }
         vBox.getChildren().removeLast();
         vBox.getChildren().add(gridPane);
+
+        // update game bar
+        gameBar.updateStats(gameStats);
+
         stage.getScene().setRoot(render());
     }
 }

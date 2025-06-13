@@ -3,6 +3,7 @@ package edu.unc.comp301.view;
 import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.Observer;
+import edu.unc.comp301.model.piece.GameStats;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -29,7 +30,7 @@ public class View implements FXComponent, Observer {
     }
 
     @Override
-    public void update() {
+    public void update(GameStats gameStats) {
         stage.getScene().setRoot(render());
     }
 }

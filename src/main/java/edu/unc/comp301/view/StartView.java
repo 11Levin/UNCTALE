@@ -2,6 +2,7 @@ package edu.unc.comp301.view;
 
 import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
+import edu.unc.comp301.model.piece.GameStats;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -26,7 +27,7 @@ public class StartView extends View {
     }
 
     @Override
-    public void update() {
+    public void update(GameStats gameStats) {
         if (model.getStatus() != Model.STATUS.GAME_START) return;
         stage.getScene().setRoot(render());
     }

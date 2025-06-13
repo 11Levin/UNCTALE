@@ -3,7 +3,9 @@ package edu.unc.comp301.model;
 import edu.unc.comp301.model.board.Board;
 import edu.unc.comp301.model.board.Posn;
 import edu.unc.comp301.model.piece.CollisionEvent;
+import edu.unc.comp301.model.piece.GameStats;
 import edu.unc.comp301.model.piece.Piece;
+import edu.unc.comp301.model.piece.PlayerStats;
 
 import java.util.*;
 
@@ -17,6 +19,7 @@ public class Model implements Subject {
     private final List<Observer> views = new ArrayList<>();
     private final Board board;
     private volatile STATUS status = STATUS.GAME_END;
+    private PlayerStats playerStats = new PlayerStats(0, 100);
 
     // player stats
     private int score;
@@ -67,6 +70,7 @@ public class Model implements Subject {
     public void startGame() {
         score = 0;
         level = 1;
+        board.init(level, playerStats);
         status = STATUS.GAME_CONTINUE;
         updateViews();
     }
@@ -101,7 +105,7 @@ public class Model implements Subject {
     private void move(int drow, int dcol) {
         CollisionEvent collisionEvent = board.movePlayer(drow, dcol);
         if (collisionEvent.getResult() == CollisionEvent.Result.NEXT_LEVEL) {
-            board.init(++level);
+            board.init(++level, playerStats);
         }
         score += collisionEvent.getPoints();
     }
@@ -113,7 +117,7 @@ public class Model implements Subject {
 
     public void updateViews() {
         for (Observer observer : views) {
-            observer.update();
+            observer.update(new GameStats(level, score, playerStats.getAttack(), playerStats.getHealth()));
         }
     }
 

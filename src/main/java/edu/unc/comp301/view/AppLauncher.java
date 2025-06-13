@@ -18,8 +18,7 @@ public class AppLauncher extends Application {
     @Override
     public void start(Stage primaryStage) {
         // setup board
-        Board board = new Board(1, 1);
-        board.init(1);
+        Board board = new Board();
 
         // setup model, controller
         Model model = new Model(board);

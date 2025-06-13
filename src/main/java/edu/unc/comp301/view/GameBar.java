@@ -1,5 +1,6 @@
 package edu.unc.comp301.view;
 
+import edu.unc.comp301.model.piece.GameStats;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -75,9 +76,9 @@ public class GameBar implements FXComponent {
         levelNumber.setText(Integer.toString(level));
     }
 
-    public void updateStats(int health, int score, int level) {
-        setHealth(health);
-        setScore(score);
-        setLevel(level);
+    public void updateStats(GameStats gameStats) {
+        setHealth(gameStats.getHealth());
+        setScore(gameStats.getScore());
+        setLevel(gameStats.getLevel());
     }
 }

@@ -49,7 +49,7 @@ public class GameBar implements FXComponent{
     }
 
     private void loadImages() {
-        String[] toLoad = {"UNCHeart.png"};
+        String[] toLoad = {"misc/UNCHeart.png"};
         for (String path : toLoad) {
             images.put(path, new Image(path));
         }
@@ -65,7 +65,7 @@ public class GameBar implements FXComponent{
     public void setHealth(int health) {
         healthBar.getChildren().clear();
         for (int i = 0; i < health / 10; i++) {
-            healthBar.getChildren().add(getView("UNCHeart.png"));
+            healthBar.getChildren().add(getView("misc/UNCHeart.png"));
         }
 //        System.out.println("loaded health");
     }

@@ -1,8 +1,8 @@
 package edu.unc.comp301.controller;
 
 import edu.unc.comp301.model.board.BoardImpl;
-import edu.unc.comp301.model.pieces.movable.Character;
-import edu.unc.comp301.model.pieces.CollisionEvent;
+import edu.unc.comp301.model.piece.movable.Character;
+import edu.unc.comp301.model.piece.CollisionEvent;
 import edu.unc.comp301.view.View;
 import javafx.application.Platform;
 import javafx.scene.Scene;

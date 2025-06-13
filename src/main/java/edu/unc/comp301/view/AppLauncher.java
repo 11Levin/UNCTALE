@@ -1,7 +1,7 @@
 package edu.unc.comp301.view;
 
-import edu.unc.comp301.model.board.BoardImpl;
-import edu.unc.comp301.model.exceptions.LevelNotLoadedException;
+import edu.unc.comp301.model.board.Board;
+import edu.unc.comp301.model.exception.LevelNotLoadedException;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -17,17 +17,12 @@ public class AppLauncher extends Application {
 
   @Override
   public void start(Stage primaryStage) {
-      BoardImpl board = new BoardImpl(1, 1);
-      try {
-          board.init(1);
-      } catch (FileNotFoundException e) {
-          throw new LevelNotLoadedException("level couldn't be loaded");
-      }
+      Board board = new Board(1, 1);
+      board.init(1);
       View view = new View(board);
       Scene scene = new Scene(view.render(), tileSize * dims[0], tileSize * (dims[1] + 1));
       view.setScene(scene);
       scene.getStylesheets().add("main.css");
-//      scene.getStylesheets().add(getClass().getResource("/fontstyle.css").toExternalForm());
       primaryStage.setScene(scene);
       primaryStage.setTitle("UNCTale");
       primaryStage.setResizable(true);

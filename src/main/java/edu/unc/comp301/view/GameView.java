@@ -2,8 +2,8 @@ package edu.unc.comp301.view;
 
 import edu.unc.comp301.model.board.BoardImpl;
 import edu.unc.comp301.model.board.Posn;
-import edu.unc.comp301.model.pieces.CollisionEvent;
-import edu.unc.comp301.model.pieces.Piece;
+import edu.unc.comp301.model.piece.CollisionEvent;
+import edu.unc.comp301.model.piece.Piece;
 import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -21,9 +21,9 @@ public class GameView implements FXComponent{
     private GameBar gameBar;
     Map<String, Parent>[][] rendered;
     int viewRadius = 4;
-    private String[] toLoad = {"UNCApple_Buff.png", "UNCGrass.png", "UNCHomework_Debuff.jpg", "UNCLogo_Exit.png", "UNCMoney_Treasure.png",
-            "UNCPencil_Buff.png", "UNCPlayer.png", "UNCPortal.png", "UNCProfessor_Enemy.png", "UNCRam_Obstacle.png", "UNCRamses_Enemy.png",
-            "UNCStudent_Enemy.png", "UNCTile_1.jpg", "UNCTile_2.jpg", "UNCTile_3.jpg", "UNCWall.png", "UNCUnloaded.png"};
+    private String[] toLoad = {"buff/UNCApple_Buff.png", "immovable/UNCGrass.png", "buff/UNCHomework_Debuff.jpg", "immovable/UNCLogo_Exit.png", "immovable/UNCMoney_Treasure.png",
+            "buff/UNCPencil_Buff.png", "movable/UNCPlayer.png", "immovable/UNCPortal.png", "movable/UNCProfessor_Enemy.png", "immovable/UNCRam_Obstacle.png", "movable/UNCRamses_Enemy.png",
+            "movable/UNCStudent_Enemy.png", "immovable/UNCTile_1.jpg", "immovable/UNCTile_2.jpg", "immovable/UNCTile_3.jpg", "immovable/UNCWall.png", "immovable/UNCUnloaded.png"};
     Parent nodes[][];
 
     public GameView(BoardImpl board) {
@@ -63,13 +63,13 @@ public class GameView implements FXComponent{
                 rendered[i][j] = new HashMap<>();
                 for (String tile : toLoad) {
                     StackPane stackPane = new StackPane();
-                    if (tile.equals("UNCUnloaded.png")) {
-                        stackPane.getChildren().add(getView("UNCUnloaded.png"));
+                    if (tile.equals("immovable/UNCUnloaded.png")) {
+                        stackPane.getChildren().add(getView("immovable/UNCUnloaded.png"));
                         rendered[i][j].put(tile, stackPane);
                         continue;
                     }
-                    stackPane.getChildren().add(getView("UNCGrass.png"));
-                    if (!tile.equals("UNCGrass.png")) {
+                    stackPane.getChildren().add(getView("immovable/UNCGrass.png"));
+                    if (!tile.equals("immovable/UNCGrass.png")) {
                         stackPane.getChildren().add(getView(tile));
                     }
                     rendered[i][j].put(tile, stackPane);
@@ -98,13 +98,13 @@ public class GameView implements FXComponent{
                 int visualR = i - r + viewRadius;
                 int visualC = j - c + viewRadius;
 
-                Parent toAdd = rendered[visualR][visualC].get("UNCWall.png");
+                Parent toAdd = rendered[visualR][visualC].get("immovable/UNCWall.png");
                 if (nodes[visualC][visualR] != null) gridPane.getChildren().remove(nodes[visualR][visualC]);
 
                 // Check piece at (i, j) is within board bounds
                 if (i >= 0 && i < board.getHeight() && j >= 0 && j < board.getWidth()) {
                     Piece piece = board.getPiece(new Posn(i, j));
-                    toAdd = rendered[visualR][visualC].get("UNCGrass.png");
+                    toAdd = rendered[visualR][visualC].get("immovable/UNCGrass.png");
                     if (piece != null) {
                         toAdd = rendered[visualR][visualC].get(piece.getResourcePath());
                     }

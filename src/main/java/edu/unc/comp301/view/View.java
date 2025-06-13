@@ -2,7 +2,7 @@ package edu.unc.comp301.view;
 
 import edu.unc.comp301.model.board.BoardImpl;
 import edu.unc.comp301.controller.GameController;
-import edu.unc.comp301.model.pieces.CollisionEvent;
+import edu.unc.comp301.model.piece.CollisionEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 

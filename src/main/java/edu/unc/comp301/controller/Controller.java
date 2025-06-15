@@ -65,9 +65,9 @@ public class Controller {
                     }
 
                     // move enemies
-                    if (tick++ % 20 == 0) {
+                    if (tick++ % 4 == 0) {
                         //System.out.println("Enemies moved!");
-                        model.spawnBullet();
+                        model.spawnBullet(tick/5);
                     }
 
                     // update views

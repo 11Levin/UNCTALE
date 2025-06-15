@@ -54,6 +54,8 @@ public class Model implements Subject {
         return level;
     }
 
+
+
     public Piece get(Posn p) {
         if (board == null) return null;
         int r = p.getRow();
@@ -98,8 +100,8 @@ public class Model implements Subject {
         move(0, 1);
     }
 
-    public void spawnBullet() {
-        board.spawnBullet();
+    public void spawnBullet(int tick) {
+        board.spawnBullet(tick);
     }
 
     private void move(int drow, int dcol) {

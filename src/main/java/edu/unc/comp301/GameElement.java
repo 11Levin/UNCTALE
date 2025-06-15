@@ -2,7 +2,6 @@ package edu.unc.comp301;
 
 import edu.unc.comp301.model.board.Board;
 import edu.unc.comp301.model.exception.LevelNotLoadedException;
-import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 
 import java.io.InputStream;
@@ -25,9 +24,8 @@ public class GameElement {
     public final String[] enemyNames = {"student", "professor", "bullet"};
 
     public GameElement() {
-        System.out.println("loading keys");
         InputStream inputStream = Board.class.getClassLoader().getResourceAsStream("misc/entity_data.txt");
-        if (inputStream == null) throw new LevelNotLoadedException("Error loading key.");
+        if (inputStream == null) throw new LevelNotLoadedException("Error loading resources.");
         Scanner scanner = new Scanner(inputStream);
         while (scanner.hasNext()) {
             String line = scanner.nextLine();

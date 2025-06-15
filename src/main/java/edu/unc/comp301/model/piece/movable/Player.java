@@ -5,10 +5,9 @@ import edu.unc.comp301.model.piece.CollisionEvent;
 import edu.unc.comp301.model.piece.Piece;
 import edu.unc.comp301.model.piece.buff.Buff;
 import edu.unc.comp301.model.piece.immovable.ImmovablePiece;
+import java.util.*;
 
-import static edu.unc.comp301.model.piece.Piece.Type.BUFF;
-
-public class Player extends MovablePiece {
+public class Player extends MovablePiece implements PlayerInterface{
     public Player(Posn posn, int health, int attack) {
         super("player", "movable/UNCPlayer.png", posn, health, attack);
     }
@@ -28,5 +27,13 @@ public class Player extends MovablePiece {
             default:
                 return CollisionEvent.CONTINUE;
         }
+    }
+
+    /**
+     * Get a one-character representation of the player's buffs
+     * @return
+     */
+    public List<Character> getBuffs() {
+        return new ArrayList<>();
     }
 }

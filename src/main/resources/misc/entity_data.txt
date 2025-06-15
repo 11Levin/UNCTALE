@@ -5,7 +5,7 @@ p, player, movable/UNCPlayer.png
 e, exit, immovable/UNCLogo_Exit.png
 s, student, movable/UNCStudent_Enemy.png
 a, apple, buff/UNCApple_Buff.png
-h, homework, buff/UNCHomework_Debuff.jpg
+h, homework, buff/UNCHomework_Debuff.png
 c, pencil, buff/UNCPencil_Buff.png
 w, wall, immovable/UNCWall.png
 g, grass, immovable/UNCGrass.png
@@ -17,3 +17,6 @@ r, ramses, movable/UNCRamses_Enemy.png
 q, professor, movable/UNCProfessor_Enemy.png
 l, portal, immovable/UNCPortal.png
 b, bullet, movable/UNCBullet_Enemy.png
+@, apple_item, buff/UNCApple_Player.png
+{, pencil_item, buff/UNCPencil_Player.png
+^, homework_item, buff/UNCHomework_Player.png

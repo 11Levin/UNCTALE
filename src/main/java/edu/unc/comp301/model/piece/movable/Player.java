@@ -32,11 +32,7 @@ public class Player extends MovablePiece implements PlayerInterface{
         }
     }
 
-    /**
-     * Get a one-character representation of the player's buffs
-     * @return
-     */
-    public List<Character> getBuffs() {
+    public List<String> getBuffs() {
         return new ArrayList<>();
     }
 }

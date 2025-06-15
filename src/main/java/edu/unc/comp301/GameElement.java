@@ -22,6 +22,7 @@ public class GameElement {
     public final static int tileSize = 64;
     public final static Random random = new Random();
     public final String[] enemyNames = {"student", "professor", "bullet","ramses"};
+    public final int MAX_NUMBER_BUFFS = 3;
 
     public GameElement() {
         InputStream inputStream = Board.class.getClassLoader().getResourceAsStream("misc/entity_data.txt");

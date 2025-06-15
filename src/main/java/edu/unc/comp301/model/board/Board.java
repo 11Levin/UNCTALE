@@ -9,8 +9,13 @@ import edu.unc.comp301.model.piece.CollisionEvent;
 import edu.unc.comp301.model.piece.Piece;
 import edu.unc.comp301.model.piece.PlayerStats;
 import edu.unc.comp301.model.piece.buff.Apple;
+import edu.unc.comp301.model.piece.buff.Buff;
 import edu.unc.comp301.model.piece.buff.Homework;
 import edu.unc.comp301.model.piece.buff.Pencil;
+import edu.unc.comp301.model.piece.decorator.ApplePlayer;
+import edu.unc.comp301.model.piece.decorator.HomeworkPlayer;
+import edu.unc.comp301.model.piece.decorator.PencilPlayer;
+import edu.unc.comp301.model.piece.decorator.PlayerDecorator;
 import edu.unc.comp301.model.piece.immovable.Exit;
 import edu.unc.comp301.model.piece.immovable.Obstacle;
 import edu.unc.comp301.model.piece.immovable.Treasure;
@@ -26,12 +31,12 @@ public class Board extends GameElement {
     private int width;
     private int height;
     private volatile int level = 0;
-    private ArrayList<Thread> threadList = new ArrayList<>();
-    private ArrayList<Bullet> bulletList = new ArrayList<>();
 
     // entity info
-    private Player player;
+    private PlayerDecorator player;
     private final ArrayList<Enemy> enemyList = new ArrayList<>();
+    private final ArrayList<Thread> threadList = new ArrayList<>();
+    private final ArrayList<Bullet> bulletList = new ArrayList<>();
 
     /**
      * Initializes an empty board with size (height, width)
@@ -108,7 +113,7 @@ public class Board extends GameElement {
                   if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
                   playerFound = true;
                   board[i][j] = new Player(new Posn(i, j), playerStats.getHealth(), playerStats.getAttack());
-                  player = (Player) board[i][j];
+                  player = new PlayerDecorator((Player)board[i][j]);
                   continue;
                 }
                 board[i][j] = nameToPiece(name, new Posn(i, j));
@@ -152,7 +157,7 @@ public class Board extends GameElement {
         return board[posn.getRow()][posn.getCol()];
     }
 
-    private CollisionEvent moveMovable(MovablePiece movable, int drow, int dcol) {
+    private CollisionEvent moveMovable(MovableInterface movable, int drow, int dcol) {
         int r = movable.getPosn().getRow();
         int c = movable.getPosn().getCol();
         int nr = r + drow;
@@ -173,10 +178,6 @@ public class Board extends GameElement {
         }
 
         CollisionEvent collisionEvent = movable.collide(getPiece(nPos));
-
-        // update player
-        player.setHealth(player.getHealth() + collisionEvent.getHealth());
-        player.setAttack(player.getAttack() + collisionEvent.getAttack());
 
         // handle collision types
         CollisionEvent.Result res = collisionEvent.getResult();
@@ -232,8 +233,26 @@ public class Board extends GameElement {
 
         // update position if no obstacle or enemy is in the way
         if (res == CollisionEvent.Result.PICK_ITEM) {
+            System.out.println("Picked up item");
             player.setAttack(player.getAttack() + collisionEvent.getAttack());
             player.setHealth(player.getHealth() + collisionEvent.getHealth());
+            Buff buff = (Buff) getPiece(nPos);
+            switch (buff.getName()) {
+                case "apple":
+                    System.out.println("Picked up apple");
+                    player = new ApplePlayer(player);
+                    break;
+                case "homework":
+                    System.out.println("Picked up homework");
+                    player = new HomeworkPlayer(player);
+                    break;
+                case "pencil":
+                    System.out.println("Picked up pencil");
+                    player = new PencilPlayer(player);
+                    break;
+                default:
+                    break;
+            }
         }
 
         for (CollisionEvent.Result ig : ignore) {
@@ -252,7 +271,7 @@ public class Board extends GameElement {
         return moveMovable(player, drow, dcol);
     }
 
-    public void bullet(Enemy enemy, int pattern){
+    private void bullet(Enemy enemy, int pattern){
         int r = enemy.getPosn().getRow();
         int c = enemy.getPosn().getCol();
         ArrayList<int[]> dir = new ArrayList<>();
@@ -295,18 +314,13 @@ public class Board extends GameElement {
                 player.setHealth(player.getHealth()-enemy.getAttack());
                 bulletList.remove(bullet);
             }
-
-
-
-
-
             dir.remove(idx);
         }
 
 
     }
 
-    public void moveBullet(Bullet bullet){
+    private void moveBullet(Bullet bullet){
         int cur_level = level;
         Thread moveBullet = new Thread(() -> {
             try {
@@ -323,8 +337,6 @@ public class Board extends GameElement {
                 }
 
             }
-
-
         });
         moveBullet.start();
         threadList.add(moveBullet);
@@ -351,7 +363,7 @@ public class Board extends GameElement {
 
     }
 
-    public void moveEnemy(Enemy enemy) {
+    private void moveEnemy(Enemy enemy) {
         ArrayList<int[]> dir = new ArrayList<>();
         dir.add(new int[] {-1, 0});
         dir.add(new int[] {1, 0});
@@ -367,7 +379,7 @@ public class Board extends GameElement {
         }
     }
 
-    public void loadEnemies(){
+    private void loadEnemies(){
         for (Enemy enemy: enemyList){
             if (!enemy.getName().equals("ramses")){
                 enemyMove(enemy);
@@ -375,7 +387,7 @@ public class Board extends GameElement {
         }
     }
 
-    public void enemyMove(Enemy enemy){
+    private void enemyMove(Enemy enemy){
         int cur_level = level;
         Thread enemyMove = new Thread(() -> {
             while ((enemy.getHealth() > 0) && (this.level == cur_level)) {
@@ -390,14 +402,14 @@ public class Board extends GameElement {
         threadList.add(enemyMove);
     }
 
-    public synchronized void clearThreads(){
+    private synchronized void clearThreads(){
         for (Thread thread : threadList){
             thread.interrupt();
         }
         threadList.clear();
     }
 
-    public synchronized void clearEntities(){
+    private synchronized void clearEntities(){
         for(Enemy enemy: enemyList){
             enemy.setHealth(0);
             board[enemy.getPosn().getRow()][enemy.getPosn().getCol()] = null;
@@ -436,7 +448,7 @@ public class Board extends GameElement {
      * @return
      */
     public String[] getToDraw() {
-        String[] rtn = new String[2 * viewRadius + 1];
+        String[] rtn = new String[2 * viewRadius + 1 + MAX_NUMBER_BUFFS];
         int r = player.getPosn().getRow();
         int c = player.getPosn().getCol();
         for (int i = r - viewRadius; i <= r + viewRadius; i++) {
@@ -455,6 +467,13 @@ public class Board extends GameElement {
                 sb.append(toAdd);
             }
             rtn[i + viewRadius - r] = sb.toString();
+        }
+        List<String> buffs = player.getBuffs();
+        Set<String> noDuplicates = new HashSet<>();
+        noDuplicates.addAll(buffs);
+        int buffCount = 0;
+        for (String s : noDuplicates) {
+            rtn[2 * viewRadius + 1 + buffCount++] = s;
         }
         return rtn;
     }

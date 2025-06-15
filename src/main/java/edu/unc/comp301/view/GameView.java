@@ -4,6 +4,8 @@ import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.piece.GameStats;
 import javafx.scene.Parent;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.image.ImageView;
@@ -38,6 +40,10 @@ public class GameView extends View {
         return imageView;
     }
 
+    private ImageView getView(String s) {
+        return getView(shortName(s));
+    }
+
     @Override
     public Parent render() {
         if (isRendered) return vBox;
@@ -62,7 +68,9 @@ public class GameView extends View {
                 }
             }
         }
-        vBox.getChildren().addAll(gameBar.render(), new GridPane());
+        StackPane grid = new StackPane();
+        grid.getChildren().addAll(new GridPane(), new GridPane());
+        vBox.getChildren().addAll(gameBar.render(), grid);
         return vBox;
     }
 
@@ -79,8 +87,20 @@ public class GameView extends View {
                 gridPane.add(toAdd, j, i);
             }
         }
+
+        // update buffs
+        Canvas buffs = new Canvas((2 * viewRadius + 1) * tileSize, (2 * viewRadius + 1) * tileSize);
+        GraphicsContext gc = buffs.getGraphicsContext2D();
+        for (int i = 0; i < MAX_NUMBER_BUFFS; i++) {
+            String buff = toDraw[i + 2 * viewRadius + 1];
+            if (buff != null) {
+                gc.drawImage(fullToImage(buff), viewRadius * tileSize, viewRadius * tileSize, tileSize, tileSize);
+            }
+        }
         vBox.getChildren().removeLast();
-        vBox.getChildren().add(gridPane);
+        StackPane grid = new StackPane();
+        grid.getChildren().addAll(gridPane, buffs);
+        vBox.getChildren().add(grid);
 
         // update game bar
         gameBar.updateStats(gameStats);

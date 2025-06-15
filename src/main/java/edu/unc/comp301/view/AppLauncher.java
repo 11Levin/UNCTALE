@@ -17,20 +17,20 @@ public class AppLauncher extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // setup board
+        // model
         Board board = new Board();
-
-        // setup model, controller
         Model model = new Model(board);
+
+        // controller
         Controller controller = new Controller(model);
 
-        // setup views
+        // view
         StartView startView = new StartView(controller, model, primaryStage);
         GameView gameView = new GameView(controller, model, primaryStage);
-
-        // link views
+        EndView endView = new EndView(controller, model, primaryStage);
         model.addView(startView);
         model.addView(gameView);
+        model.addView(endView);
 
         // setup stage
         Scene scene = new Scene(startView.render(), tileSize * dims[0], tileSize * (dims[1] + 1));

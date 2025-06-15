@@ -254,6 +254,7 @@ public class Board extends GameElement {
                     break;
             }
         }
+        if (player.getHealth() == 0) return new CollisionEvent(0, 0, 0, CollisionEvent.Result.GAME_OVER);
 
         for (CollisionEvent.Result ig : ignore) {
             if (res == ig) updatePosition = false;

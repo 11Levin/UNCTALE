@@ -6,6 +6,7 @@ import edu.unc.comp301.model.piece.CollisionEvent;
 import edu.unc.comp301.model.piece.GameStats;
 import edu.unc.comp301.model.piece.Piece;
 import edu.unc.comp301.model.piece.PlayerStats;
+import edu.unc.comp301.model.piece.movable.PlayerInterface;
 
 import java.util.*;
 
@@ -19,7 +20,8 @@ public class Model implements Subject {
     private final List<Observer> views = new ArrayList<>();
     private final Board board;
     private volatile STATUS status = STATUS.GAME_END;
-    private PlayerStats playerStats = new PlayerStats(20, 50);
+    private final PlayerStats defaultStats = new PlayerStats(20, 100);
+    private PlayerStats playerStats = defaultStats;
 
     // player stats
     private int score;
@@ -72,16 +74,16 @@ public class Model implements Subject {
     public void startGame() {
         score = 0;
         level = 1;
-        board.init(level, playerStats);
+        board.init(level, defaultStats);
         status = STATUS.GAME_CONTINUE;
         updateViews();
     }
 
     public void endGame() {
-        score = 0;
-        level = 1;
+        playerStats = board.getPlayerStats();
         status = STATUS.GAME_END;
         highScore = Math.max(highScore, score);
+        updateViews();
     }
 
     public void moveUp() {
@@ -109,6 +111,9 @@ public class Model implements Subject {
         if (collisionEvent.getResult() == CollisionEvent.Result.NEXT_LEVEL) {
             playerStats = board.getPlayerStats();
             board.init(++level, playerStats);
+        } else if (collisionEvent.getResult() == CollisionEvent.Result.GAME_OVER) {
+            playerStats = board.getPlayerStats();
+            endGame();
         }
         score += collisionEvent.getPoints();
     }
@@ -121,7 +126,7 @@ public class Model implements Subject {
     public void updateViews() {
         playerStats = board.getPlayerStats();
         for (Observer observer : views) {
-            observer.update(new GameStats(level, score, playerStats.getAttack(), playerStats.getHealth()));
+            observer.update(new GameStats(level, score, highScore, playerStats.getAttack(), playerStats.getHealth()));
         }
     }
 

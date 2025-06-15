@@ -98,8 +98,8 @@ public class Model implements Subject {
         move(0, 1);
     }
 
-    public void moveEnemies() {
-        board.moveEnemies();
+    public void spawnBullet() {
+        board.spawnBullet();
     }
 
     private void move(int drow, int dcol) {

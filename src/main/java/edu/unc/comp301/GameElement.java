@@ -21,7 +21,7 @@ public class GameElement {
     public final static int viewRadius = 4;
     public final static int tileSize = 64;
     public final static Random random = new Random();
-    public final String[] enemyNames = {"student", "professor", "bullet"};
+    public final String[] enemyNames = {"student", "professor", "bullet","ramses"};
 
     public GameElement() {
         InputStream inputStream = Board.class.getClassLoader().getResourceAsStream("misc/entity_data.txt");

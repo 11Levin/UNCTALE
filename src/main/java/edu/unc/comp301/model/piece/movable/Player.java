@@ -23,6 +23,9 @@ public class Player extends MovablePiece implements PlayerInterface{
                 Buff buff = (Buff) other;
                 return buff.getCollisionEvent();
             case MOVABLE:
+                if(other.getName().equals("bullet")){
+                    return new CollisionEvent(0, 0, 0, CollisionEvent.Result.HIT);
+                }
                 return new CollisionEvent(0, 0, 0, CollisionEvent.Result.ATTACK);
             default:
                 return CollisionEvent.CONTINUE;

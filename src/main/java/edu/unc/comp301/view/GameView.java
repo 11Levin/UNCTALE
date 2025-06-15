@@ -34,6 +34,7 @@ public class GameView extends View {
         ImageView imageView = new ImageView(shortToImage(c));
         imageView.setFitWidth(tileSize);
         imageView.setFitHeight(tileSize);
+
         return imageView;
     }
 

@@ -5,6 +5,6 @@ import edu.unc.comp301.model.piece.CollisionEvent;
 
 public class Homework extends Buff {
     public Homework(Posn posn) {
-        super("homework", "buff/UNCHomework_Debuff.jpg", posn, new CollisionEvent(0, -5, 0, CollisionEvent.Result.CONTINUE));
+        super("homework", "buff/UNCHomework_Debuff.jpg", posn, new CollisionEvent(0, -5, -10, CollisionEvent.Result.CONTINUE));
     }
 }

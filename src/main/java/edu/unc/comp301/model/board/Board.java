@@ -373,22 +373,25 @@ public class Board extends GameElement {
 
     private void moveBullet(Bullet bullet){
         int cur_level = level;
-        Thread moveBullet = new Thread(() -> {
-            try {
-                Thread.sleep(3000/bullet.getSpeed());
-            } catch (InterruptedException e) {
+    Thread moveBullet =
+        new Thread(
+            () -> {
+              try {
+                Thread.sleep(3000 / bullet.getSpeed());
+              } catch (InterruptedException e) {
 
-            }
-            while ((bullet.getHealth() > 0) && (this.level == cur_level)) {
-                moveMovable(bullet,bullet.getDirection()[0], bullet.getDirection()[1]);
+              }
+              while ((bullet.getHealth() > 0) && (this.level == cur_level)) {
+                if (bulletList.contains(bullet)) {
+                  moveMovable(bullet, bullet.getDirection()[0], bullet.getDirection()[1]);
+                }
                 try {
-                    Thread.sleep(3000/bullet.getSpeed());
+                  Thread.sleep(3000 / bullet.getSpeed());
                 } catch (InterruptedException e) {
 
                 }
-
-            }
-        });
+              }
+            });
         moveBullet.start();
         threadList.add(moveBullet);
     }
@@ -442,7 +445,10 @@ public class Board extends GameElement {
         int cur_level = level;
         Thread enemyMove = new Thread(() -> {
             while ((enemy.getHealth() > 0) && (this.level == cur_level)) {
-                moveEnemy(enemy);
+                if (enemyList.contains(enemy)){
+                    moveEnemy(enemy);
+                }
+
                 try {
                     Thread.sleep(3000/enemy.getSpeed());
                 } catch (InterruptedException e) {

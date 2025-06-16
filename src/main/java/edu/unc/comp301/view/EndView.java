@@ -20,6 +20,8 @@ public class EndView extends View {
     @Override
     public Parent render() {
         VBox vBox = new VBox();
+        vBox.getStylesheets().add("main.css");
+        vBox.getStyleClass().add("layout");
         Label scoreName = new Label("Score: ");
         Label scoreNumber = new Label(Integer.toString(gameStats.getScore()));
         Label highName = new Label("High: ");

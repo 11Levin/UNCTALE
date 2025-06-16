@@ -149,6 +149,7 @@ public class Board extends GameElement {
                 portals.get(b).setOther(portals.get(a));
             }
         }
+        //prevent any last second errors
         loadEnemies();
         scanner.close();
     }
@@ -195,7 +196,6 @@ public class Board extends GameElement {
         if (nr < 0 || nr >= height || nc < 0 || nc >= width){
             if(movable.getName().equals("bullet")){
                 Bullet enemy = (Bullet) getPiece(new Posn(r,c));
-                player.attack(100, enemy);
                 board[r][c] = null;
                 bulletList.remove(enemy);
             }
@@ -253,14 +253,12 @@ public class Board extends GameElement {
             Enemy enemy;
             if(movable.getName().equals("player")){
                 enemy = (Bullet)getPiece(nPos);
-                player.attack(100, enemy);
                 player.setHealth(player.getHealth()-enemy.getAttack());
                 System.out.println("Player Hurt! Health is at: " + player.getHealth());
                 board[nr][nc] = null;
                 bulletList.remove(enemy);
             } else {
                 enemy = (Bullet)getPiece(new Posn(r,c));
-                player.attack(100, enemy);
                 player.setHealth(player.getHealth()-enemy.getAttack());
                 System.out.println("Player Hurt! Health is at: " + player.getHealth());
                 board[r][c] = null;
@@ -271,7 +269,6 @@ public class Board extends GameElement {
 
         if((movable.getName().equals("bullet")) && (!res.equals(CollisionEvent.Result.CONTINUE))){
             Enemy enemy = (Enemy)getPiece(new Posn(r,c));
-            player.attack(100, enemy);
             board[r][c] = null;
             bulletList.remove(enemy);
             return CollisionEvent.BLOCK;
@@ -372,7 +369,6 @@ public class Board extends GameElement {
     }
 
     private void moveBullet(Bullet bullet){
-        int cur_level = level;
     Thread moveBullet =
         new Thread(
             () -> {
@@ -381,7 +377,7 @@ public class Board extends GameElement {
               } catch (InterruptedException e) {
 
               }
-              while ((bullet.getHealth() > 0) && (this.level == cur_level)) {
+              while ((bulletList.contains(bullet))) {
                 if (bulletList.contains(bullet)) {
                   moveMovable(bullet, bullet.getDirection()[0], bullet.getDirection()[1]);
                 }
@@ -433,7 +429,7 @@ public class Board extends GameElement {
         }
     }
 
-    private void loadEnemies(){
+    private synchronized void loadEnemies(){
         for (Enemy enemy: enemyList){
             if (!enemy.getName().equals("ramses")){
                 enemyMove(enemy);
@@ -442,9 +438,8 @@ public class Board extends GameElement {
     }
 
     private void enemyMove(Enemy enemy){
-        int cur_level = level;
         Thread enemyMove = new Thread(() -> {
-            while ((enemy.getHealth() > 0) && (this.level == cur_level)) {
+            while (enemyList.contains(enemy)) {
                 if (enemyList.contains(enemy)){
                     moveEnemy(enemy);
                 }

@@ -1,4 +1,4 @@
-package edu.unc.comp301.model;
+package edu.unc.comp301.view;
 
 public interface Subject {
     void addView(Observer view);

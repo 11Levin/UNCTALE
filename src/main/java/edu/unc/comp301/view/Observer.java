@@ -1,4 +1,4 @@
-package edu.unc.comp301.model;
+package edu.unc.comp301.view;
 
 import edu.unc.comp301.model.piece.GameStats;
 

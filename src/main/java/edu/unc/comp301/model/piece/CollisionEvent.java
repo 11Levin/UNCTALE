@@ -39,6 +39,7 @@ public class CollisionEvent {
         HIT,
         BLOCK,
         GAME_OVER,
+        TELEPORT,
     }
 
     @Override

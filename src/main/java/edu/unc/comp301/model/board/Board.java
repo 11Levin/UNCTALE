@@ -1,5 +1,6 @@
 package edu.unc.comp301.model.board;
 
+import com.sun.glass.ui.Window;
 import edu.unc.comp301.GameElement;
 import edu.unc.comp301.model.EnemyFactory;
 import edu.unc.comp301.model.exception.LevelNotLoadedException;
@@ -18,6 +19,7 @@ import edu.unc.comp301.model.piece.decorator.PencilPlayer;
 import edu.unc.comp301.model.piece.decorator.PlayerDecorator;
 import edu.unc.comp301.model.piece.immovable.Exit;
 import edu.unc.comp301.model.piece.immovable.Obstacle;
+import edu.unc.comp301.model.piece.immovable.Portal;
 import edu.unc.comp301.model.piece.immovable.Treasure;
 import edu.unc.comp301.model.piece.movable.*;
 import javafx.application.Platform;
@@ -79,6 +81,7 @@ public class Board extends GameElement {
             case "apple" -> new Apple(posn);
             case "pencil" -> new Pencil(posn);
             case "homework" -> new Homework(posn);
+            case "portal" -> new Portal(posn);
             default -> null;
         };
     }
@@ -100,7 +103,7 @@ public class Board extends GameElement {
         height = scanner.nextInt();
         width = scanner.nextInt();
 
-
+        List<Portal> portals = new ArrayList<>();
         board = new Piece[height][width];
         boolean playerFound = false;
         scanner.nextLine();
@@ -117,9 +120,33 @@ public class Board extends GameElement {
                   continue;
                 }
                 board[i][j] = nameToPiece(name, new Posn(i, j));
+                if (name.equals("portal")) {
+                    portals.add((Portal) board[i][j]);
+                }
                 for (String enemyName : enemyNames) {
                   if (enemyName.equals(name)) enemyList.add((Enemy) board[i][j]);
                 }
+            }
+        }
+
+        // link portals
+        if (scanner.hasNextInt()) {
+            System.out.println("Linking portals");
+            int numPortals = scanner.nextInt();
+            if (numPortals != portals.size()) throw new LevelNotLoadedException("Number of portals doesn't match");
+            if (numPortals % 2 == 1) throw new LevelNotLoadedException("Number of portals should be even");
+            Set<Integer> visited = new HashSet<>();
+            for (int i = 0; i < numPortals / 2; i++) {
+                int a = scanner.nextInt();
+                int b = scanner.nextInt();
+                if (a < 0 || a >= numPortals || b < 0 || b >= numPortals) throw new LevelNotLoadedException("Portals are zero-indexed left-to-right, top-to-bottom");
+                if (visited.contains(a)) throw new LevelNotLoadedException("Portal " + a + " already linked");
+                if (visited.contains(b)) throw new LevelNotLoadedException("Portal " + b + " already linked");
+                if (a == b) throw new LevelNotLoadedException("Portal " + a + " cannot be linked to itself");
+                visited.add(a);
+                visited.add(b);
+                portals.get(a).setOther(portals.get(b));
+                portals.get(b).setOther(portals.get(a));
             }
         }
         loadEnemies();
@@ -165,8 +192,6 @@ public class Board extends GameElement {
         Posn nPos = new Posn(nr, nc);
 
         // out of bounds
-
-
         if (nr < 0 || nr >= height || nc < 0 || nc >= width){
             if(movable.getName().equals("bullet")){
                 Bullet enemy = (Bullet) getPiece(new Posn(r,c));
@@ -179,10 +204,11 @@ public class Board extends GameElement {
 
         CollisionEvent collisionEvent = movable.collide(getPiece(nPos));
 
-        // handle collision types
         CollisionEvent.Result res = collisionEvent.getResult();
         boolean updatePosition = true;
         CollisionEvent.Result[] ignore = {CollisionEvent.Result.NEXT_LEVEL, CollisionEvent.Result.BLOCK, CollisionEvent.Result.GAME_OVER};
+
+        // check if player attacked enemy
         if (res == CollisionEvent.Result.ATTACK) {
             Enemy enemy = (Enemy)getPiece(nPos);
             player.attack(player.getAttack(), enemy);
@@ -203,6 +229,26 @@ public class Board extends GameElement {
             return CollisionEvent.BLOCK;
         }
 
+        // check if portal was entered
+        if (res == CollisionEvent.Result.TELEPORT) {
+            Portal portal = (Portal) getPiece(nPos);
+            Portal other = portal.getOther();
+            Posn otherPosn = other.getPosn();
+            Posn playerPosn = player.getPosn();
+            Posn exitPosn = new Posn(otherPosn.getRow() + drow, otherPosn.getCol() + dcol);
+            if (exitPosn.getRow() < 0 || exitPosn.getRow() >= height || exitPosn.getCol() < 0 || exitPosn.getCol() >= width) {
+                return CollisionEvent.BLOCK;
+            }
+            CollisionEvent check = player.collide(getPiece(exitPosn));
+            if (check.getResult() != CollisionEvent.Result.CONTINUE) return CollisionEvent.BLOCK;
+            player.setPosn(exitPosn);
+            System.out.println("Teleported player");
+            board[playerPosn.getRow()][playerPosn.getCol()] = null;
+            board[exitPosn.getRow()][exitPosn.getCol()] = player;
+            return collisionEvent;
+        }
+
+        // check if player is hurt
         if (res == CollisionEvent.Result.HIT) {
             Enemy enemy;
             if(movable.getName().equals("player")){
@@ -231,7 +277,7 @@ public class Board extends GameElement {
             return CollisionEvent.BLOCK;
         }
 
-        // update position if no obstacle or enemy is in the way
+        // check if buff was picked up
         if (res == CollisionEvent.Result.PICK_ITEM) {
             System.out.println("Picked up item");
             player.setAttack(player.getAttack() + collisionEvent.getAttack());
@@ -254,11 +300,15 @@ public class Board extends GameElement {
                     break;
             }
         }
+
+        // check if game over
         if (player.getHealth() == 0) return new CollisionEvent(0, 0, 0, CollisionEvent.Result.GAME_OVER);
 
         for (CollisionEvent.Result ig : ignore) {
             if (res == ig) updatePosition = false;
         }
+
+        // check if player moved
         if (updatePosition) {
           movable.move(drow, dcol);
           board[r][c] = null;

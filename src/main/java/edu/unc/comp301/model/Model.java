@@ -6,7 +6,8 @@ import edu.unc.comp301.model.piece.CollisionEvent;
 import edu.unc.comp301.model.piece.GameStats;
 import edu.unc.comp301.model.piece.Piece;
 import edu.unc.comp301.model.piece.PlayerStats;
-import edu.unc.comp301.model.piece.movable.PlayerInterface;
+import edu.unc.comp301.view.Observer;
+import edu.unc.comp301.view.Subject;
 
 import java.util.*;
 
@@ -17,7 +18,7 @@ public class Model implements Subject {
         GAME_END,
     }
 
-    private final List<Observer> views = new ArrayList<>();
+    private final List<edu.unc.comp301.view.Observer> views = new ArrayList<>();
     private final Board board;
     private volatile STATUS status = STATUS.GAME_END;
     private final PlayerStats defaultStats = new PlayerStats(20, 100);
@@ -119,7 +120,7 @@ public class Model implements Subject {
     }
 
     @Override
-    public void addView(Observer view) {
+    public void addView(edu.unc.comp301.view.Observer view) {
         views.add(view);
     }
 

@@ -3,7 +3,6 @@ package edu.unc.comp301.view;
 import edu.unc.comp301.GameElement;
 import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
-import edu.unc.comp301.model.Observer;
 import edu.unc.comp301.model.piece.GameStats;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;

@@ -1,9 +1,9 @@
-@font-face{
-    font-family: 'pixel';
-    src: url('fonts/joystix_monospace.otf');
+@font-face {
+    font-family: 'joystixmonospace-regular';
+    src: url('font/joystix_monospace.otf');
 }
 
-.text{
-    -fx-font-family: 'pixel';
-    -fx-font-size: 30px;
+.title-label {
+    -fx-font-family: 'joystixmonospace-regular';
+    -fx-font-size: 40px;
 }

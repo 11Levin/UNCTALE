@@ -18,6 +18,7 @@ public class StartView extends View {
     public Parent render() {
         Label titleLabel = new Label("UNC Tale");
         Button startButton = new Button("Start");
+        titleLabel.getStyleClass().add("title-label");
         VBox vBox = new VBox();
         vBox.getChildren().addAll(titleLabel, startButton);
         startButton.setOnAction((event) -> {

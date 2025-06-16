@@ -3,6 +3,7 @@ package edu.unc.comp301.view;
 import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.piece.GameStats;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,9 +17,18 @@ public class StartView extends View {
 
     @Override
     public Parent render() {
+
+        VBox vBox = new VBox(30);
+        vBox.setAlignment(Pos.CENTER);
+        vBox.getStylesheets().add("main.css");
+        vBox.getStyleClass().add("layout");
+
         Label titleLabel = new Label("UNC Tale");
         Button startButton = new Button("Start");
-        VBox vBox = new VBox();
+
+        titleLabel.getStyleClass().add("title");
+        startButton.getStyleClass().add("start-button");
+
         vBox.getChildren().addAll(titleLabel, startButton);
         startButton.setOnAction((event) -> {
             controller.startGame();

@@ -28,6 +28,7 @@ public class GameView extends View {
         super(controller, model, stage);
         gameBar = new GameBar();
         vBox = new VBox();
+        vBox.getStylesheets().add("main.css");
         rendered = new HashMap[2 * viewRadius + 1][2 * viewRadius + 1];
         render();
     }

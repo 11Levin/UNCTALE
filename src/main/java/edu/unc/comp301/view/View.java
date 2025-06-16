@@ -24,6 +24,8 @@ public class View extends GameElement implements FXComponent, Observer {
     @Override
     public Parent render() {
         StackPane layout = new StackPane();
+        layout.getStylesheets().add("main.css");
+        layout.getStyleClass().add("layout");
         Label label = new Label("Hello World");
         layout.getChildren().add(label);
         return layout;

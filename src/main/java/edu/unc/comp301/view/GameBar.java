@@ -15,6 +15,7 @@ public class GameBar implements FXComponent {
     private final Label scoreNumber = new Label("0");
     private final Label levelNumber = new Label("1");
     private final HBox healthBar = new HBox();
+    private final HBox attackBar = new HBox();
     private final Map<String, Image> images = new HashMap<>();
     private final int tileSize = 32;
 
@@ -22,11 +23,18 @@ public class GameBar implements FXComponent {
     public Parent render() {
         loadImages();
         HBox bar = new HBox();
+        bar.getStylesheets().add("main.css");
+        bar.getStyleClass().add("bar");
         bar.setPrefWidth(640);
         bar.setPrefHeight(64);
 
-        // health
-        setHealth(32);
+        // stats
+        setHealth(100);
+        setAttack(20);
+        VBox statBox = new VBox();
+        statBox.getStylesheets().add("main.css");
+        statBox.getChildren().addAll(healthBar,attackBar);
+
 
         // spacer
         HBox spacer = new HBox();
@@ -34,15 +42,19 @@ public class GameBar implements FXComponent {
 
         // score
         VBox scoreBox = new VBox();
+        scoreBox.getStyleClass().add("score");
         Label scoreLabel = new Label("SCORE");
+        scoreLabel.getStyleClass().add("score-label");
         scoreBox.getChildren().addAll(scoreLabel, scoreNumber);
 
         // level
         VBox levelBox = new VBox();
+        levelBox.getStyleClass().add("score");
         Label levelLabel = new Label("LEVEL");
+        levelLabel.getStyleClass().add("score-label");
         levelBox.getChildren().addAll(levelLabel, levelNumber);
 
-        bar.getChildren().addAll(healthBar, spacer, scoreBox, levelBox);
+        bar.getChildren().addAll(statBox, spacer, scoreBox,levelBox);
         return bar;
     }
 
@@ -51,7 +63,7 @@ public class GameBar implements FXComponent {
     }
 
     private void loadImages() {
-        String[] toLoad = {"misc/UNCHeart.png"};
+        String[] toLoad = {"misc/UNCHeart.png","buff/UNCPencil_Buff.png"};
         for (String path : toLoad) {
             images.put(path, new Image(path));
         }
@@ -72,12 +84,21 @@ public class GameBar implements FXComponent {
 //        System.out.println("loaded health");
     }
 
+    public void setAttack(int attack) {
+        attackBar.getChildren().clear();
+        for (int i = 0; i < attack / 5; i++) {
+            attackBar.getChildren().add(getView("buff/UNCPencil_Buff.png"));
+        }
+
+    }
+
     public void setLevel(int level) {
         levelNumber.setText(Integer.toString(level));
     }
 
     public void updateStats(GameStats gameStats) {
         setHealth(gameStats.getHealth());
+        setAttack(gameStats.getAttack());
         setScore(gameStats.getScore());
         setLevel(gameStats.getLevel());
     }

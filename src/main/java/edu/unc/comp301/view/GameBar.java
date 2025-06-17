@@ -1,10 +1,14 @@
 package edu.unc.comp301.view;
 
 import edu.unc.comp301.GameElement;
+import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.piece.GameStats;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -18,6 +22,15 @@ public class GameBar extends GameElement implements FXComponent{
     private final HBox healthBar = new HBox();
     private final HBox attackBar = new HBox();
     private final Map<String, Image> images = new HashMap<>();
+    private Controller controller;
+    private final Button right = new Button(">");
+    private final Button up = new Button("^");
+    private final Button left = new Button("<");
+    private final Button down = new Button("v");
+
+    public GameBar(Controller controller){
+        this.controller = controller;
+    }
 
     @Override
     public Parent render() {
@@ -35,6 +48,38 @@ public class GameBar extends GameElement implements FXComponent{
         statBox.getStylesheets().add("main.css");
         statBox.getChildren().addAll(healthBar,attackBar);
 
+        //arrows
+        HBox arrowBoxT = new HBox();
+        HBox arrowBoxB = new HBox();
+        arrowBoxT.setAlignment(Pos.CENTER);
+        arrowBoxB.setAlignment(Pos.CENTER);
+        styleButton(right);
+        styleButton(up);
+        styleButton(left);
+        styleButton(down);
+        right.setOnAction((event) -> {
+//            controller.moveRight();
+            controller.queuePress(KeyCode.RIGHT);
+            System.out.println("Right");
+        });
+        up.setOnAction((event) -> {
+//            controller.moveUp();
+            controller.queuePress(KeyCode.UP);
+            System.out.println("Up");
+        });
+        left.setOnAction((event) -> {
+//            controller.moveLeft();
+            controller.queuePress(KeyCode.LEFT);
+            System.out.println("Left");
+        });
+        down.setOnAction((event) -> {
+//            controller.moveDown();
+            controller.queuePress(KeyCode.DOWN);
+            System.out.println("Down");
+        });
+        arrowBoxT.getChildren().add(up);
+        arrowBoxB.getChildren().addAll(left,down,right);
+        statBox.getChildren().addAll(arrowBoxT,arrowBoxB);
 
         // spacer
         HBox spacer = new HBox();
@@ -54,8 +99,14 @@ public class GameBar extends GameElement implements FXComponent{
         levelLabel.getStyleClass().add("level-label");
         levelBox.getChildren().addAll(levelLabel, levelNumber);
 
+
+
         bar.getChildren().addAll(statBox,spacer,scoreBox,levelBox);
         return bar;
+    }
+
+    private void styleButton(Button button) {
+        button.setPrefSize(20,20);
     }
 
     public void setScore(int score) {

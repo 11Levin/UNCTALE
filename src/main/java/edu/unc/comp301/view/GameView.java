@@ -26,17 +26,12 @@ public class GameView extends View {
     // grid of pre-rendered stackpanes for each tile in the view area to reduce re-rendering
     private final Map<Character, Parent>[][] rendered;
 
-    // controls
-    private final Button right = new Button(">");
-    private final Button up = new Button("^");
-    private final Button left = new Button("<");
-    private final Button down = new Button("v");
 
 
 
     public GameView(Controller controller, Model model, Stage stage) {
         super(controller, model, stage);
-        gameBar = new GameBar();
+        gameBar = new GameBar(controller);
         vBox = new VBox();
         vBox.getStylesheets().add("main.css");
         rendered = new HashMap[2 * viewRadius + 1][2 * viewRadius + 1];
@@ -81,34 +76,13 @@ public class GameView extends View {
         }
 
         // setup buttons
-        styleButton(right);
-        styleButton(up);
-        styleButton(left);
-        styleButton(down);
-        right.setOnAction((event) -> {
-//            controller.moveRight();
-            controller.queuePress(KeyCode.RIGHT);
-        });
-        up.setOnAction((event) -> {
-//            controller.moveUp();
-            controller.queuePress(KeyCode.UP);
-        });
-        left.setOnAction((event) -> {
-//            controller.moveLeft();
-            controller.queuePress(KeyCode.LEFT);
-        });
-        down.setOnAction((event) -> {
-//            controller.moveDown();
-            controller.queuePress(KeyCode.DOWN);
-        });
+
 
         vBox.getChildren().addAll(gameBar.render(), new GridPane());
         return vBox;
     }
 
-    private void styleButton(Button button) {
-        button.setPrefSize(tileSize, tileSize);
-    }
+
 
     @Override
     public void update(GameStats gameStats) {
@@ -136,11 +110,6 @@ public class GameView extends View {
         }
         gridPane.add(center, viewRadius, viewRadius);
 
-        // draw controls
-        gridPane.add(right, 2 * viewRadius, 2 * viewRadius);
-        gridPane.add(up, 2 * viewRadius - 1, 2 * viewRadius - 1);
-        gridPane.add(left, 2 * viewRadius - 2, 2 * viewRadius);
-        gridPane.add(down, 2 * viewRadius - 1, 2 * viewRadius);
 
         vBox.getChildren().removeLast();
         vBox.getChildren().add(gridPane);

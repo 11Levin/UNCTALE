@@ -49,12 +49,12 @@ public class GameBar implements FXComponent {
 
         // level
         VBox levelBox = new VBox();
-        levelBox.getStyleClass().add("score");
+        levelBox.getStyleClass().add("level");
         Label levelLabel = new Label("LEVEL");
-        levelLabel.getStyleClass().add("score-label");
+        levelLabel.getStyleClass().add("level-label");
         levelBox.getChildren().addAll(levelLabel, levelNumber);
 
-        bar.getChildren().addAll(statBox, spacer, scoreBox,levelBox);
+        bar.getChildren().addAll(statBox,spacer,scoreBox,levelBox);
         return bar;
     }
 
@@ -63,7 +63,7 @@ public class GameBar implements FXComponent {
     }
 
     private void loadImages() {
-        String[] toLoad = {"misc/UNCHeart.png","buff/UNCPencil_Buff.png"};
+        String[] toLoad = {"misc/UNCHeart.png","buff/UNCPencil_Buff.png","misc/UNCHeartExtra.png"};
         for (String path : toLoad) {
             images.put(path, new Image(path));
         }
@@ -76,10 +76,26 @@ public class GameBar implements FXComponent {
         return rtn;
     }
 
-    public void setHealth(int health) {
+    public synchronized void setHealth(int health) {
         healthBar.getChildren().clear();
-        for (int i = 0; i < health / 10; i++) {
+
+        int totalHearts = 10;
+        if(health>100){
+            for (int heart = health; heart > 100; heart -= 20) {
+                healthBar.getChildren().add(getView("misc/UNCHeartExtra.png"));
+                totalHearts--;
+                if(totalHearts == 0){
+                    break;
+                }
+            }
+
+            for (int i = 0; i < totalHearts; i++) {
+                healthBar.getChildren().add(getView("misc/UNCHeart.png"));
+            }
+        } else {
+          for (int i = 0; i < health / 10; i++) {
             healthBar.getChildren().add(getView("misc/UNCHeart.png"));
+          }
         }
 //        System.out.println("loaded health");
     }

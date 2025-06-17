@@ -6,6 +6,7 @@ import edu.unc.comp301.model.piece.GameStats;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -22,15 +23,28 @@ public class EndView extends View {
         VBox vBox = new VBox();
         vBox.getStylesheets().add("main.css");
         vBox.getStyleClass().add("layout");
+
+        HBox scoreBox = new HBox();
+        scoreBox.getStyleClass().add("score-box");
         Label scoreName = new Label("Score: ");
         Label scoreNumber = new Label(Integer.toString(gameStats.getScore()));
+        scoreName.getStyleClass().add("score-value");
+        scoreBox.getChildren().addAll(scoreName,scoreNumber);
+
+        HBox highBox = new HBox();
+        scoreBox.getStyleClass().add("high-box");
         Label highName = new Label("High: ");
         Label highNumber = new Label(Integer.toString(gameStats.getHighScore()));
+        highName.getStyleClass().add("high-value");
+        highBox.getChildren().addAll(highName,highNumber);
+
+
         Button playAgain = new Button("Play again");
+        playAgain.getStyleClass().add("again-button");
         playAgain.setOnAction((event) -> {
             controller.startGame();
         });
-        vBox.getChildren().addAll(scoreName, scoreNumber, highName, highNumber, playAgain);
+        vBox.getChildren().addAll(scoreBox, highBox, playAgain);
         return vBox;
     }
 

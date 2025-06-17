@@ -28,9 +28,11 @@ public class AppLauncher extends Application {
         StartView startView = new StartView(controller, model, primaryStage);
         GameView gameView = new GameView(controller, model, primaryStage);
         EndView endView = new EndView(controller, model, primaryStage);
+        InstructionsView instructionsView = new InstructionsView(controller, model, primaryStage);
         model.addView(startView);
         model.addView(gameView);
         model.addView(endView);
+        model.addView(instructionsView);
 
         // setup stage
         Scene scene = new Scene(startView.render(), tileSize * dims[0], tileSize * (dims[1] + 3));

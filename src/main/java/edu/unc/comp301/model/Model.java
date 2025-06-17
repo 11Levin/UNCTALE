@@ -16,6 +16,7 @@ public class Model implements Subject {
         GAME_START,
         GAME_CONTINUE,
         GAME_END,
+        GAME_INSTRUCTIONS,
     }
 
     private final List<edu.unc.comp301.view.Observer> views = new ArrayList<>();
@@ -84,6 +85,16 @@ public class Model implements Subject {
         playerStats = board.getPlayerStats();
         status = STATUS.GAME_END;
         highScore = Math.max(highScore, score);
+        updateViews();
+    }
+
+    public void showInstructions() {
+        status = STATUS.GAME_INSTRUCTIONS;
+        updateViews();
+    }
+
+    public void showHomeScreen() {
+        status = STATUS.GAME_START;
         updateViews();
     }
 

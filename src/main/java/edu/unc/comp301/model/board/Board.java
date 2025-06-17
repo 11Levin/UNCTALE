@@ -463,11 +463,9 @@ public class Board extends GameElement {
 
     private synchronized void clearEntities(){
         for(Enemy enemy: enemyList){
-            enemy.setHealth(0);
             board[enemy.getPosn().getRow()][enemy.getPosn().getCol()] = null;
         }
         for(Enemy bullet: bulletList){
-            bullet.setHealth(0);
             board[bullet.getPosn().getRow()][bullet.getPosn().getCol()] = null;
         }
         enemyList.clear();

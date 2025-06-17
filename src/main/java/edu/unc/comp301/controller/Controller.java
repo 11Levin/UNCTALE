@@ -11,6 +11,7 @@ import java.util.*;
 public class Controller {
     private final Model model;
     private volatile Set<KeyCode> pressed = new HashSet<>();
+    private Set<KeyCode> toQueue = new HashSet<>();
     private int tick;
 
     public Controller(Model model) {
@@ -38,7 +39,7 @@ public class Controller {
     }
 
     public void queuePress(KeyCode keyCode) {
-        pressed.add(keyCode);
+        toQueue.add(keyCode);
     }
 
     public void init(Scene scene) {
@@ -49,6 +50,8 @@ public class Controller {
 
         Thread gameTick = new Thread(() -> {
             while (true) {
+                pressed.addAll(toQueue);
+                toQueue = new HashSet<>();
                 if (model.getStatus() == Model.STATUS.GAME_CONTINUE) {
                     // check for player input
                     if (pressed.contains(KeyCode.UP) || pressed.contains(KeyCode.W)) {

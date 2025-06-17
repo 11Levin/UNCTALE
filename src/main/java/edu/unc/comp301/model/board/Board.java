@@ -529,6 +529,7 @@ public class Board extends GameElement {
     }
 
   public PlayerStats getPlayerStats() {
+        if (player == null) return new PlayerStats(0, 0);
       return new PlayerStats(player.getAttack(), player.getHealth());
     }
 }

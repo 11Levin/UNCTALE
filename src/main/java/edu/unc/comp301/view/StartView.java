@@ -28,6 +28,10 @@ public class StartView extends View {
         Label titleLabel = new Label("UNC Tale");
         VBox titleBox = new VBox();
 
+        VBox subtitleBox = new VBox();
+        Label subtitle = new Label("Made by Vincent and Levin Wu");
+        subtitle.getStyleClass().add("subtitle");
+        subtitleBox.getChildren().add(subtitle);
 
         titleLabel.getStyleClass().add("title");
         titleBox.getStyleClass().add("title-box");
@@ -41,6 +45,13 @@ public class StartView extends View {
             controller.startGame();
         });
 
+        Button instructionsButton = new Button("Instructions");
+        instructionsButton.getStyleClass().add("exit-button");
+        instructionsButton.setOnAction((event) -> {
+            System.out.println("Instructions pressed");
+            model.showInstructions();
+        });
+
         Button exitButton = new Button("Exit");
         exitButton.getStyleClass().add("exit-button");
 
@@ -49,7 +60,7 @@ public class StartView extends View {
             Platform.exit();
         });
 
-        vBox.getChildren().addAll(titleBox, startButton,exitButton);
+        vBox.getChildren().addAll(titleBox, subtitleBox, startButton,instructionsButton, exitButton);
 
         return vBox;
     }

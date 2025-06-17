@@ -10,7 +10,7 @@ import java.util.*;
 
 public class Controller {
     private final Model model;
-    private final Set<KeyCode> pressed = new HashSet<>();
+    private volatile Set<KeyCode> pressed = new HashSet<>();
     private int tick;
 
     public Controller(Model model) {
@@ -36,10 +36,10 @@ public class Controller {
     public void startGame() {
         model.startGame();
     }
-//
-//    public void queuePress(KeyCode keyCode) {
-//        pressed.add(keyCode);
-//    }
+
+    public void queuePress(KeyCode keyCode) {
+        pressed.add(keyCode);
+    }
 
     public void init(Scene scene) {
         // set keybinds

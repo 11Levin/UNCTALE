@@ -85,6 +85,22 @@ public class GameView extends View {
         styleButton(up);
         styleButton(left);
         styleButton(down);
+        right.setOnAction((event) -> {
+//            controller.moveRight();
+            controller.queuePress(KeyCode.RIGHT);
+        });
+        up.setOnAction((event) -> {
+//            controller.moveUp();
+            controller.queuePress(KeyCode.UP);
+        });
+        left.setOnAction((event) -> {
+//            controller.moveLeft();
+            controller.queuePress(KeyCode.LEFT);
+        });
+        down.setOnAction((event) -> {
+//            controller.moveDown();
+            controller.queuePress(KeyCode.DOWN);
+        });
 
         vBox.getChildren().addAll(gameBar.render(), new GridPane());
         return vBox;

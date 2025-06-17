@@ -1,5 +1,6 @@
 package edu.unc.comp301.view;
 
+import edu.unc.comp301.GameElement;
 import edu.unc.comp301.model.piece.GameStats;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -11,13 +12,12 @@ import javafx.scene.image.Image;
 
 import java.util.*;
 
-public class GameBar implements FXComponent {
+public class GameBar extends GameElement implements FXComponent{
     private final Label scoreNumber = new Label("0");
     private final Label levelNumber = new Label("1");
     private final HBox healthBar = new HBox();
     private final HBox attackBar = new HBox();
     private final Map<String, Image> images = new HashMap<>();
-    private final int tileSize = 32;
 
     @Override
     public Parent render() {
@@ -25,8 +25,8 @@ public class GameBar implements FXComponent {
         HBox bar = new HBox();
         bar.getStylesheets().add("main.css");
         bar.getStyleClass().add("bar");
-        bar.setPrefWidth(640);
-        bar.setPrefHeight(64);
+        bar.setPrefWidth((2 * viewRadius + 1) * tileSize);
+        bar.setPrefHeight(2 * tileSize);
 
         // stats
         setHealth(100);
@@ -71,8 +71,8 @@ public class GameBar implements FXComponent {
 
     private ImageView getView(String path) {
         ImageView rtn = new ImageView(images.get(path));
-        rtn.setFitWidth(tileSize);
-        rtn.setFitHeight(tileSize);
+        rtn.setFitWidth(tileSize / 2);
+        rtn.setFitHeight(tileSize / 2);
         return rtn;
     }
 

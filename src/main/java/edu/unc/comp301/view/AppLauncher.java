@@ -33,9 +33,8 @@ public class AppLauncher extends Application {
         model.addView(endView);
 
         // setup stage
-        Scene scene = new Scene(startView.render(), tileSize * dims[0], tileSize * (dims[1] + 1));
+        Scene scene = new Scene(startView.render(), tileSize * dims[0], tileSize * (dims[1] + 3));
         controller.init(scene);
-//        scene.getStylesheets().add("main.css");
         scene.getStylesheets().add("fontstyle.css");
         primaryStage.setScene(scene);
         primaryStage.setTitle("UNCTale");

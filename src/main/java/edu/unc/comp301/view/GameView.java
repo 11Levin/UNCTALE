@@ -6,12 +6,15 @@ import edu.unc.comp301.model.piece.GameStats;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.security.Key;
 import java.util.*;
 
 public class GameView extends View {
@@ -22,6 +25,13 @@ public class GameView extends View {
 
     // grid of pre-rendered stackpanes for each tile in the view area to reduce re-rendering
     private final Map<Character, Parent>[][] rendered;
+
+    // controls
+    private final Button right = new Button(">");
+    private final Button up = new Button("^");
+    private final Button left = new Button("<");
+    private final Button down = new Button("v");
+
 
 
     public GameView(Controller controller, Model model, Stage stage) {
@@ -69,10 +79,35 @@ public class GameView extends View {
                 }
             }
         }
-        StackPane grid = new StackPane();
-        grid.getChildren().addAll(new GridPane(), new GridPane());
-        vBox.getChildren().addAll(gameBar.render(), grid);
+
+        // setup buttons
+        styleButton(right);
+        styleButton(up);
+        styleButton(left);
+        styleButton(down);
+        right.setOnAction((event) -> {
+//            controller.moveRight();
+            controller.queuePress(KeyCode.RIGHT);
+        });
+        up.setOnAction((event) -> {
+//            controller.moveUp();
+            controller.queuePress(KeyCode.UP);
+        });
+        left.setOnAction((event) -> {
+//            controller.moveLeft();
+            controller.queuePress(KeyCode.LEFT);
+        });
+        down.setOnAction((event) -> {
+//            controller.moveDown();
+            controller.queuePress(KeyCode.DOWN);
+        });
+
+        vBox.getChildren().addAll(gameBar.render(), new GridPane());
         return vBox;
+    }
+
+    private void styleButton(Button button) {
+        button.setPrefSize(tileSize, tileSize);
     }
 
     @Override
@@ -89,19 +124,26 @@ public class GameView extends View {
             }
         }
 
-        // update buffs
-        Canvas buffs = new Canvas((2 * viewRadius + 1) * tileSize, (2 * viewRadius + 1) * tileSize);
-        GraphicsContext gc = buffs.getGraphicsContext2D();
+        // draw player and buffs
+        StackPane center = new StackPane();
+        center.getChildren().addAll(getView('g'), getView('p'));
         for (int i = 0; i < MAX_NUMBER_BUFFS; i++) {
-            String buff = toDraw[i + 2 * viewRadius + 1];
-            if (buff != null) {
-                gc.drawImage(fullToImage(buff), viewRadius * tileSize, viewRadius * tileSize, tileSize, tileSize);
+//            System.out.println("drawing buffs: ");
+//            System.out.println(toDraw[2 * viewRadius + 1 + i]);
+            if (toDraw[2 * viewRadius + 1 + i] != null) {
+                center.getChildren().add(getView(toDraw[2 * viewRadius + 1 + i]));
             }
         }
+        gridPane.add(center, viewRadius, viewRadius);
+
+        // draw controls
+        gridPane.add(right, 2 * viewRadius, 2 * viewRadius);
+        gridPane.add(up, 2 * viewRadius - 1, 2 * viewRadius - 1);
+        gridPane.add(left, 2 * viewRadius - 2, 2 * viewRadius);
+        gridPane.add(down, 2 * viewRadius - 1, 2 * viewRadius);
+
         vBox.getChildren().removeLast();
-        StackPane grid = new StackPane();
-        grid.getChildren().addAll(gridPane, buffs);
-        vBox.getChildren().add(grid);
+        vBox.getChildren().add(gridPane);
 
         // update game bar
         gameBar.updateStats(gameStats);

@@ -185,7 +185,7 @@ public class Board extends GameElement {
         return board[posn.getRow()][posn.getCol()];
     }
 
-    private CollisionEvent moveMovable(MovableInterface movable, int drow, int dcol) {
+    private synchronized CollisionEvent moveMovable(MovableInterface movable, int drow, int dcol) {
         int r = movable.getPosn().getRow();
         int c = movable.getPosn().getCol();
         int nr = r + drow;

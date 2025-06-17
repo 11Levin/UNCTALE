@@ -58,6 +58,7 @@
     -fx-font-family: 'pixel';
     -fx-font-size: 20px;
     -fx-background-color: #62C6F2;
+    -fx-alignment: center;
     -fx-text-fill: white;
     -fx-padding: 10px 20px;
     -fx-background-radius: 8px;

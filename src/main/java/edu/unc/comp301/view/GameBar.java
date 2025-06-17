@@ -104,6 +104,9 @@ public class GameBar implements FXComponent {
         attackBar.getChildren().clear();
         for (int i = 0; i < attack / 5; i++) {
             attackBar.getChildren().add(getView("buff/UNCPencil_Buff.png"));
+            if (i == 10){
+                break;
+            }
         }
 
     }

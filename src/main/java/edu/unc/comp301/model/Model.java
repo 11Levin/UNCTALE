@@ -9,6 +9,10 @@ import edu.unc.comp301.model.piece.PlayerStats;
 import edu.unc.comp301.view.Observer;
 import edu.unc.comp301.view.Subject;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 public class Model implements Subject {
@@ -83,7 +87,20 @@ public class Model implements Subject {
     public void endGame() {
         playerStats = board.getPlayerStats();
         status = STATUS.GAME_END;
+        InputStream inputStream = Board.class.getClassLoader().getResourceAsStream("misc/high_score.txt");
+        Scanner scanner = new Scanner(inputStream);
+        highScore = scanner.nextInt();
+        System.out.println(highScore);
         highScore = Math.max(highScore, score);
+        File file = new File("src/main/resources/misc/high_score.txt");
+        try{
+        FileWriter writer = new FileWriter(file, false);
+        writer.write(Integer.toString(highScore));
+        writer.close();
+        } catch (IOException e) {
+            System.out.println("error");
+        }
+        System.out.println(highScore);
         updateViews();
     }
 

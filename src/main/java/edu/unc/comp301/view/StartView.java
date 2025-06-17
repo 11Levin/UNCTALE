@@ -42,7 +42,7 @@ public class StartView extends View {
         });
 
         Button exitButton = new Button("Exit");
-        startButton.getStyleClass().add("exit-button");
+        exitButton.getStyleClass().add("exit-button");
 
 
         exitButton.setOnAction((event) -> {

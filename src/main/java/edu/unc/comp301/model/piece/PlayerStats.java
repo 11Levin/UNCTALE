@@ -9,7 +9,7 @@ public class PlayerStats {
         this.health = health;
     }
 
-    public int getAttack() {return attack;}
+    public int getAttack() {return Math.max(attack, 5);}
 
     public int getHealth() {return health;}
 }

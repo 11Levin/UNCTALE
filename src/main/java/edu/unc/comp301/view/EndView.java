@@ -23,6 +23,8 @@ public class EndView extends View {
         VBox vBox = new VBox();
         vBox.getStylesheets().add("main.css");
         vBox.getStyleClass().add("layout");
+        vBox.setAlignment(javafx.geometry.Pos.CENTER);
+        vBox.setSpacing(20);
 
         HBox scoreBox = new HBox();
         scoreBox.getStyleClass().add("score-box");
@@ -32,7 +34,7 @@ public class EndView extends View {
         scoreBox.getChildren().addAll(scoreName,scoreNumber);
 
         HBox highBox = new HBox();
-        scoreBox.getStyleClass().add("high-box");
+        highBox.getStyleClass().add("high-box");
         Label highName = new Label("High: ");
         Label highNumber = new Label(Integer.toString(gameStats.getHighScore()));
         highName.getStyleClass().add("high-value");

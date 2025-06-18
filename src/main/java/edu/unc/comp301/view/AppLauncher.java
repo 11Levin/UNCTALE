@@ -49,7 +49,6 @@ public class AppLauncher extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         controller.init(scene);
-//        scene.getStylesheets().add("fontstyle.css");
         primaryStage.setTitle("UNCTale");
         primaryStage.show();
     }

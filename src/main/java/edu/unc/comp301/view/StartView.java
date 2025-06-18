@@ -21,54 +21,53 @@ public class StartView extends View {
 
     @Override
     public Parent render() {
-
+        // container for everything
         VBox vBox = new VBox(30);
         vBox.setAlignment(Pos.CENTER);
         vBox.getStylesheets().add("main.css");
-        vBox.getStyleClass().add("layout");
 
-
+        // game name
         Label titleLabel = new Label("UNC Tale");
         VBox titleBox = new VBox();
-
-        VBox subtitleBox = new VBox();
-        Label subtitle = new Label("Made by Vincent and Levin Wu");
-        subtitle.getStyleClass().add("subtitle");
-        subtitleBox.getChildren().add(subtitle);
-
-        titleLabel.getStyleClass().add("title");
-        titleBox.getStyleClass().add("title-box");
         titleBox.getChildren().add(titleLabel);
+        titleBox.getStyleClass().add("layout");
+        titleBox.getStyleClass().add("layout-title");
+        titleLabel.getStyleClass().add("label-title");
 
+        // credits
+        VBox subtitleBox = new VBox();
+        Label subtitle = new Label("Made by Vincent Wang and Levin Wu");
+        subtitleBox.getChildren().add(subtitle);
+        subtitleBox.getStyleClass().add("layout");
+        subtitleBox.getStyleClass().add("layout-subtitle");
+        subtitle.getStyleClass().add("label-subtitle");
+
+        // buttons
         Button startButton = new Button("Start");
-        startButton.getStyleClass().add("start-button");
-
-
         startButton.setOnAction((event) -> {
             controller.startGame(difficulty);
         });
+        startButton.getStyleClass().add("button");
 
         Button instructionsButton = new Button("Instructions");
-        instructionsButton.getStyleClass().add("exit-button");
         instructionsButton.setOnAction((event) -> {
             System.out.println("Instructions pressed");
             model.showInstructions();
         });
-
-        Button exitButton = new Button("Exit");
-        exitButton.getStyleClass().add("exit-button");
-
-
-        exitButton.setOnAction((event) -> {
-            Platform.exit();
-        });
+        instructionsButton.getStyleClass().add("button");
 
         Button difficultyButton = new Button("Difficulty: " + difficultyLevels[difficulty]);
-        difficultyButton.getStyleClass().add("start-button");
         difficultyButton.setOnAction((event) -> {
             difficulty = (difficulty + 1) % difficultyLevels.length;
             difficultyButton.setText("Difficulty: " + difficultyLevels[difficulty]);
         });
+        difficultyButton.getStyleClass().add("button");
+
+        Button exitButton = new Button("Exit");
+        exitButton.setOnAction((event) -> {
+            Platform.exit();
+        });
+        exitButton.getStyleClass().add("button-important");
 
         vBox.getChildren().addAll(titleBox, subtitleBox, startButton,difficultyButton,instructionsButton, exitButton);
 

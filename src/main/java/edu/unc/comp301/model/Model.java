@@ -8,6 +8,7 @@ import edu.unc.comp301.model.piece.Piece;
 import edu.unc.comp301.model.piece.PlayerStats;
 import edu.unc.comp301.view.Observer;
 import edu.unc.comp301.view.Subject;
+import edu.unc.comp301.view.View;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -23,10 +24,10 @@ public class Model implements Subject {
         GAME_INSTRUCTIONS,
     }
 
-    private final List<edu.unc.comp301.view.Observer> views = new ArrayList<>();
+    private final List<Observer> views = new ArrayList<>();
     private final Board board;
     private volatile STATUS status = STATUS.GAME_END;
-    private final PlayerStats defaultStats = new PlayerStats(20, 100);
+    private final PlayerStats defaultStats = new PlayerStats(20, 100, new HashSet<>());
     private PlayerStats playerStats = defaultStats;
 
     // player stats
@@ -84,7 +85,7 @@ public class Model implements Subject {
         level = 1;
         board.init(level, defaultStats);
         status = STATUS.GAME_CONTINUE;
-        updateViews();
+        renderViews();
     }
 
     public void endGame() {
@@ -152,18 +153,27 @@ public class Model implements Subject {
     }
 
     @Override
-    public void addView(edu.unc.comp301.view.Observer view) {
+    public void addView(Observer view) {
         views.add(view);
     }
 
     public void updateViews() {
         playerStats = board.getPlayerStats();
         for (Observer observer : views) {
-            observer.update(new GameStats(level, score, highScore, playerStats.getAttack(), playerStats.getHealth()));
+            observer.update(new GameStats(level, score, highScore, playerStats.getAttack(), playerStats.getHealth(), playerStats.getBuffs()));
         }
     }
 
-    public String[] getToDraw() {
-        return board.getToDraw();
+    /**
+     * For re-rendering views if screen is resized
+     */
+    public void renderViews() {
+        for (Observer view : views) {
+            ((View)view).render();
+        }
+    }
+
+    public String[] getToDraw(int verticalRadius, int horizontalRadius) {
+        return board.getToDraw(verticalRadius, horizontalRadius);
     }
 }

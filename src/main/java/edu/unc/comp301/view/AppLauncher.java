@@ -1,15 +1,16 @@
 package edu.unc.comp301.view;
 
+import edu.unc.comp301.GameElement;
 import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.board.Board;
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class AppLauncher extends Application {
-    private final int[] dims = {9, 9};
-    private final int tileSize = 64;
 
     public static void main(String[] args) {
         launch(args);
@@ -34,8 +35,13 @@ public class AppLauncher extends Application {
         model.addView(endView);
         model.addView(instructionsView);
 
-        // setup stage
-        Scene scene = new Scene(startView.render(), tileSize * dims[0], tileSize * (dims[1] + 3));
+        Rectangle2D rect = Screen.getPrimary().getBounds();
+        double screenWidth = rect.getWidth();
+        double screenHeight = rect.getHeight() - 80;
+        Scene scene = new Scene(startView.render(), screenWidth, screenHeight);
+        GameElement.setVerticalRadius(((int)(screenHeight / GameElement.tileSize) - 1) / 2);
+        GameElement.setHorizontalRadius(((int)(screenWidth / GameElement.tileSize) - 1) / 2);
+
         controller.init(scene);
         scene.getStylesheets().add("fontstyle.css");
         primaryStage.setScene(scene);

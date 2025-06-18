@@ -166,7 +166,7 @@ public class Model implements Subject {
         }
     }
 
-    public String[] getToDraw() {
-        return board.getToDraw();
+    public String[] getToDraw(int verticalRadius, int horizontalRadius) {
+        return board.getToDraw(verticalRadius, horizontalRadius);
     }
 }

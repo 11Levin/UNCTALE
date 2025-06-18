@@ -160,18 +160,14 @@ public class Board extends GameElement {
     }
 
     /**
-     * Gives the width or number of columns of the grid
-     *
-     * @return
+     * @return the width or number of columns of the grid
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Gives the height or number of rows of the grid
-     *
-     * @return
+     * @return the height or number of rows of the grid
      */
     public int getHeight() {
         return height;
@@ -504,13 +500,13 @@ public class Board extends GameElement {
      * Returns a string representation of grid components that need to be drawn
      * @return
      */
-    public String[] getToDraw() {
-        String[] rtn = new String[2 * viewRadius + 1 + MAX_NUMBER_BUFFS];
+    public String[] getToDraw(int verticalRadius, int horizontalRadius) {
+        String[] rtn = new String[2 * verticalRadius + 1 + MAX_NUMBER_BUFFS];
         int r = player.getPosn().getRow();
         int c = player.getPosn().getCol();
-        for (int i = r - viewRadius; i <= r + viewRadius; i++) {
+        for (int i = r - verticalRadius; i <= r + verticalRadius; i++) {
             StringBuilder sb = new StringBuilder();
-            for (int j = c - viewRadius; j <= c + viewRadius; j++) {
+            for (int j = c - horizontalRadius; j <= c + horizontalRadius; j++) {
                 Character toAdd = 'w';
 
                 // Check piece at (i, j) is within board bounds
@@ -523,14 +519,14 @@ public class Board extends GameElement {
                 }
                 sb.append(toAdd);
             }
-            rtn[i + viewRadius - r] = sb.toString();
+            rtn[i + verticalRadius - r] = sb.toString();
         }
         List<String> buffs = player.getBuffs();
         Set<String> noDuplicates = new HashSet<>();
         noDuplicates.addAll(buffs);
         int buffCount = 0;
         for (String s : noDuplicates) {
-            rtn[2 * viewRadius + 1 + buffCount++] = s;
+            rtn[2 * verticalRadius + 1 + buffCount++] = s;
         }
         return rtn;
     }

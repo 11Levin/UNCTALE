@@ -18,13 +18,11 @@ import java.security.Key;
 import java.util.*;
 
 public class GameView extends View {
-    private boolean isRendered = false;
-
     private final GameBar gameBar;
     private final VBox vBox;
 
     // grid of pre-rendered stackpanes for each tile in the view area to reduce re-rendering
-    private final Map<Character, Parent>[][] rendered;
+    private Map<Character, Parent>[][] rendered;
 
 
 
@@ -34,7 +32,6 @@ public class GameView extends View {
         gameBar = new GameBar(controller);
         vBox = new VBox();
         vBox.getStylesheets().add("main.css");
-        rendered = new HashMap[2 * viewRadius + 1][2 * viewRadius + 1];
         render();
     }
 
@@ -50,14 +47,13 @@ public class GameView extends View {
         return getView(shortName(s));
     }
 
-    @Override
-    public Parent render() {
-        if (isRendered) return vBox;
-        isRendered = true;
+    public Parent render(int verticalRadius, int horizontalRadius) {
+        vBox.getChildren().clear();
+        rendered = new HashMap[2 * verticalRadius + 1][2 * horizontalRadius + 1];
 
         // create all tiles beforehand
-        for (int i = 0; i < 2 * viewRadius + 1; i++) {
-            for (int j = 0; j < 2 * viewRadius + 1; j++) {
+        for (int i = 0; i < 2 * verticalRadius + 1; i++) {
+            for (int j = 0; j < 2 * horizontalRadius + 1; j++) {
                 rendered[i][j] = new HashMap<>();
                 for (Character c : getToLoad()) {
                     StackPane stackPane = new StackPane();
@@ -74,25 +70,34 @@ public class GameView extends View {
                 }
             }
         }
-
-        // setup buttons
-
-
-        vBox.getChildren().addAll(gameBar.render(), new GridPane());
+        vBox.getChildren().addAll(new GridPane());
         return vBox;
     }
 
+    @Override
+    public Parent render() {
+        return render(getVerticalRadius(), getHorizontalRadius());
+    }
 
 
     @Override
     public void update(GameStats gameStats) {
         if (model.getStatus() != Model.STATUS.GAME_CONTINUE) return;
 
+        // prevent updates happening mid-code
+        int verticalRadius = getVerticalRadius();
+        int horizontalRadius = getHorizontalRadius();
+        System.out.println(verticalRadius + " " + horizontalRadius);
+        if (2 * verticalRadius + 1 != rendered.length || 2 * horizontalRadius + 1 != rendered[0].length) {
+            render(verticalRadius, horizontalRadius);
+        };
+
+//        System.out.println("updating");
         // update grid
         GridPane gridPane = new GridPane();
-        String[] toDraw = model.getToDraw();
-        for (int i = 0; i < 2 * viewRadius + 1; i++) {
-            for (int j = 0; j < 2 * viewRadius + 1; j++) {
+        String[] toDraw = model.getToDraw(verticalRadius, horizontalRadius);
+        for (int i = 0; i < 2 * verticalRadius + 1; i++) {
+            for (int j = 0; j < 2 * horizontalRadius + 1; j++) {
                 Parent toAdd = rendered[i][j].get(toDraw[i].charAt(j));
                 gridPane.add(toAdd, j, i);
             }
@@ -104,18 +109,17 @@ public class GameView extends View {
         for (int i = 0; i < MAX_NUMBER_BUFFS; i++) {
 //            System.out.println("drawing buffs: ");
 //            System.out.println(toDraw[2 * viewRadius + 1 + i]);
-            if (toDraw[2 * viewRadius + 1 + i] != null) {
-                center.getChildren().add(getView(toDraw[2 * viewRadius + 1 + i]));
+            if (toDraw[2 * verticalRadius + 1 + i] != null) {
+                center.getChildren().add(getView(toDraw[2 * verticalRadius + 1 + i]));
             }
         }
-        gridPane.add(center, viewRadius, viewRadius);
+        gridPane.add(center, horizontalRadius, verticalRadius);
 
-
-        vBox.getChildren().removeLast();
+        vBox.getChildren().clear();
         vBox.getChildren().add(gridPane);
 
         // update game bar
         gameBar.updateStats(gameStats);
-        stage.getScene().setRoot(render());
+        stage.getScene().setRoot(vBox);
     }
 }

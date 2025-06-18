@@ -34,75 +34,76 @@ public class GameBar extends GameElement implements FXComponent{
 
     @Override
     public Parent render() {
-        loadImages();
-        HBox bar = new HBox();
-        bar.getStylesheets().add("main.css");
-        bar.getStyleClass().add("bar");
-        bar.setPrefWidth((2 * viewRadius + 1) * tileSize);
-        bar.setPrefHeight(2 * tileSize);
-
-        // stats
-        setHealth(100);
-        setAttack(20);
-        VBox statBox = new VBox();
-        statBox.getStylesheets().add("main.css");
-        statBox.getChildren().addAll(healthBar,attackBar);
-
-        //arrows
-        HBox arrowBoxT = new HBox();
-        HBox arrowBoxB = new HBox();
-        arrowBoxT.setAlignment(Pos.CENTER);
-        arrowBoxB.setAlignment(Pos.CENTER);
-        styleButton(right);
-        styleButton(up);
-        styleButton(left);
-        styleButton(down);
-        right.setOnAction((event) -> {
-//            controller.moveRight();
-            controller.queuePress(KeyCode.RIGHT);
-            System.out.println("Right");
-        });
-        up.setOnAction((event) -> {
-//            controller.moveUp();
-            controller.queuePress(KeyCode.UP);
-            System.out.println("Up");
-        });
-        left.setOnAction((event) -> {
-//            controller.moveLeft();
-            controller.queuePress(KeyCode.LEFT);
-            System.out.println("Left");
-        });
-        down.setOnAction((event) -> {
-//            controller.moveDown();
-            controller.queuePress(KeyCode.DOWN);
-            System.out.println("Down");
-        });
-        arrowBoxT.getChildren().add(up);
-        arrowBoxB.getChildren().addAll(left,down,right);
-        statBox.getChildren().addAll(arrowBoxT,arrowBoxB);
-
-        // spacer
-        HBox spacer = new HBox();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        // score
-        VBox scoreBox = new VBox();
-        scoreBox.getStyleClass().add("score");
-        Label scoreLabel = new Label("SCORE");
-        scoreLabel.getStyleClass().add("score-label");
-        scoreBox.getChildren().addAll(scoreLabel, scoreNumber);
-
-        // level
-        VBox levelBox = new VBox();
-        levelBox.getStyleClass().add("level");
-        Label levelLabel = new Label("LEVEL");
-        levelLabel.getStyleClass().add("level-label");
-        levelBox.getChildren().addAll(levelLabel, levelNumber);
-
-
-
-        bar.getChildren().addAll(statBox,spacer,scoreBox,levelBox);
-        return bar;
+//        loadImages();
+//        HBox bar = new HBox();
+//        bar.getStylesheets().add("main.css");
+//        bar.getStyleClass().add("bar");
+//        bar.setPrefWidth((2 * getHorizontalRadius() + 1) * tileSize);
+//        bar.setPrefHeight(2 * tileSize);
+//
+//        // stats
+//        setHealth(100);
+//        setAttack(20);
+//        VBox statBox = new VBox();
+//        statBox.getStylesheets().add("main.css");
+//        statBox.getChildren().addAll(healthBar,attackBar);
+//
+//        //arrows
+//        HBox arrowBoxT = new HBox();
+//        HBox arrowBoxB = new HBox();
+//        arrowBoxT.setAlignment(Pos.CENTER);
+//        arrowBoxB.setAlignment(Pos.CENTER);
+//        styleButton(right);
+//        styleButton(up);
+//        styleButton(left);
+//        styleButton(down);
+//        right.setOnAction((event) -> {
+////            controller.moveRight();
+//            controller.queuePress(KeyCode.RIGHT);
+//            System.out.println("Right");
+//        });
+//        up.setOnAction((event) -> {
+////            controller.moveUp();
+//            controller.queuePress(KeyCode.UP);
+//            System.out.println("Up");
+//        });
+//        left.setOnAction((event) -> {
+////            controller.moveLeft();
+//            controller.queuePress(KeyCode.LEFT);
+//            System.out.println("Left");
+//        });
+//        down.setOnAction((event) -> {
+////            controller.moveDown();
+//            controller.queuePress(KeyCode.DOWN);
+//            System.out.println("Down");
+//        });
+//        arrowBoxT.getChildren().add(up);
+//        arrowBoxB.getChildren().addAll(left,down,right);
+//        statBox.getChildren().addAll(arrowBoxT,arrowBoxB);
+//
+//        // spacer
+//        HBox spacer = new HBox();
+//        HBox.setHgrow(spacer, Priority.ALWAYS);
+//
+//        // score
+//        VBox scoreBox = new VBox();
+//        scoreBox.getStyleClass().add("score");
+//        Label scoreLabel = new Label("SCORE");
+//        scoreLabel.getStyleClass().add("score-label");
+//        scoreBox.getChildren().addAll(scoreLabel, scoreNumber);
+//
+//        // level
+//        VBox levelBox = new VBox();
+//        levelBox.getStyleClass().add("level");
+//        Label levelLabel = new Label("LEVEL");
+//        levelLabel.getStyleClass().add("level-label");
+//        levelBox.getChildren().addAll(levelLabel, levelNumber);
+//
+//
+//
+//        bar.getChildren().addAll(statBox,spacer,scoreBox,levelBox);
+//        return bar;
+        return new HBox();
     }
 
     private void styleButton(Button button) {

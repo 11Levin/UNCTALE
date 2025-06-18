@@ -2,7 +2,6 @@ package edu.unc.comp301;
 
 import edu.unc.comp301.model.board.Board;
 import edu.unc.comp301.model.exception.LevelNotLoadedException;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 
 import java.io.InputStream;
@@ -20,7 +19,9 @@ public class GameElement {
     private final List<Character> loadList = new ArrayList<>();
     private static int verticalRadius;
     private static int horizontalRadius;
-    public final static int tileSize = 64;
+    public final static int TILE_SIZE = 64;
+    public final static int GAME_BAR_HEIGHT = 128;
+    public final static int STAGE_PADDING = 40;
     public final static Random random = new Random();
     public final String[] enemyNames = {"student", "professor", "bullet","ramses"};
     public final int MAX_NUMBER_BUFFS = 3;

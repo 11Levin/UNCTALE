@@ -81,7 +81,7 @@ public class Controller {
                     // update views
                     Platform.runLater(model::updateViews);
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(200);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }

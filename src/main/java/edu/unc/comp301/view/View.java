@@ -19,22 +19,6 @@ public class View extends GameElement implements FXComponent, Observer {
         this.controller = controller;
         this.model = model;
         this.stage = stage;
-
-        stage.widthProperty().addListener((obs, oldValue, newValue) -> {
-            if (model.getStatus() == Model.STATUS.GAME_CONTINUE) {
-                int newHorizontalRadius = (newValue.intValue() / tileSize - 1) / 2;
-                setHorizontalRadius(newHorizontalRadius);
-                model.updateViews();
-            }
-        });
-        stage.heightProperty().addListener((obs, newValue, oldValue) -> {
-            if (model.getStatus() == Model.STATUS.GAME_CONTINUE) {
-                int newVerticalRadius = (newValue.intValue() / tileSize - 1) / 2;
-                setVerticalRadius(newVerticalRadius);
-                System.out.println("new vr: " + newVerticalRadius);
-                model.updateViews();
-            }
-        });
     }
 
     @Override

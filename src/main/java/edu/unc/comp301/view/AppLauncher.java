@@ -1,6 +1,5 @@
 package edu.unc.comp301.view;
 
-import edu.unc.comp301.GameElement;
 import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.board.Board;
@@ -9,6 +8,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+
+import static edu.unc.comp301.GameElement.*;
 
 public class AppLauncher extends Application {
 
@@ -35,18 +36,21 @@ public class AppLauncher extends Application {
         model.addView(endView);
         model.addView(instructionsView);
 
+        // set stage size
         Rectangle2D rect = Screen.getPrimary().getBounds();
-        double screenWidth = rect.getWidth();
-        double screenHeight = rect.getHeight() - 80;
-        Scene scene = new Scene(startView.render(), screenWidth, screenHeight);
-        GameElement.setVerticalRadius(((int)(screenHeight / GameElement.tileSize) - 1) / 2);
-        GameElement.setHorizontalRadius(((int)(screenWidth / GameElement.tileSize) - 1) / 2);
+        int verticalRadius = (((int)rect.getHeight() - GAME_BAR_HEIGHT - 3 * STAGE_PADDING) / TILE_SIZE - 1) / 2;
+        int horizontalRadius = (((int)rect.getWidth() - STAGE_PADDING) / TILE_SIZE - 1) / 2;
+        horizontalRadius = Math.min(horizontalRadius, verticalRadius + 2);
+        View.setVerticalRadius(verticalRadius);
+        View.setHorizontalRadius(horizontalRadius);
 
-        controller.init(scene);
-        scene.getStylesheets().add("fontstyle.css");
+        Scene scene = new Scene(startView.render(), (2 * horizontalRadius + 1) * TILE_SIZE, (2 * verticalRadius + 1) * TILE_SIZE + GAME_BAR_HEIGHT);
+
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
+        controller.init(scene);
+//        scene.getStylesheets().add("fontstyle.css");
         primaryStage.setTitle("UNCTale");
-        primaryStage.setResizable(true);
         primaryStage.show();
     }
 }

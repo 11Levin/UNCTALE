@@ -122,6 +122,20 @@ public class Board extends GameElement {
                   playerFound = true;
                   board[i][j] = new Player(new Posn(i, j), playerStats.getHealth(), playerStats.getAttack());
                   player = new PlayerDecorator((Player)board[i][j]);
+                  for (String buff : playerStats.getBuffs()) {
+                      switch (buff){
+                          case "apple_item":
+                              player = new ApplePlayer(player);
+                              break;
+                          case "pencil_item":
+                              player = new PencilPlayer(player);
+                              break;
+                          case "homework_item":
+                              player = new HomeworkPlayer(player);
+                              break;
+                          default:
+                      }
+                  }
                   continue;
                 }
                 board[i][j] = nameToPiece(name, new Posn(i, j));
@@ -532,7 +546,7 @@ public class Board extends GameElement {
     }
 
   public PlayerStats getPlayerStats() {
-        if (player == null) return new PlayerStats(0, 0);
-      return new PlayerStats(player.getAttack(), player.getHealth());
+        if (player == null) return new PlayerStats(0, 0, new HashSet<>());
+      return new PlayerStats(player.getAttack(), player.getHealth(), new HashSet<>(player.getBuffs()));
     }
 }

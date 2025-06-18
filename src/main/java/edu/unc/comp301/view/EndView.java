@@ -10,13 +10,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.HashSet;
+
 public class EndView extends View {
     private GameStats gameStats;
     private int difficulty = 0;
 
     public EndView(Controller controller, Model model, Stage stage) {
         super(controller, model, stage);
-        gameStats = new GameStats(0, 0, 0, 0, 0);
+        gameStats = new GameStats(0, 0, 0, 0, 0, new HashSet<>());
     }
 
     @Override

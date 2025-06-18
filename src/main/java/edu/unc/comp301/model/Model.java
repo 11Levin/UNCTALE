@@ -27,7 +27,7 @@ public class Model implements Subject {
     private final List<Observer> views = new ArrayList<>();
     private final Board board;
     private volatile STATUS status = STATUS.GAME_END;
-    private final PlayerStats defaultStats = new PlayerStats(20, 100);
+    private final PlayerStats defaultStats = new PlayerStats(20, 100, new HashSet<>());
     private PlayerStats playerStats = defaultStats;
 
     // player stats
@@ -163,7 +163,7 @@ public class Model implements Subject {
     public void updateViews() {
         playerStats = board.getPlayerStats();
         for (Observer observer : views) {
-            observer.update(new GameStats(level, score, highScore, playerStats.getAttack(), playerStats.getHealth()));
+            observer.update(new GameStats(level, score, highScore, playerStats.getAttack(), playerStats.getHealth(), playerStats.getBuffs()));
         }
     }
 

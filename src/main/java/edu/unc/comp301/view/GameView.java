@@ -81,12 +81,10 @@ public class GameView extends View {
 
         int verticalRadius = getVerticalRadius();
         int horizontalRadius = getHorizontalRadius();
-        System.out.println(verticalRadius + " " + horizontalRadius);
         if (2 * verticalRadius + 1 != rendered.length || 2 * horizontalRadius + 1 != rendered[0].length) {
             render(verticalRadius, horizontalRadius);
         };
 
-//        System.out.println("updating");
         // update grid
         GridPane gridPane = new GridPane();
         String[] toDraw = model.getToDraw(verticalRadius, horizontalRadius);
@@ -100,11 +98,7 @@ public class GameView extends View {
         // draw player and buffs
         StackPane center = new StackPane();
         center.getChildren().addAll(getView('g'), getView('p'));
-        for (int i = 0; i < MAX_NUMBER_BUFFS; i++) {
-            if (toDraw[2 * verticalRadius + 1 + i] != null) {
-                center.getChildren().add(getView(toDraw[2 * verticalRadius + 1 + i]));
-            }
-        }
+        for (String buff : gameStats.getBuffs()) center.getChildren().add(getView(buff));
         gridPane.add(center, horizontalRadius, verticalRadius);
 
         vBox.getChildren().clear();

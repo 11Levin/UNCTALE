@@ -33,6 +33,7 @@ public class Model implements Subject {
     private int score;
     private int highScore;
     private int level = 1;
+    private int difficulty;
 
     public Model(int width, int height) {
         board = new Board(width, height);
@@ -77,7 +78,8 @@ public class Model implements Subject {
         return status;
     }
 
-    public void startGame() {
+    public void startGame(int difficulty) {
+        this.difficulty = difficulty;
         score = 0;
         level = 1;
         board.init(level, defaultStats);
@@ -133,6 +135,11 @@ public class Model implements Subject {
 
     public void spawnBullet(int tick) {
         board.spawnBullet(tick);
+    }
+
+    public int getDifficulty(){
+        board.setDifficulty(this.difficulty);
+        return this.difficulty;
     }
 
     private void move(int drow, int dcol) {

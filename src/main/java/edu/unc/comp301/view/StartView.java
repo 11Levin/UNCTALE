@@ -12,6 +12,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class StartView extends View {
+    private int difficulty = 0;
+    private static final String[] difficultyLevels = {"Easy", "Medium", "Hard"};
+
     public StartView(Controller controller, Model model, Stage stage) {
         super(controller, model, stage);
     }
@@ -42,7 +45,7 @@ public class StartView extends View {
 
 
         startButton.setOnAction((event) -> {
-            controller.startGame();
+            controller.startGame(difficulty);
         });
 
         Button instructionsButton = new Button("Instructions");
@@ -60,7 +63,14 @@ public class StartView extends View {
             Platform.exit();
         });
 
-        vBox.getChildren().addAll(titleBox, subtitleBox, startButton,instructionsButton, exitButton);
+        Button difficultyButton = new Button("Difficulty: " + difficultyLevels[difficulty]);
+        difficultyButton.getStyleClass().add("start-button");
+        difficultyButton.setOnAction((event) -> {
+            difficulty = (difficulty + 1) % difficultyLevels.length;
+            difficultyButton.setText("Difficulty: " + difficultyLevels[difficulty]);
+        });
+
+        vBox.getChildren().addAll(titleBox, subtitleBox, startButton,difficultyButton,instructionsButton, exitButton);
 
         return vBox;
     }

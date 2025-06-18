@@ -33,6 +33,7 @@ public class Board extends GameElement {
     private int width;
     private int height;
     private volatile int level = 0;
+    private int difficulty = 0;
 
     // entity info
     private PlayerDecorator player;
@@ -56,6 +57,10 @@ public class Board extends GameElement {
         this.board = board;
         width = board[0].length;
         height = board.length;
+    }
+
+    public void setDifficulty(int difficulty){
+        this.difficulty = difficulty;
     }
 
     public Board() {}
@@ -253,13 +258,13 @@ public class Board extends GameElement {
             Enemy enemy;
             if(movable.getName().equals("player")){
                 enemy = (Bullet)getPiece(nPos);
-                player.setHealth(player.getHealth()-enemy.getAttack());
+                player.setHealth(player.getHealth()-enemy.getAttack()*(difficulty+1));
                 System.out.println("Player Hurt! Health is at: " + player.getHealth());
                 board[nr][nc] = null;
                 bulletList.remove(enemy);
             } else {
                 enemy = (Bullet)getPiece(new Posn(r,c));
-                player.setHealth(player.getHealth()-enemy.getAttack());
+                player.setHealth(player.getHealth()-enemy.getAttack()*(difficulty+1));
                 System.out.println("Player Hurt! Health is at: " + player.getHealth());
                 board[r][c] = null;
                 bulletList.remove(enemy);
@@ -359,7 +364,7 @@ public class Board extends GameElement {
                 board[r+dir.get(idx)[0]][c+dir.get(idx)[1]] = bullet;
                 moveBullet((Bullet) bullet);
             } else{
-                player.setHealth(player.getHealth()-enemy.getAttack());
+                player.setHealth(player.getHealth()-enemy.getAttack()*(difficulty+1));
                 bulletList.remove(bullet);
             }
             dir.remove(idx);
@@ -373,7 +378,7 @@ public class Board extends GameElement {
         new Thread(
             () -> {
               try {
-                Thread.sleep(3000 / bullet.getSpeed());
+                Thread.sleep((3000 / bullet.getSpeed())-250*(difficulty));
               } catch (InterruptedException e) {
 
               }
@@ -382,7 +387,7 @@ public class Board extends GameElement {
                   moveMovable(bullet, bullet.getDirection()[0], bullet.getDirection()[1]);
                 }
                 try {
-                  Thread.sleep(3000 / bullet.getSpeed());
+                  Thread.sleep((3000 / bullet.getSpeed())-250*(difficulty));
                 } catch (InterruptedException e) {
 
                 }
@@ -400,7 +405,7 @@ public class Board extends GameElement {
                 pattern = 1;
                 bullet(enemy,pattern);
             }
-            if ((enemy.getName().equals("professor")) && tick % 3 == 0){
+            if ((enemy.getName().equals("professor")) && tick % 4 == 0){
                 pattern = 2;
                 bullet(enemy,pattern);
             }
@@ -445,7 +450,7 @@ public class Board extends GameElement {
                 }
 
                 try {
-                    Thread.sleep(3000/enemy.getSpeed());
+                    Thread.sleep((3000/enemy.getSpeed())-250*(difficulty));
                 } catch (InterruptedException e) {
                 }
             }
@@ -464,9 +469,11 @@ public class Board extends GameElement {
     private synchronized void clearEntities(){
         for(Enemy enemy: enemyList){
             board[enemy.getPosn().getRow()][enemy.getPosn().getCol()] = null;
+            enemy.setPosn(null);
         }
         for(Enemy bullet: bulletList){
             board[bullet.getPosn().getRow()][bullet.getPosn().getCol()] = null;
+            bullet.setPosn(null);
         }
         enemyList.clear();
         bulletList.clear();

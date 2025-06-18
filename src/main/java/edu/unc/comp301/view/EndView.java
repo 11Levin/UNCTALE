@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 public class EndView extends View {
     private GameStats gameStats;
+    private int difficulty = 0;
 
     public EndView(Controller controller, Model model, Stage stage) {
         super(controller, model, stage);
@@ -44,7 +45,7 @@ public class EndView extends View {
         Button playAgain = new Button("Play again");
         playAgain.getStyleClass().add("again-button");
         playAgain.setOnAction((event) -> {
-            controller.startGame();
+            controller.startGame(difficulty);
         });
         vBox.getChildren().addAll(scoreBox, highBox, playAgain);
         return vBox;
@@ -55,5 +56,6 @@ public class EndView extends View {
         if (model.getStatus() != Model.STATUS.GAME_END) return;
         this.gameStats = gameStats;
         stage.getScene().setRoot(render());
+        this.difficulty = model.getDifficulty();
     }
 }

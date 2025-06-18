@@ -34,8 +34,8 @@ public class Controller {
         model.moveRight();
     }
 
-    public void startGame() {
-        model.startGame();
+    public void startGame(int difficulty) {
+        model.startGame(difficulty);
     }
 
     public void queuePress(KeyCode keyCode) {
@@ -75,7 +75,7 @@ public class Controller {
                     // move enemies
                     if (tick++ % 4 == 0) {
                         //System.out.println("Enemies moved!");
-                        model.spawnBullet(tick/5);
+                        model.spawnBullet(tick/(5-model.getDifficulty()));
                     }
 
                     // update views

@@ -37,7 +37,6 @@ public class GameBar extends GameElement implements FXComponent{
         loadImages();
         HBox bar = new HBox();
         bar.getStylesheets().add("main.css");
-        bar.getStyleClass().add("bar");
         bar.setPrefWidth((2 * getHorizontalRadius() + 1) * TILE_SIZE);
         bar.setPrefHeight(GAME_BAR_HEIGHT);
 
@@ -45,7 +44,6 @@ public class GameBar extends GameElement implements FXComponent{
         setHealth(100);
         setAttack(20);
         VBox statBox = new VBox();
-        statBox.getStylesheets().add("main.css");
         statBox.getChildren().addAll(healthBar,attackBar);
 
         //arrows
@@ -89,7 +87,7 @@ public class GameBar extends GameElement implements FXComponent{
         VBox scoreBox = new VBox();
         scoreBox.getStyleClass().add("score");
         Label scoreLabel = new Label("SCORE");
-        scoreLabel.getStyleClass().add("score-label");
+        scoreLabel.getStyleClass().add("label-score");
         scoreBox.getChildren().addAll(scoreLabel, scoreNumber);
 
         // level

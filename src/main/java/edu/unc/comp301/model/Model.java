@@ -90,20 +90,14 @@ public class Model implements Subject {
     public void endGame() {
         playerStats = board.getPlayerStats();
         status = STATUS.GAME_END;
-        InputStream inputStream = Board.class.getClassLoader().getResourceAsStream("misc/high_score.txt");
-        Scanner scanner = new Scanner(inputStream);
-        highScore = scanner.nextInt();
-        System.out.println(highScore);
         highScore = Math.max(highScore, score);
-        File file = new File("src/main/resources/misc/high_score.txt");
-        try{
-        FileWriter writer = new FileWriter(file, false);
-        writer.write(Integer.toString(highScore));
-        writer.close();
-        } catch (IOException e) {
-            System.out.println("error");
-        }
-        System.out.println(highScore);
+        updateViews();
+    }
+
+    public void winGame() {
+        playerStats = board.getPlayerStats();
+        status = STATUS.GAME_END;
+        highScore = Math.max(highScore, score);
         updateViews();
     }
 
@@ -144,12 +138,15 @@ public class Model implements Subject {
 
     private void move(int drow, int dcol) {
         CollisionEvent collisionEvent = board.movePlayer(drow, dcol);
-        if (collisionEvent.getResult() == CollisionEvent.Result.NEXT_LEVEL) {
+        if (collisionEvent.getResult() == CollisionEvent.Result.NEXT_LEVEL && level != 5) {
             playerStats = board.getPlayerStats();
             board.init(++level, playerStats);
         } else if (collisionEvent.getResult() == CollisionEvent.Result.GAME_OVER) {
             playerStats = board.getPlayerStats();
             endGame();
+        } else if (collisionEvent.getResult() == CollisionEvent.Result.NEXT_LEVEL && level == 5) {
+            playerStats = board.getPlayerStats();
+            winGame();
         }
         score += collisionEvent.getPoints();
     }

@@ -78,6 +78,8 @@ public class Controller {
                         model.spawnBullet(tick/(5-model.getDifficulty()));
                     }
 
+
+
                     // update views
                     Platform.runLater(model::updateViews);
                     try {

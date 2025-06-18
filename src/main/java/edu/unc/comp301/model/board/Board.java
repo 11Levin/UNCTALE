@@ -191,11 +191,20 @@ public class Board extends GameElement {
     }
 
     private synchronized CollisionEvent moveMovable(MovableInterface movable, int drow, int dcol) {
-        int r = movable.getPosn().getRow();
-        int c = movable.getPosn().getCol();
-        int nr = r + drow;
-        int nc = c + dcol;
-        Posn nPos = new Posn(nr, nc);
+        int r;
+        int c;
+        int nr;
+        int nc;
+        Posn nPos;
+        try{
+            r = movable.getPosn().getRow();
+            c = movable.getPosn().getCol();
+            nr = r + drow;
+            nc = c + dcol;
+            nPos = new Posn(nr, nc);
+        } catch (NullPointerException e){
+            return null;
+        }
 
         // out of bounds
         if (nr < 0 || nr >= height || nc < 0 || nc >= width){
@@ -427,7 +436,11 @@ public class Board extends GameElement {
         for (int i = 0; i < 4; i++){
             int idx = Math.abs(random.nextInt()) % (dir.size());
             CollisionEvent res = moveMovable(enemy, dir.get(idx)[0], dir.get(idx)[1]);
-            if ((res.getResult().equals(CollisionEvent.Result.CONTINUE))||(res.getResult().equals(CollisionEvent.Result.HIT))){
+            try{
+                if ((res.getResult().equals(CollisionEvent.Result.CONTINUE))||(res.getResult().equals(CollisionEvent.Result.HIT))){
+                    break;
+                }
+            } catch(NullPointerException e){
                 break;
             }
             dir.remove(idx);

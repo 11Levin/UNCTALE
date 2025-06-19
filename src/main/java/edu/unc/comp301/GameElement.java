@@ -17,9 +17,11 @@ public class GameElement {
     private final Map<Character, Image> shortToImage = new HashMap<>();
     private final Map<String, Image> fullToImage = new HashMap<>();
     private final List<Character> loadList = new ArrayList<>();
-
-    public final static int viewRadius = 4;
-    public final static int tileSize = 64;
+    private static int verticalRadius;
+    private static int horizontalRadius;
+    public final static int TILE_SIZE = 64;
+    public final static int GAME_BAR_HEIGHT = 128;
+    public final static int STAGE_PADDING = 40;
     public final static Random random = new Random();
     public final String[] enemyNames = {"student", "professor", "bullet","ramses"};
     public final int MAX_NUMBER_BUFFS = 3;
@@ -65,4 +67,30 @@ public class GameElement {
     }
 
     public List<Character> getToLoad() {return loadList;}
+
+    public static int getVerticalRadius() {return verticalRadius;}
+
+    public static int getHorizontalRadius() {return horizontalRadius;}
+
+    /**
+     * Gets the distance in tiles from the center (non-inclusive) to either the top or bottom row of tiles
+     * @param radius in number of tiles
+     * @return whether the change occurred
+     */
+    public static boolean setVerticalRadius(int radius) {
+        if (radius <= 2) return false;
+        verticalRadius = radius;
+        return true;
+    }
+
+    /**
+     * Gets the distance in tiles from the center (non-inclusive) to either the left or right column of tiles
+     * @param radius in number of tiles
+     * @return whether the change occurred
+     */
+    public static boolean setHorizontalRadius(int radius) {
+        if (radius <= 2) return false;
+        horizontalRadius = radius;
+        return true;
+    }
 }

@@ -4,8 +4,6 @@ import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.piece.GameStats;
 import javafx.scene.Parent;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.image.ImageView;
@@ -15,28 +13,27 @@ import javafx.stage.Stage;
 import java.util.*;
 
 public class GameView extends View {
-    private boolean isRendered = false;
-
     private final GameBar gameBar;
     private final VBox vBox;
 
     // grid of pre-rendered stackpanes for each tile in the view area to reduce re-rendering
-    private final Map<Character, Parent>[][] rendered;
+    private Map<Character, Parent>[][] rendered;
+
+
 
 
     public GameView(Controller controller, Model model, Stage stage) {
         super(controller, model, stage);
-        gameBar = new GameBar();
+        gameBar = new GameBar(controller);
         vBox = new VBox();
         vBox.getStylesheets().add("main.css");
-        rendered = new HashMap[2 * viewRadius + 1][2 * viewRadius + 1];
         render();
     }
 
     private ImageView getView(Character c) {
         ImageView imageView = new ImageView(shortToImage(c));
-        imageView.setFitWidth(tileSize);
-        imageView.setFitHeight(tileSize);
+        imageView.setFitWidth(TILE_SIZE);
+        imageView.setFitHeight(TILE_SIZE);
 
         return imageView;
     }
@@ -45,14 +42,13 @@ public class GameView extends View {
         return getView(shortName(s));
     }
 
-    @Override
-    public Parent render() {
-        if (isRendered) return vBox;
-        isRendered = true;
+    public Parent render(int verticalRadius, int horizontalRadius) {
+        vBox.getChildren().clear();
+        rendered = new HashMap[2 * verticalRadius + 1][2 * horizontalRadius + 1];
 
         // create all tiles beforehand
-        for (int i = 0; i < 2 * viewRadius + 1; i++) {
-            for (int j = 0; j < 2 * viewRadius + 1; j++) {
+        for (int i = 0; i < 2 * verticalRadius + 1; i++) {
+            for (int j = 0; j < 2 * horizontalRadius + 1; j++) {
                 rendered[i][j] = new HashMap<>();
                 for (Character c : getToLoad()) {
                     StackPane stackPane = new StackPane();
@@ -69,42 +65,45 @@ public class GameView extends View {
                 }
             }
         }
-        StackPane grid = new StackPane();
-        grid.getChildren().addAll(new GridPane(), new GridPane());
-        vBox.getChildren().addAll(gameBar.render(), grid);
+        vBox.getChildren().addAll(gameBar.render(), new GridPane());
         return vBox;
     }
+
+    @Override
+    public Parent render() {
+        return render(getVerticalRadius(), getHorizontalRadius());
+    }
+
 
     @Override
     public void update(GameStats gameStats) {
         if (model.getStatus() != Model.STATUS.GAME_CONTINUE) return;
 
+        int verticalRadius = getVerticalRadius();
+        int horizontalRadius = getHorizontalRadius();
+        if (2 * verticalRadius + 1 != rendered.length || 2 * horizontalRadius + 1 != rendered[0].length) {
+            render(verticalRadius, horizontalRadius);
+        };
+
         // update grid
         GridPane gridPane = new GridPane();
-        String[] toDraw = model.getToDraw();
-        for (int i = 0; i < 2 * viewRadius + 1; i++) {
-            for (int j = 0; j < 2 * viewRadius + 1; j++) {
+        String[] toDraw = model.getToDraw(verticalRadius, horizontalRadius);
+        for (int i = 0; i < 2 * verticalRadius + 1; i++) {
+            for (int j = 0; j < 2 * horizontalRadius + 1; j++) {
                 Parent toAdd = rendered[i][j].get(toDraw[i].charAt(j));
                 gridPane.add(toAdd, j, i);
             }
         }
 
-        // update buffs
-        Canvas buffs = new Canvas((2 * viewRadius + 1) * tileSize, (2 * viewRadius + 1) * tileSize);
-        GraphicsContext gc = buffs.getGraphicsContext2D();
-        for (int i = 0; i < MAX_NUMBER_BUFFS; i++) {
-            String buff = toDraw[i + 2 * viewRadius + 1];
-            if (buff != null) {
-                gc.drawImage(fullToImage(buff), viewRadius * tileSize, viewRadius * tileSize, tileSize, tileSize);
-            }
-        }
-        vBox.getChildren().removeLast();
-        StackPane grid = new StackPane();
-        grid.getChildren().addAll(gridPane, buffs);
-        vBox.getChildren().add(grid);
+        // draw player and buffs
+        StackPane center = new StackPane();
+        center.getChildren().addAll(getView('g'), getView('p'));
+        for (String buff : gameStats.getBuffs()) center.getChildren().add(getView(buff));
+        gridPane.add(center, horizontalRadius, verticalRadius);
 
-        // update game bar
+        vBox.getChildren().clear();
         gameBar.updateStats(gameStats);
-        stage.getScene().setRoot(render());
+        vBox.getChildren().addAll(gameBar.render(), gridPane);
+        stage.getScene().setRoot(vBox);
     }
 }

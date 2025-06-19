@@ -4,12 +4,14 @@ import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.board.Board;
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import static edu.unc.comp301.GameElement.*;
+
 public class AppLauncher extends Application {
-    private final int[] dims = {9, 9};
-    private final int tileSize = 64;
 
     public static void main(String[] args) {
         launch(args);
@@ -28,18 +30,26 @@ public class AppLauncher extends Application {
         StartView startView = new StartView(controller, model, primaryStage);
         GameView gameView = new GameView(controller, model, primaryStage);
         EndView endView = new EndView(controller, model, primaryStage);
+        InstructionsView instructionsView = new InstructionsView(controller, model, primaryStage);
         model.addView(startView);
         model.addView(gameView);
         model.addView(endView);
+        model.addView(instructionsView);
 
-        // setup stage
-        Scene scene = new Scene(startView.render(), tileSize * dims[0], tileSize * (dims[1] + 1));
-        controller.init(scene);
-//        scene.getStylesheets().add("main.css");
-        scene.getStylesheets().add("fontstyle.css");
+        // set stage size
+        Rectangle2D rect = Screen.getPrimary().getBounds();
+        int verticalRadius = (((int)rect.getHeight() - GAME_BAR_HEIGHT - 3 * STAGE_PADDING) / TILE_SIZE - 1) / 2;
+        int horizontalRadius = (((int)rect.getWidth() - STAGE_PADDING) / TILE_SIZE - 1) / 2;
+        horizontalRadius = Math.min(horizontalRadius, verticalRadius + 2);
+        View.setVerticalRadius(verticalRadius);
+        View.setHorizontalRadius(horizontalRadius);
+
+        Scene scene = new Scene(startView.render(), (2 * horizontalRadius + 1) * TILE_SIZE, (2 * verticalRadius + 1) * TILE_SIZE + GAME_BAR_HEIGHT);
+
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
+        controller.init(scene);
         primaryStage.setTitle("UNCTale");
-        primaryStage.setResizable(true);
         primaryStage.show();
     }
 }

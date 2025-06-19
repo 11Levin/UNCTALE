@@ -3,13 +3,15 @@ package edu.unc.comp301.controller;
 import edu.unc.comp301.model.Model;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 
 import java.util.*;
 
 public class Controller {
     private final Model model;
-    private final Set<KeyCode> pressed = new HashSet<>();
+    private volatile Set<KeyCode> pressed = new HashSet<>();
+    private Set<KeyCode> toQueue = new HashSet<>();
     private int tick;
 
     public Controller(Model model) {
@@ -32,8 +34,12 @@ public class Controller {
         model.moveRight();
     }
 
-    public void startGame() {
-        model.startGame();
+    public void startGame(int difficulty) {
+        model.startGame(difficulty);
+    }
+
+    public void queuePress(KeyCode keyCode) {
+        toQueue.add(keyCode);
     }
 
     public void init(Scene scene) {
@@ -44,6 +50,8 @@ public class Controller {
 
         Thread gameTick = new Thread(() -> {
             while (true) {
+                pressed.addAll(toQueue);
+                toQueue = new HashSet<>();
                 if (model.getStatus() == Model.STATUS.GAME_CONTINUE) {
                     // check for player input
                     if (pressed.contains(KeyCode.UP) || pressed.contains(KeyCode.W)) {
@@ -67,8 +75,10 @@ public class Controller {
                     // move enemies
                     if (tick++ % 4 == 0) {
                         //System.out.println("Enemies moved!");
-                        model.spawnBullet(tick/5);
+                        model.spawnBullet(tick/(5-model.getDifficulty()));
                     }
+
+
 
                     // update views
                     Platform.runLater(model::updateViews);

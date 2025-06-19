@@ -1,23 +1,49 @@
-@font-face {
-    font-family: 'joystixmonospace-regular';
-    src: url('font/joystix_monospace.otf');
+.layout {
+    -fx-background-color: linear-gradient(to bottom, #007498, #008ba0);
+    -fx-font-family: 'pixel';
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 50px;
 }
 
-.text {
-    -fx-font-family: 'joystixmonospace-regular';
-    -fx-font-size: 16px;
+.bar {
+    -fx-background-color: linear-gradient(to bottom, #007498, #008ba0);
+    -fx-font-family: 'pixel';
+    -fx-padding: 20px;
 }
 
-.text-instructions {
-   -fx-padding: 10 0 10 0;
+.title {
+    -fx-font-family: 'pixel';
+    -fx-font-size: 120px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #62C6F2;
+    -fx-padding: 20px;
 }
 
-/*
-Buttons
-*/
-.button .button-important{
+.subtitle {
+    -fx-font-family: 'pixel';
+    -fx-font-size: 10px;
+    -fx-text-fill: #62C6F2;
+    -fx-padding: 20px;
+}
+
+.title-box {
+  -fx-alignment: center;
+  -fx-spacing: 10px;
+  -fx-background-color: #FFFFFF;
+}
+
+.subtitle-box {
+    -fx-alignment: center;
+    -fx-spacing: 10px;
+    -fx-background_color: #EEEEEE
+}
+
+.start-button {
+    -fx-font-family: 'pixel';
     -fx-font-size: 20px;
     -fx-background-color: #62C6F2;
+    -fx-text-fill: white;
     -fx-padding: 10px 20px;
     -fx-background-radius: 8px;
     -fx-border-radius: 8px;
@@ -27,52 +53,99 @@ Buttons
     -fx-border-width: 2px;
 }
 
-.button-important {
-    -fx-background-color: #FFFFFF;
+.exit-button {
+    -fx-font-family: 'pixel';
+    -fx-font-size: 20px;
+    -fx-background-color: #62C6F2;
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-cursor:hand;
+    -fx-effect:dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 2, 2);
+    -fx-border-color: #357ABD;
+    -fx-border-width: 2px;
 }
 
-/*
-Layouts
-*/
-.layout {
-    -fx-background-color: linear-gradient(to bottom, #007498, #008ba0);
-    -fx-padding: 50px;
-    -fx-spacing: 10px;
+.again-button {
+    -fx-font-family: 'pixel';
+    -fx-font-size: 20px;
+    -fx-background-color: #62C6F2;
     -fx-alignment: center;
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-cursor:hand;
+    -fx-effect:dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 2, 2);
+    -fx-border-color: #357ABD;
+    -fx-border-width: 2px;
 }
 
-.layout-title {
-    -fx-background-color: #FFFFFF;
+.text{
+    -fx-font-family: 'pixel';
+    -fx-font-size: 30px;
 }
 
-.layout-subtitle {
-    -fx-background_color: #EEEEEE;
+.label{
+    -fx-font-family: 'pixel';
 }
 
-.layout-score {
-  -fx-background-color: #FFFFFF;
+.score {
+  -fx-background-color: #ffffff;
   -fx-background-radius: 4px;
+  -fx-font-weight: bold;
+  -fx-padding: 10px;
   -fx-font-size: 6px;
   -fx-alignment: center-right;
+  -fx-spacing: 10px;
 }
 
-/*
-Labels and titles
-*/
-.label-subtitle {
-    -fx-font-size: 20px;
+.score-label {
+  -fx-text-fill: #00d0ff;
+  -fx-font-size: 5px;
 }
 
-.label-title {
-    -fx-font-size: 120px;
+.level {
+  -fx-background-color: #ffffff;
+  -fx-background-radius: 4px;
+  -fx-font-weight: bold;
+  -fx-font-size: 6px;
+  -fx-padding: 8;
+  -fx-alignment: center-right;
+  -fx-spacing: 10px;
 }
 
-.label-name {
-    -fx-font-size: 5px;
+.level-label {
+  -fx-text-fill: #00d0ff;
+  -fx-font-size: 5px;
 }
 
-.label-value {
-    -fx-font-size: 12px;
+.score-value {
+  -fx-text-fill: #00d0ff;
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
 }
 
+.score-box {
+  -fx-alignment: center;
+  -fx-spacing: 10px;
+  -fx-background-color: #FFFFFF;
+}
 
+.high-box {
+  -fx-alignment: center;
+  -fx-spacing: 10px;
+  -fx-background-color: #FFFFFF;
+}
+
+.high-value {
+  -fx-text-fill: #00d0ff;
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
+}
+
+.instructions{
+   -fx-text-fill: #766f65;
+   -fx-padding: 10 0 10 0;
+}

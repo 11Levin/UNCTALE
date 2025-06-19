@@ -1,5 +1,8 @@
 package edu.unc.comp301.model.board;
 
+/**
+ * Class representing a board position, i.e. an ordered pair of integers
+ */
 public class Posn {
     private final int row;
     private final int col;

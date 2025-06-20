@@ -13,12 +13,16 @@ public abstract class Buff extends APiece {
      * @param name         the buff's name
      * @param resourcePath (name).png or (name).jpg
      * @param posn         the buff's position
+     * @param collisionEvent the resulting collision event from picking up the buff
      */
     public Buff(String name, String resourcePath, Posn posn, CollisionEvent collisionEvent) {
         super(name, resourcePath, posn, Type.BUFF);
         this.collisionEvent = collisionEvent;
     }
 
+    /**
+     * @return the collision event from a movable picking up this buff
+     */
     public CollisionEvent getCollisionEvent() {
         return collisionEvent;
     }

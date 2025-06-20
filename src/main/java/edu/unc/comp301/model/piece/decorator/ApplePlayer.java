@@ -5,6 +5,9 @@ import edu.unc.comp301.model.piece.buff.Apple;
 import edu.unc.comp301.model.piece.movable.PlayerInterface;
 import java.util.*;
 
+/**
+ * Decorates player with an apple upon picking up an apple buff
+ */
 public class ApplePlayer extends PlayerDecorator{
     public ApplePlayer(PlayerInterface playerInterface) {
         super(playerInterface);

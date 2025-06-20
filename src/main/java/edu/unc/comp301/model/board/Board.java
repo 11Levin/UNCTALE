@@ -393,31 +393,28 @@ public class Board extends GameElement {
     }
 
     private void moveBullet(Bullet bullet) {
-        Thread moveBullet =
-                new Thread(
-                        () -> {
-                            try {
-                                Thread.sleep((3000 / bullet.getSpeed()) - 250 * (difficulty));
-                            } catch (InterruptedException e) {
+        Thread moveBullet = new Thread(() -> {
+            try {
+                Thread.sleep((3000 / bullet.getSpeed()) - 250 * (difficulty));
+            } catch (InterruptedException e) {
 
-                            }
-                            while ((bulletList.contains(bullet))) {
-                                if (bulletList.contains(bullet)) {
-                                    moveMovable(bullet, bullet.getDirection()[0], bullet.getDirection()[1]);
-                                }
-                                try {
-                                    Thread.sleep((3000 / bullet.getSpeed()) - 250 * (difficulty));
-                                } catch (InterruptedException e) {
+            }
+            while ((bulletList.contains(bullet))) {
+                if (bulletList.contains(bullet)) {
+                    moveMovable(bullet, bullet.getDirection()[0], bullet.getDirection()[1]);
+                }
+                try {
+                    Thread.sleep((3000 / bullet.getSpeed()) - 250 * (difficulty));
+                } catch (InterruptedException e) {
 
-                                }
-                            }
-                        });
+                }
+            }
+        });
         moveBullet.start();
         threadList.add(moveBullet);
     }
 
     public void spawnBullet(int tick) {
-        //System.out.println(tick);
         for (Enemy enemy : enemyList) {
             int pattern = 0;
             if ((enemy.getName().equals("student")) && tick % 6 == 0) {

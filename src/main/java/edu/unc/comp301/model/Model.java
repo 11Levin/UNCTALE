@@ -27,6 +27,7 @@ public class Model implements Subject {
     private volatile STATUS status = STATUS.GAME_END;
     private final PlayerStats defaultStats = new PlayerStats(20, 100, new HashSet<>());
     private PlayerStats playerStats = defaultStats;
+    private boolean winGame;
 
     // player stats
     private int score;
@@ -86,6 +87,7 @@ public class Model implements Subject {
         lastScore = score;
         score = 0;
         level = 1;
+        winGame = false;
         board.init(level, defaultStats);
         status = STATUS.GAME_CONTINUE;
         renderViews();
@@ -102,6 +104,7 @@ public class Model implements Subject {
         playerStats = board.getPlayerStats();
         status = STATUS.GAME_END;
         highScore = Math.max(highScore, score);
+        winGame = true;
         updateViews();
     }
 
@@ -142,6 +145,7 @@ public class Model implements Subject {
 
     private void move(int drow, int dcol) {
         CollisionEvent collisionEvent = board.movePlayer(drow, dcol);
+        score += collisionEvent.getPoints();
         if (collisionEvent.getResult() == CollisionEvent.Result.NEXT_LEVEL && level != 5) {
             playerStats = board.getPlayerStats();
             board.init(++level, playerStats);
@@ -152,7 +156,6 @@ public class Model implements Subject {
             playerStats = board.getPlayerStats();
             winGame();
         }
-        score += collisionEvent.getPoints();
     }
 
     @Override
@@ -163,7 +166,7 @@ public class Model implements Subject {
     public void updateViews() {
         playerStats = board.getPlayerStats();
         for (Observer observer : views) {
-            observer.update(new GameStats(level, score, highScore, lastScore, playerStats.getAttack(), playerStats.getHealth(), playerStats.getBuffs()));
+            observer.update(new GameStats(level, score, highScore, lastScore, playerStats.getAttack(), playerStats.getHealth(), playerStats.getBuffs(), winGame));
         }
     }
 

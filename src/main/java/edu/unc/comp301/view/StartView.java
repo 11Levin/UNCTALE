@@ -33,14 +33,15 @@ public class StartView extends View {
         // title
         Label titleLabel = new Label("UNC Tale");
         VBox titleBox = new VBox();
-        titleBox.getStyleClass().add("title-box");
+        titleBox.getStyleClass().add("layout-title-box");
         titleBox.getChildren().add(titleLabel);
         titleLabel.getStyleClass().add("label-title-blue");
 
         // credits
         VBox subtitleBox = new VBox();
+        subtitleBox.getStyleClass().add("layout-subtitle-box");
         Label subtitle = new Label("Made by Vincent Wang and Levin Wu");
-        subtitle.getStyleClass().add("subtitle");
+        subtitle.getStyleClass().add("label-subtitle-blue");
         subtitleBox.getChildren().add(subtitle);
 
         HBox scoresBox = new HBox(20);

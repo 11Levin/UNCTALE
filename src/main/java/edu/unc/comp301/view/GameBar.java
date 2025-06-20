@@ -7,16 +7,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.HBox;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-public class GameBar extends GameElement implements FXComponent{
+public class GameBar extends GameElement implements FXComponent {
     private final Label scoreNumber = new Label("0");
     private final Label levelNumber = new Label("1");
     private final HBox healthBar = new HBox();
@@ -24,11 +24,11 @@ public class GameBar extends GameElement implements FXComponent{
     private final Map<String, Image> images = new HashMap<>();
     private final Controller controller;
     private final Button right = new Button("D");
-    private final Button up = new Button("W");
+    private final Button up = new Button("w");
     private final Button left = new Button("A");
     private final Button down = new Button("S");
 
-    public GameBar(Controller controller){
+    public GameBar(Controller controller) {
         this.controller = controller;
     }
 
@@ -38,17 +38,15 @@ public class GameBar extends GameElement implements FXComponent{
         HBox bar = new HBox();
         bar.setPrefWidth((2 * getHorizontalRadius() + 1) * TILE_SIZE);
         bar.setPrefHeight(GAME_BAR_HEIGHT);
+        bar.getStyleClass().add("layout-bar");
 
         // stats
-        VBox statBox = new VBox();
-        statBox.getChildren().addAll(healthBar,attackBar);
-        statBox.setSpacing(10);
+        VBox statBox = new VBox(10);
+        statBox.getChildren().addAll(healthBar, attackBar);
 
         //arrows
-        HBox arrowBoxT = new HBox();
         HBox arrowBoxB = new HBox();
-        arrowBoxT.setAlignment(Pos.CENTER);
-        arrowBoxB.setAlignment(Pos.CENTER);
+        arrowBoxB.getStyleClass().add("layout-centered-spacing");
         styleButton(right);
         styleButton(up);
         styleButton(left);
@@ -69,46 +67,44 @@ public class GameBar extends GameElement implements FXComponent{
             controller.moveDown();
             System.out.println("Down");
         });
-        arrowBoxT.getChildren().addAll(up);
-        arrowBoxB.getChildren().addAll(left,down,right);
-        Label topInstrucLabel = new Label("Use W to move up");
-        Label bottomInstruc = new Label("Use A to move left | S to move down | D to move right");
-        topInstrucLabel.getStyleClass().add("instruction");
-        bottomInstruc.getStyleClass().add("instruction");
+
+        arrowBoxB.getChildren().addAll(left, down, right);
+
+        // arrow descriptions
+        Label topInstrucLabel = new Label("W to move up");
+        Label bottomInstrucLabel = new Label("A to move left | S to move down | D to move right");
+        topInstrucLabel.getStyleClass().add("label-description-tiny");
+        bottomInstrucLabel.getStyleClass().add("label-description-tiny");
         VBox arrowBox = new VBox();
-        HBox topInstruc = new HBox();
-        topInstruc.getStyleClass().add("instruction-box");
-        topInstruc.getChildren().add(topInstrucLabel);
-        arrowBox.getChildren().addAll(topInstruc,arrowBoxT,arrowBoxB,bottomInstruc);
+        arrowBox.getStyleClass().add("layout-centered-spacing");
+        arrowBox.getChildren().addAll(topInstrucLabel, up, arrowBoxB, bottomInstrucLabel);
 
         HBox spacer = new HBox();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         // score
         VBox scoreBox = new VBox();
-        scoreBox.getStyleClass().add("score");
+        scoreBox.getStyleClass().add("layout-metric");
         Label scoreLabel = new Label("SCORE");
-        scoreLabel.getStyleClass().add("score-label");
+        scoreLabel.getStyleClass().add("label-metric-name");
+        scoreNumber.getStyleClass().add("label-metric-value");
         scoreBox.getChildren().addAll(scoreLabel, scoreNumber);
 
         // level
         VBox levelBox = new VBox();
-        levelBox.getStyleClass().add("level");
+        levelBox.getStyleClass().add("layout-metric");
         Label levelLabel = new Label("LEVEL");
-        levelLabel.getStyleClass().add("level-label");
+        levelLabel.getStyleClass().add("label-metric-name");
+        levelNumber.getStyleClass().add("label-metric-value");
         levelBox.getChildren().addAll(levelLabel, levelNumber);
 
-
-        bar.getChildren().addAll(statBox,arrowBox,scoreBox,spacer,levelBox);
+        bar.getChildren().addAll(statBox, arrowBox, spacer, scoreBox, levelBox);
         return bar;
     }
 
     private void styleButton(Button button) {
-        button.setMinWidth(30);
-        button.setMaxWidth(30);
-        button.setMinHeight(40);
-        button.setMaxHeight(40);
-        button.getStyleClass().add("arrow-Button");
+        button.setPrefSize(14, 14);
+        button.getStyleClass().add("button-small");
     }
 
     public void setScore(int score) {
@@ -116,7 +112,7 @@ public class GameBar extends GameElement implements FXComponent{
     }
 
     private void loadImages() {
-        String[] toLoad = {"misc/UNCHeart.png","buff/UNCPencil_Buff.png","misc/UNCHeartExtra.png"};
+        String[] toLoad = {"misc/UNCHeart.png", "buff/UNCPencil_Buff.png", "misc/UNCHeartExtra.png"};
         for (String path : toLoad) {
             images.put(path, new Image(path));
         }
@@ -137,11 +133,11 @@ public class GameBar extends GameElement implements FXComponent{
         healthBar.setPrefWidth(TILE_SIZE * 5);
 
         int totalHearts = 10;
-        if(health>100){
+        if (health > 100) {
             for (int heart = health; heart > 100; heart -= 20) {
                 healthBar.getChildren().add(getView("misc/UNCHeartExtra.png"));
                 totalHearts--;
-                if(totalHearts == 0){
+                if (totalHearts == 0) {
                     break;
                 }
             }
@@ -150,22 +146,20 @@ public class GameBar extends GameElement implements FXComponent{
                 healthBar.getChildren().add(getView("misc/UNCHeart.png"));
             }
         } else {
-          for (int i = 0; i < health / 10; i++) {
-            healthBar.getChildren().add(getView("misc/UNCHeart.png"));
-          }
+            for (int i = 0; i < health / 10; i++) {
+                healthBar.getChildren().add(getView("misc/UNCHeart.png"));
+            }
         }
-//        System.out.println("loaded health");
     }
 
     public void setAttack(int attack) {
         attackBar.getChildren().clear();
         for (int i = 0; i < attack / 5; i++) {
             attackBar.getChildren().add(getView("buff/UNCPencil_Buff.png"));
-            if (i == 9){
+            if (i == 9) {
                 break;
             }
         }
-
     }
 
     public void setLevel(int level) {

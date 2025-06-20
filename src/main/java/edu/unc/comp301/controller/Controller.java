@@ -3,10 +3,10 @@ package edu.unc.comp301.controller;
 import edu.unc.comp301.model.Model;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Controller {
     private final Model model;
@@ -75,9 +75,8 @@ public class Controller {
                     // move enemies
                     if (tick++ % 4 == 0) {
                         //System.out.println("Enemies moved!");
-                        model.spawnBullet(tick/(5-model.getDifficulty()));
+                        model.spawnBullet(tick / (5 - model.getDifficulty()));
                     }
-
 
 
                     // update views

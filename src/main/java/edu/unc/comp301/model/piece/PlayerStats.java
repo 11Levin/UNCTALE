@@ -1,5 +1,6 @@
 package edu.unc.comp301.model.piece;
-import java.util.*;
+
+import java.util.Set;
 
 public class PlayerStats {
     private final int attack;
@@ -12,9 +13,15 @@ public class PlayerStats {
         this.buffs = buffs;
     }
 
-    public int getAttack() {return Math.max(attack, 5);}
+    public int getAttack() {
+        return Math.max(attack, 5);
+    }
 
-    public int getHealth() {return health;}
+    public int getHealth() {
+        return health;
+    }
 
-    public Set<String> getBuffs() {return buffs;}
+    public Set<String> getBuffs() {
+        return buffs;
+    }
 }

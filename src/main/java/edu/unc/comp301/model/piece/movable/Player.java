@@ -5,9 +5,11 @@ import edu.unc.comp301.model.piece.CollisionEvent;
 import edu.unc.comp301.model.piece.Piece;
 import edu.unc.comp301.model.piece.buff.Buff;
 import edu.unc.comp301.model.piece.immovable.ImmovablePiece;
-import java.util.*;
 
-public class Player extends MovablePiece implements PlayerInterface{
+import java.util.ArrayList;
+import java.util.List;
+
+public class Player extends MovablePiece implements PlayerInterface {
     public Player(Posn posn, int health, int attack) {
         super("player", "movable/UNCPlayer.png", posn, health, attack);
     }
@@ -23,7 +25,7 @@ public class Player extends MovablePiece implements PlayerInterface{
                 Buff buff = (Buff) other;
                 return buff.getCollisionEvent();
             case MOVABLE:
-                if(other.getName().equals("bullet")){
+                if (other.getName().equals("bullet")) {
                     return new CollisionEvent(0, 0, 0, CollisionEvent.Result.HIT);
                 }
                 return new CollisionEvent(0, 0, 0, CollisionEvent.Result.ATTACK);

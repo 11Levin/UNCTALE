@@ -3,9 +3,7 @@ package edu.unc.comp301.model.piece.decorator;
 import edu.unc.comp301.model.board.Posn;
 import edu.unc.comp301.model.piece.CollisionEvent;
 import edu.unc.comp301.model.piece.Piece;
-import edu.unc.comp301.model.piece.buff.Buff;
 import edu.unc.comp301.model.piece.movable.MovablePiece;
-import edu.unc.comp301.model.piece.movable.Player;
 import edu.unc.comp301.model.piece.movable.PlayerInterface;
 
 import java.util.ArrayList;

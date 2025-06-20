@@ -10,7 +10,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 
-public class View extends GameElement implements FXComponent, Observer {
+public abstract class View extends GameElement implements FXComponent, Observer {
     protected final Controller controller;
     protected final Model model;
     protected final Stage stage;
@@ -19,16 +19,6 @@ public class View extends GameElement implements FXComponent, Observer {
         this.controller = controller;
         this.model = model;
         this.stage = stage;
-    }
-
-    @Override
-    public Parent render() {
-        StackPane layout = new StackPane();
-        layout.getStylesheets().add("main.css");
-        layout.getStyleClass().add("layout");
-        Label label = new Label("Hello World");
-        layout.getChildren().add(label);
-        return layout;
     }
 
     @Override

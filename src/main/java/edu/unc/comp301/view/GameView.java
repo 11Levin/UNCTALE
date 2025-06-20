@@ -4,13 +4,14 @@ import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.piece.GameStats;
 import javafx.scene.Parent;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameView extends View {
     private final GameBar gameBar;
@@ -18,8 +19,6 @@ public class GameView extends View {
 
     // grid of pre-rendered stackpanes for each tile in the view area to reduce re-rendering
     private Map<Character, Parent>[][] rendered;
-
-
 
 
     public GameView(Controller controller, Model model, Stage stage) {
@@ -83,7 +82,8 @@ public class GameView extends View {
         int horizontalRadius = getHorizontalRadius();
         if (2 * verticalRadius + 1 != rendered.length || 2 * horizontalRadius + 1 != rendered[0].length) {
             render(verticalRadius, horizontalRadius);
-        };
+        }
+        ;
 
         // update grid
         GridPane gridPane = new GridPane();

@@ -28,49 +28,55 @@ public class StartView extends View {
         vBox.setPadding(new Insets(0, 0, 40, 0));
         vBox.setAlignment(Pos.CENTER);
         vBox.getStylesheets().add("main.css");
-        vBox.getStyleClass().add("layout");
+        vBox.getStyleClass().add("layout-blue");
 
-
+        // title
         Label titleLabel = new Label("UNC Tale");
         VBox titleBox = new VBox();
+        titleBox.getStyleClass().add("title-box");
+        titleBox.getChildren().add(titleLabel);
+        titleLabel.getStyleClass().add("label-title-blue");
 
+        // credits
         VBox subtitleBox = new VBox();
-        Label subtitle = new Label("Made by Vincent and Levin Wu");
+        Label subtitle = new Label("Made by Vincent Wang and Levin Wu");
         subtitle.getStyleClass().add("subtitle");
         subtitleBox.getChildren().add(subtitle);
 
         HBox scoresBox = new HBox(20);
 
+        // score
         HBox scoreBox = new HBox();
-        scoreBox.getStyleClass().add("score-box_start");
+        scoreBox.getStyleClass().add("layout-metric");
         Label scoreName = new Label("Score: ");
         Label scoreNumber = new Label("0");
-        scoreName.getStyleClass().add("score-value_start");
-        scoreBox.getChildren().addAll(scoreName,scoreNumber);
+        scoreName.getStyleClass().add("label-metric-name");
+        scoreNumber.getStyleClass().add("label-metric-value");
+        scoreBox.getChildren().addAll(scoreName, scoreNumber);
 
+        // high score
         HBox highBox = new HBox();
-        highBox.getStyleClass().add("high-box_start");
+        highBox.getStyleClass().add("layout-metric");
         Label highName = new Label("Highscore: ");
         Label highNumber = new Label("0");
-        highName.getStyleClass().add("high-value_start");
-        highBox.getChildren().addAll(highName,highNumber);
+        highName.getStyleClass().add("label-metric-name");
+        highNumber.getStyleClass().add("label-metric-value");
+        highBox.getChildren().addAll(highName, highNumber);
 
+        // last score
         HBox lastBox = new HBox();
-        lastBox.getStyleClass().add("last-box_start");
+        lastBox.getStyleClass().add("layout-metric");
         Label lastName = new Label("Last score: ");
         Label lastNumber = new Label("0");
-        lastName.getStyleClass().add("last-value_start");
-        lastBox.getChildren().addAll(lastName,lastNumber);
+        lastName.getStyleClass().add("label-metric-name");
+        lastNumber.getStyleClass().add("label-metric-value");
+        lastBox.getChildren().addAll(lastName, lastNumber);
 
-        scoresBox.getChildren().addAll(scoreBox,highBox,lastBox);
+        scoresBox.getChildren().addAll(scoreBox, highBox, lastBox);
         scoresBox.setAlignment(Pos.CENTER);
 
-        titleLabel.getStyleClass().add("title");
-        titleBox.getStyleClass().add("title-box");
-        titleBox.getChildren().add(titleLabel);
-
         Button startButton = new Button("Start");
-        startButton.getStyleClass().add("start-button");
+        startButton.getStyleClass().add("button");
 
 
         startButton.setOnAction((event) -> {
@@ -78,14 +84,14 @@ public class StartView extends View {
         });
 
         Button instructionsButton = new Button("Instructions");
-        instructionsButton.getStyleClass().add("instruction-button");
+        instructionsButton.getStyleClass().add("button");
         instructionsButton.setOnAction((event) -> {
             System.out.println("Instructions pressed");
             model.showInstructions();
         });
 
         Button exitButton = new Button("Exit");
-        exitButton.getStyleClass().add("exit-button");
+        exitButton.getStyleClass().add("button");
 
 
         exitButton.setOnAction((event) -> {
@@ -93,13 +99,13 @@ public class StartView extends View {
         });
 
         Button difficultyButton = new Button("Difficulty: " + difficultyLevels[difficulty]);
-        difficultyButton.getStyleClass().add("start-button");
+        difficultyButton.getStyleClass().add("button");
         difficultyButton.setOnAction((event) -> {
             difficulty = (difficulty + 1) % difficultyLevels.length;
             difficultyButton.setText("Difficulty: " + difficultyLevels[difficulty]);
         });
 
-        vBox.getChildren().addAll(titleBox, subtitleBox,scoresBox, startButton,difficultyButton,instructionsButton, exitButton);
+        vBox.getChildren().addAll(titleBox, subtitleBox, scoresBox, startButton, difficultyButton, instructionsButton, exitButton);
 
         return vBox;
     }

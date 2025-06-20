@@ -38,8 +38,8 @@ public class AppLauncher extends Application {
 
         // set stage size
         Rectangle2D rect = Screen.getPrimary().getBounds();
-        int verticalRadius = (((int)rect.getHeight() - GAME_BAR_HEIGHT - 3 * STAGE_PADDING) / TILE_SIZE - 1) / 2;
-        int horizontalRadius = (((int)rect.getWidth() - STAGE_PADDING) / TILE_SIZE - 1) / 2;
+        int verticalRadius = (((int) rect.getHeight() - GAME_BAR_HEIGHT - 3 * STAGE_PADDING) / TILE_SIZE - 1) / 2;
+        int horizontalRadius = (((int) rect.getWidth() - STAGE_PADDING) / TILE_SIZE - 1) / 2;
         horizontalRadius = Math.min(horizontalRadius, verticalRadius + 2);
         View.setVerticalRadius(verticalRadius);
         View.setHorizontalRadius(horizontalRadius);

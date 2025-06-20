@@ -19,7 +19,7 @@ public class EndView extends View {
 
     public EndView(Controller controller, Model model, Stage stage) {
         super(controller, model, stage);
-        gameStats = new GameStats(0, 0, 0,0, 0, 0, new HashSet<>());
+        gameStats = new GameStats(0, 0, 0, 0, 0, 0, new HashSet<>());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class EndView extends View {
         Label scoreNumber = new Label(Integer.toString(gameStats.getScore()));
         scoreNumber.getStyleClass().add("score-value");
         scoreName.getStyleClass().add("score-value");
-        scoreBox.getChildren().addAll(scoreName,scoreNumber);
+        scoreBox.getChildren().addAll(scoreName, scoreNumber);
 
         HBox highBox = new HBox();
         highBox.getStyleClass().add("high-box");
@@ -44,7 +44,7 @@ public class EndView extends View {
         Label highNumber = new Label(Integer.toString(gameStats.getHighScore()));
         highNumber.getStyleClass().add("high-value");
         highName.getStyleClass().add("high-value");
-        highBox.getChildren().addAll(highName,highNumber);
+        highBox.getChildren().addAll(highName, highNumber);
 
         HBox lastBox = new HBox();
         lastBox.getStyleClass().add("last-box");
@@ -52,7 +52,7 @@ public class EndView extends View {
         Label lastNumber = new Label(Integer.toString(gameStats.getLastScore()));
         lastNumber.getStyleClass().add("last-value");
         lastName.getStyleClass().add("last-value");
-        lastBox.getChildren().addAll(lastName,lastNumber);
+        lastBox.getChildren().addAll(lastName, lastNumber);
 
 
         Button playAgain = new Button("Play again");
@@ -68,7 +68,7 @@ public class EndView extends View {
         exitButton.setOnAction((event) -> {
             Platform.exit();
         });
-        vBox.getChildren().addAll(scoreBox, highBox, lastBox,playAgain,exitButton);
+        vBox.getChildren().addAll(scoreBox, highBox, lastBox, playAgain, exitButton);
         return vBox;
     }
 

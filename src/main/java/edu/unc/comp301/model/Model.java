@@ -10,11 +10,9 @@ import edu.unc.comp301.view.Observer;
 import edu.unc.comp301.view.Subject;
 import edu.unc.comp301.view.View;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class Model implements Subject {
     public enum STATUS {
@@ -61,14 +59,13 @@ public class Model implements Subject {
         return highScore;
     }
 
-    public int getLastScore(){
+    public int getLastScore() {
         return lastScore;
     }
 
     public int getLevel() {
         return level;
     }
-
 
 
     public Piece get(Posn p) {
@@ -138,7 +135,7 @@ public class Model implements Subject {
         board.spawnBullet(tick);
     }
 
-    public int getDifficulty(){
+    public int getDifficulty() {
         board.setDifficulty(this.difficulty);
         return this.difficulty;
     }
@@ -166,7 +163,7 @@ public class Model implements Subject {
     public void updateViews() {
         playerStats = board.getPlayerStats();
         for (Observer observer : views) {
-            observer.update(new GameStats(level, score, highScore,lastScore, playerStats.getAttack(), playerStats.getHealth(), playerStats.getBuffs()));
+            observer.update(new GameStats(level, score, highScore, lastScore, playerStats.getAttack(), playerStats.getHealth(), playerStats.getBuffs()));
         }
     }
 
@@ -175,7 +172,7 @@ public class Model implements Subject {
      */
     public void renderViews() {
         for (Observer view : views) {
-            ((View)view).render();
+            ((View) view).render();
         }
     }
 

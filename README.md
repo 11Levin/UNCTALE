@@ -49,11 +49,11 @@ If a board is loaded correctly, toString() should return the level_text file, no
 
 ## Additional Features
 
--5 levels instead of 3.
--Difficulty setting that allows for harder playthrough for pros.
--Player gets to dodge bullets instead of just getting hit by enemies.
--Instructions are also provided in-game.
--Special portal item that can teleport you.
+- 5 levels instead of 3.
+- Difficulty setting that allows for harder playthrough for pros.
+- Player gets to dodge bullets instead of just getting hit by enemies.
+- Instructions are also provided in-game.
+- Special portal item that can teleport you.
 
 ## Notes
 Using OpenJDK 24. I (Vincent) tried to implement a basic UI to test the game features but ran into complications. In the

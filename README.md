@@ -19,7 +19,7 @@ student enemies, and professors.
 
 - The player is trying to: rescue the school from Ramses by navigating the maze and collecting money along the way.
 - The player can move: by using WASD to play this side scroller.
-- Enemies will stop you by: lowering your health until you die.
+- Enemies will stop you by: shooting bullets that lower your health until you die.
 - This will happen when an enemy is successful: when you're health reaches 0, it will be game over.  
 - Other game mechanics include: pencils and apples can increase health and attack. Homework decreases attack and score.
 - Money increases score.
@@ -28,12 +28,18 @@ student enemies, and professors.
 
 ## Known Issues / Incomplete Features
 
-- [ ] Feature not yet implemented: a bullet class so enemies can shoot bullets and basic enemy AI.  
-- [ ] Known bug: characters can't move.
-- [ ] Design limitation: we're trying to configure this game around being turn-based, which we didn't previously expect.
+- Pixel Font is not working.
+
+## KAdditional Features
+
+-5 levels instead of 3.
+-Difficulty setting that allows for harder playthrough for pros.
+-Player gets to dodge bullets instead of just getting hit by enemies.
+-Instructions are also provided in-game.
+-Special portal item that can teleport you.
 
 ## Notes
-Using OpenJDK 24. I (Vincent) tried implemented a basic UI to test the game features but ran into complications. In the
+Using OpenJDK 24. I (Vincent) tried to implement a basic UI to test the game features but ran into complications. In the
 process, I updated to JDK 24, though with the current game this is of no use. I later realized we are to test the game
 by using toString(). 
 

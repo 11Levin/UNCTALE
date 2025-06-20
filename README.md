@@ -29,7 +29,7 @@ student enemies, and professors.
 This project can be compiled by downloading the project file (such as from GitHub), opening it with a code editor (such as IntelliJ), and running it with Maven -> Plugins -> javafx -> javafx: run.
 
 ## Testing Instructions
-# Making Levels
+### Making Levels
 
 Custom levels can be made by going to resources/level. The two integers in the first row are the dimensions of the
 level (r, c) = (number of rows, number of columns). The next r rows are length c strings. Each character represents a piece, and the character-to-piece correspondences are given in resources/misc/entity_data.txt. Each row in entity_data

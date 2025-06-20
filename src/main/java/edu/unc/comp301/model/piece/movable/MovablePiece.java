@@ -5,7 +5,7 @@ import edu.unc.comp301.model.piece.APiece;
 import edu.unc.comp301.model.piece.CollisionEvent;
 import edu.unc.comp301.model.piece.Piece;
 
-public abstract class MovablePiece extends APiece implements MovableInterface{
+public abstract class MovablePiece extends APiece implements MovableInterface {
     private int health;
     private int attack;
 

@@ -5,10 +5,6 @@ import edu.unc.comp301.model.exception.LevelNotLoadedException;
 import javafx.scene.image.Image;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Scanner;
 import java.util.*;
 
 public class GameElement {
@@ -23,7 +19,7 @@ public class GameElement {
     public final static int GAME_BAR_HEIGHT = 128;
     public final static int STAGE_PADDING = 40;
     public final static Random random = new Random();
-    public final String[] enemyNames = {"student", "professor", "bullet","ramses"};
+    public final String[] enemyNames = {"student", "professor", "bullet", "ramses"};
     public final int MAX_NUMBER_BUFFS = 3;
 
     public GameElement() {
@@ -66,14 +62,21 @@ public class GameElement {
         return fullToImage.get(name);
     }
 
-    public List<Character> getToLoad() {return loadList;}
+    public List<Character> getToLoad() {
+        return loadList;
+    }
 
-    public static int getVerticalRadius() {return verticalRadius;}
+    public static int getVerticalRadius() {
+        return verticalRadius;
+    }
 
-    public static int getHorizontalRadius() {return horizontalRadius;}
+    public static int getHorizontalRadius() {
+        return horizontalRadius;
+    }
 
     /**
      * Gets the distance in tiles from the center (non-inclusive) to either the top or bottom row of tiles
+     *
      * @param radius in number of tiles
      * @return whether the change occurred
      */
@@ -85,6 +88,7 @@ public class GameElement {
 
     /**
      * Gets the distance in tiles from the center (non-inclusive) to either the left or right column of tiles
+     *
      * @param radius in number of tiles
      * @return whether the change occurred
      */

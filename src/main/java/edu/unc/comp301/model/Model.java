@@ -10,11 +10,9 @@ import edu.unc.comp301.view.Observer;
 import edu.unc.comp301.view.Subject;
 import edu.unc.comp301.view.View;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class Model implements Subject {
     public enum STATUS {
@@ -29,6 +27,7 @@ public class Model implements Subject {
     private volatile STATUS status = STATUS.GAME_END;
     private final PlayerStats defaultStats = new PlayerStats(20, 100, new HashSet<>());
     private PlayerStats playerStats = defaultStats;
+    private boolean winGame;
 
     // player stats
     private int score;
@@ -61,14 +60,13 @@ public class Model implements Subject {
         return highScore;
     }
 
-    public int getLastScore(){
+    public int getLastScore() {
         return lastScore;
     }
 
     public int getLevel() {
         return level;
     }
-
 
 
     public Piece get(Posn p) {
@@ -89,6 +87,7 @@ public class Model implements Subject {
         lastScore = score;
         score = 0;
         level = 1;
+        winGame = false;
         board.init(level, defaultStats);
         status = STATUS.GAME_CONTINUE;
         renderViews();
@@ -105,6 +104,7 @@ public class Model implements Subject {
         playerStats = board.getPlayerStats();
         status = STATUS.GAME_END;
         highScore = Math.max(highScore, score);
+        winGame = true;
         updateViews();
     }
 
@@ -138,13 +138,14 @@ public class Model implements Subject {
         board.spawnBullet(tick);
     }
 
-    public int getDifficulty(){
+    public int getDifficulty() {
         board.setDifficulty(this.difficulty);
         return this.difficulty;
     }
 
     private void move(int drow, int dcol) {
         CollisionEvent collisionEvent = board.movePlayer(drow, dcol);
+        score += collisionEvent.getPoints();
         if (collisionEvent.getResult() == CollisionEvent.Result.NEXT_LEVEL && level != 5) {
             playerStats = board.getPlayerStats();
             board.init(++level, playerStats);
@@ -155,7 +156,6 @@ public class Model implements Subject {
             playerStats = board.getPlayerStats();
             winGame();
         }
-        score += collisionEvent.getPoints();
     }
 
     @Override
@@ -166,7 +166,7 @@ public class Model implements Subject {
     public void updateViews() {
         playerStats = board.getPlayerStats();
         for (Observer observer : views) {
-            observer.update(new GameStats(level, score, highScore,lastScore, playerStats.getAttack(), playerStats.getHealth(), playerStats.getBuffs()));
+            observer.update(new GameStats(level, score, highScore, lastScore, playerStats.getAttack(), playerStats.getHealth(), playerStats.getBuffs(), winGame));
         }
     }
 
@@ -175,7 +175,7 @@ public class Model implements Subject {
      */
     public void renderViews() {
         for (Observer view : views) {
-            ((View)view).render();
+            ((View) view).render();
         }
     }
 

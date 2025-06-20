@@ -19,44 +19,51 @@ public class EndView extends View {
 
     public EndView(Controller controller, Model model, Stage stage) {
         super(controller, model, stage);
-        gameStats = new GameStats(0, 0, 0,0, 0, 0, new HashSet<>());
+        gameStats = new GameStats(0, 0, 0, 0, 0, 0, new HashSet<>(), false);
     }
 
     @Override
     public Parent render() {
         VBox vBox = new VBox();
         vBox.getStylesheets().add("main.css");
-        vBox.getStyleClass().add("layout");
-        vBox.setAlignment(javafx.geometry.Pos.CENTER);
-        vBox.setSpacing(40);
+        vBox.getStyleClass().add("layout-blue");
+        vBox.getStyleClass().add("layout-centered-large-spacing");
 
+        Label endMessage = new Label();
+        endMessage.getStyleClass().add("label-title-blue");
+        if (gameStats.getWinGame()) {
+            endMessage.setText("YOU WIN!");
+        } else {
+            endMessage.setText("YOU DIED AS A BROKE COLLEGE STUDENT!1!1!");
+            endMessage.getStyleClass().add("label-subtitle-blue");
+        }
         HBox scoreBox = new HBox();
-        scoreBox.getStyleClass().add("score-box");
+        scoreBox.getStyleClass().add("layout-metric");
         Label scoreName = new Label("Score: ");
         Label scoreNumber = new Label(Integer.toString(gameStats.getScore()));
-        scoreNumber.getStyleClass().add("score-value");
-        scoreName.getStyleClass().add("score-value");
-        scoreBox.getChildren().addAll(scoreName,scoreNumber);
+        scoreName.getStyleClass().add("label-metric-name");
+        scoreNumber.getStyleClass().add("label-metric-value");
+        scoreBox.getChildren().addAll(scoreName, scoreNumber);
 
         HBox highBox = new HBox();
-        highBox.getStyleClass().add("high-box");
+        highBox.getStyleClass().add("layout-metric");
         Label highName = new Label("Highscore: ");
         Label highNumber = new Label(Integer.toString(gameStats.getHighScore()));
-        highNumber.getStyleClass().add("high-value");
-        highName.getStyleClass().add("high-value");
-        highBox.getChildren().addAll(highName,highNumber);
+        highName.getStyleClass().add("label-metric-name");
+        highNumber.getStyleClass().add("label-metric-value");
+        highBox.getChildren().addAll(highName, highNumber);
 
         HBox lastBox = new HBox();
-        lastBox.getStyleClass().add("last-box");
+        lastBox.getStyleClass().add("layout-metric");
         Label lastName = new Label("Last score: ");
         Label lastNumber = new Label(Integer.toString(gameStats.getLastScore()));
-        lastNumber.getStyleClass().add("last-value");
-        lastName.getStyleClass().add("last-value");
-        lastBox.getChildren().addAll(lastName,lastNumber);
+        lastName.getStyleClass().add("label-metric-name");
+        lastNumber.getStyleClass().add("label-metric-value");
+        lastBox.getChildren().addAll(lastName, lastNumber);
 
 
         Button playAgain = new Button("Play again");
-        playAgain.getStyleClass().add("again-button");
+        playAgain.getStyleClass().add("button");
         playAgain.setOnAction((event) -> {
             controller.startGame(difficulty);
         });
@@ -68,7 +75,7 @@ public class EndView extends View {
         exitButton.setOnAction((event) -> {
             Platform.exit();
         });
-        vBox.getChildren().addAll(scoreBox, highBox, lastBox,playAgain,exitButton);
+        vBox.getChildren().addAll(endMessage, scoreBox, highBox, lastBox, playAgain, exitButton);
         return vBox;
     }
 

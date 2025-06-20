@@ -1,6 +1,5 @@
 package edu.unc.comp301.model.board;
 
-import com.sun.glass.ui.Window;
 import edu.unc.comp301.GameElement;
 import edu.unc.comp301.model.EnemyFactory;
 import edu.unc.comp301.model.exception.LevelNotLoadedException;
@@ -22,7 +21,6 @@ import edu.unc.comp301.model.piece.immovable.Obstacle;
 import edu.unc.comp301.model.piece.immovable.Portal;
 import edu.unc.comp301.model.piece.immovable.Treasure;
 import edu.unc.comp301.model.piece.movable.*;
-import javafx.application.Platform;
 
 import java.io.InputStream;
 import java.util.*;
@@ -59,11 +57,12 @@ public class Board extends GameElement {
         height = board.length;
     }
 
-    public void setDifficulty(int difficulty){
+    public void setDifficulty(int difficulty) {
         this.difficulty = difficulty;
     }
 
-    public Board() {}
+    public Board() {
+    }
 
     /**
      * gives a Piece object from a string representing the piece.
@@ -80,7 +79,7 @@ public class Board extends GameElement {
             case "student" -> EnemyFactory.createEnemy(name, posn);
             case "professor" -> EnemyFactory.createEnemy(name, posn);
             case "ramses" -> EnemyFactory.createEnemy(name, posn);
-            case "bullet" -> EnemyFactory.createBullet(posn,10,new int[] {0,0},1);
+            case "bullet" -> EnemyFactory.createBullet(posn, 10, new int[]{0, 0}, 1);
             case "treasure" -> new Treasure(posn);
             case "exit" -> new Exit(posn);
             case "apple" -> new Apple(posn);
@@ -95,7 +94,7 @@ public class Board extends GameElement {
     /**
      * Generates a specified level
      *
-     * @param level the level to generate (positive integer)
+     * @param level       the level to generate (positive integer)
      * @param playerStats the player's attack and health
      */
     public synchronized void init(int level, PlayerStats playerStats) {
@@ -121,9 +120,9 @@ public class Board extends GameElement {
                     if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
                     playerFound = true;
                     board[i][j] = new Player(new Posn(i, j), playerStats.getHealth(), playerStats.getAttack());
-                    player = new PlayerDecorator((Player)board[i][j]);
+                    player = new PlayerDecorator((Player) board[i][j]);
                     for (String buff : playerStats.getBuffs()) {
-                        switch (buff){
+                        switch (buff) {
                             case "apple_item":
                                 player = new ApplePlayer(player);
                                 break;
@@ -158,7 +157,8 @@ public class Board extends GameElement {
             for (int i = 0; i < numPortals / 2; i++) {
                 int a = scanner.nextInt();
                 int b = scanner.nextInt();
-                if (a < 0 || a >= numPortals || b < 0 || b >= numPortals) throw new LevelNotLoadedException("Portals are zero-indexed left-to-right, top-to-bottom");
+                if (a < 0 || a >= numPortals || b < 0 || b >= numPortals)
+                    throw new LevelNotLoadedException("Portals are zero-indexed left-to-right, top-to-bottom");
                 if (visited.contains(a)) throw new LevelNotLoadedException("Portal " + a + " already linked");
                 if (visited.contains(b)) throw new LevelNotLoadedException("Portal " + b + " already linked");
                 if (a == b) throw new LevelNotLoadedException("Portal " + a + " cannot be linked to itself");
@@ -206,20 +206,20 @@ public class Board extends GameElement {
         int nr;
         int nc;
         Posn nPos;
-        try{
+        try {
             r = movable.getPosn().getRow();
             c = movable.getPosn().getCol();
             nr = r + drow;
             nc = c + dcol;
             nPos = new Posn(nr, nc);
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             return null;
         }
 
         // out of bounds
-        if (nr < 0 || nr >= height || nc < 0 || nc >= width){
-            if(movable.getName().equals("bullet")){
-                Bullet enemy = (Bullet) getPiece(new Posn(r,c));
+        if (nr < 0 || nr >= height || nc < 0 || nc >= width) {
+            if (movable.getName().equals("bullet")) {
+                Bullet enemy = (Bullet) getPiece(new Posn(r, c));
                 board[r][c] = null;
                 bulletList.remove(enemy);
             }
@@ -234,17 +234,17 @@ public class Board extends GameElement {
 
         // check if player attacked enemy
         if (res == CollisionEvent.Result.ATTACK) {
-            Enemy enemy = (Enemy)getPiece(nPos);
+            Enemy enemy = (Enemy) getPiece(nPos);
             player.attack(player.getAttack(), enemy);
             System.out.println("Enemy Hurt! Health is at: " + enemy.getHealth());
             if (enemy.getHealth() == 0) { // enemy will drop buff when killed
-                if(enemy.getName().equals("student")){
+                if (enemy.getName().equals("student")) {
                     board[nr][nc] = nameToPiece("apple", new Posn(nr, nc));
                 }
-                if(enemy.getName().equals("professor")){
+                if (enemy.getName().equals("professor")) {
                     board[nr][nc] = nameToPiece("pencil", new Posn(nr, nc));
                 }
-                if(enemy.getName().equals("ramses")){
+                if (enemy.getName().equals("ramses")) {
                     board[nr][nc] = nameToPiece("exit", new Posn(nr, nc));
                 }
 
@@ -275,15 +275,15 @@ public class Board extends GameElement {
         // check if player is hurt
         if (res == CollisionEvent.Result.HIT) {
             Enemy enemy;
-            if(movable.getName().equals("player")){
-                enemy = (Bullet)getPiece(nPos);
-                player.setHealth(player.getHealth()-enemy.getAttack()*(difficulty+1));
+            if (movable.getName().equals("player")) {
+                enemy = (Bullet) getPiece(nPos);
+                player.setHealth(player.getHealth() - enemy.getAttack() * (difficulty + 1));
                 System.out.println("Player Hurt! Health is at: " + player.getHealth());
                 board[nr][nc] = null;
                 bulletList.remove(enemy);
             } else {
-                enemy = (Bullet)getPiece(new Posn(r,c));
-                player.setHealth(player.getHealth()-enemy.getAttack()*(difficulty+1));
+                enemy = (Bullet) getPiece(new Posn(r, c));
+                player.setHealth(player.getHealth() - enemy.getAttack() * (difficulty + 1));
                 System.out.println("Player Hurt! Health is at: " + player.getHealth());
                 board[r][c] = null;
                 bulletList.remove(enemy);
@@ -291,8 +291,8 @@ public class Board extends GameElement {
             }
         }
 
-        if((movable.getName().equals("bullet")) && (!res.equals(CollisionEvent.Result.CONTINUE))){
-            Enemy enemy = (Enemy)getPiece(new Posn(r,c));
+        if ((movable.getName().equals("bullet")) && (!res.equals(CollisionEvent.Result.CONTINUE))) {
+            Enemy enemy = (Enemy) getPiece(new Posn(r, c));
             board[r][c] = null;
             bulletList.remove(enemy);
             return CollisionEvent.BLOCK;
@@ -343,47 +343,47 @@ public class Board extends GameElement {
         return moveMovable(player, drow, dcol);
     }
 
-    private void bullet(Enemy enemy, int pattern){
+    private void bullet(Enemy enemy, int pattern) {
         int r = enemy.getPosn().getRow();
         int c = enemy.getPosn().getCol();
         ArrayList<int[]> dir = new ArrayList<>();
-        if ((r-1) >= 0){
-            if (board[r-1][c] == null || board[r-1][c].equals(player)){
-                dir.add(new int[] {-1, 0});
+        if ((r - 1) >= 0) {
+            if (board[r - 1][c] == null || board[r - 1][c].equals(player)) {
+                dir.add(new int[]{-1, 0});
             }
         }
-        if ((r+1) < height){
-            if (board[r+1][c] == null || board[r+1][c].equals(player)){
-                dir.add(new int[] {1, 0});
+        if ((r + 1) < height) {
+            if (board[r + 1][c] == null || board[r + 1][c].equals(player)) {
+                dir.add(new int[]{1, 0});
             }
         }
-        if ((c-1) >= 0){
-            if (board[r][c-1] == null || board[r][c-1].equals(player)){
-                dir.add(new int[] {0, -1});
+        if ((c - 1) >= 0) {
+            if (board[r][c - 1] == null || board[r][c - 1].equals(player)) {
+                dir.add(new int[]{0, -1});
             }
         }
-        if ((c+1) < width){
-            if (board[r][c+1] == null || board[r][c+1].equals(player)){
-                dir.add(new int[] {0, 1});
+        if ((c + 1) < width) {
+            if (board[r][c + 1] == null || board[r][c + 1].equals(player)) {
+                dir.add(new int[]{0, 1});
             }
         }
-        for (int i = 0; i < pattern; i++){
+        for (int i = 0; i < pattern; i++) {
             int idx = 1;
-            if ((dir.isEmpty())){
+            if ((dir.isEmpty())) {
                 break;
             }
             idx = Math.abs(random.nextInt()) % (dir.size());
             Enemy bullet = EnemyFactory.createBullet(
-                    new Posn(r+dir.get(idx)[0], c+dir.get(idx)[1]),
+                    new Posn(r + dir.get(idx)[0], c + dir.get(idx)[1]),
                     enemy.getAttack(),
                     dir.get(idx),
                     enemy.getSpeed());
             bulletList.add((Bullet) bullet);
-            if (board[r+dir.get(idx)[0]][c+dir.get(idx)[1]] == null){
-                board[r+dir.get(idx)[0]][c+dir.get(idx)[1]] = bullet;
+            if (board[r + dir.get(idx)[0]][c + dir.get(idx)[1]] == null) {
+                board[r + dir.get(idx)[0]][c + dir.get(idx)[1]] = bullet;
                 moveBullet((Bullet) bullet);
-            } else{
-                player.setHealth(player.getHealth()-enemy.getAttack()*(difficulty+1));
+            } else {
+                player.setHealth(player.getHealth() - enemy.getAttack() * (difficulty + 1));
                 bulletList.remove(bullet);
             }
             dir.remove(idx);
@@ -392,45 +392,42 @@ public class Board extends GameElement {
 
     }
 
-    private void moveBullet(Bullet bullet){
-        Thread moveBullet =
-                new Thread(
-                        () -> {
-                            try {
-                                Thread.sleep((3000 / bullet.getSpeed())-250*(difficulty));
-                            } catch (InterruptedException e) {
+    private void moveBullet(Bullet bullet) {
+        Thread moveBullet = new Thread(() -> {
+            try {
+                Thread.sleep((3000 / bullet.getSpeed()) - 250 * (difficulty));
+            } catch (InterruptedException e) {
 
-                            }
-                            while ((bulletList.contains(bullet))) {
-                                if (bulletList.contains(bullet)) {
-                                    moveMovable(bullet, bullet.getDirection()[0], bullet.getDirection()[1]);
-                                }
-                                try {
-                                    Thread.sleep((3000 / bullet.getSpeed())-250*(difficulty));
-                                } catch (InterruptedException e) {
+            }
+            while ((bulletList.contains(bullet))) {
+                if (bulletList.contains(bullet)) {
+                    moveMovable(bullet, bullet.getDirection()[0], bullet.getDirection()[1]);
+                }
+                try {
+                    Thread.sleep((3000 / bullet.getSpeed()) - 250 * (difficulty));
+                } catch (InterruptedException e) {
 
-                                }
-                            }
-                        });
+                }
+            }
+        });
         moveBullet.start();
         threadList.add(moveBullet);
     }
 
     public void spawnBullet(int tick) {
-        //System.out.println(tick);
-        for (Enemy enemy: enemyList){
+        for (Enemy enemy : enemyList) {
             int pattern = 0;
-            if ((enemy.getName().equals("student"))&& tick % 6 == 0){
+            if ((enemy.getName().equals("student")) && tick % 6 == 0) {
                 pattern = 1;
-                bullet(enemy,pattern);
+                bullet(enemy, pattern);
             }
-            if ((enemy.getName().equals("professor")) && tick % 4 == 0){
+            if ((enemy.getName().equals("professor")) && tick % 4 == 0) {
                 pattern = 2;
-                bullet(enemy,pattern);
+                bullet(enemy, pattern);
             }
-            if ((enemy.getName().equals("ramses"))&& tick % 2 == 0){
+            if ((enemy.getName().equals("ramses")) && tick % 2 == 0) {
                 pattern = 4;
-                bullet(enemy,pattern);
+                bullet(enemy, pattern);
             }
 
         }
@@ -439,41 +436,41 @@ public class Board extends GameElement {
 
     private void moveEnemy(Enemy enemy) {
         ArrayList<int[]> dir = new ArrayList<>();
-        dir.add(new int[] {-1, 0});
-        dir.add(new int[] {1, 0});
-        dir.add(new int[] {0, -1});
-        dir.add(new int[] {0, 1});
-        for (int i = 0; i < 4; i++){
+        dir.add(new int[]{-1, 0});
+        dir.add(new int[]{1, 0});
+        dir.add(new int[]{0, -1});
+        dir.add(new int[]{0, 1});
+        for (int i = 0; i < 4; i++) {
             int idx = Math.abs(random.nextInt()) % (dir.size());
             CollisionEvent res = moveMovable(enemy, dir.get(idx)[0], dir.get(idx)[1]);
-            try{
-                if ((res.getResult().equals(CollisionEvent.Result.CONTINUE))||(res.getResult().equals(CollisionEvent.Result.HIT))){
+            try {
+                if ((res.getResult().equals(CollisionEvent.Result.CONTINUE)) || (res.getResult().equals(CollisionEvent.Result.HIT))) {
                     break;
                 }
-            } catch(NullPointerException e){
+            } catch (NullPointerException e) {
                 break;
             }
             dir.remove(idx);
         }
     }
 
-    private synchronized void loadEnemies(){
-        for (Enemy enemy: enemyList){
-            if (!enemy.getName().equals("ramses")){
+    private synchronized void loadEnemies() {
+        for (Enemy enemy : enemyList) {
+            if (!enemy.getName().equals("ramses")) {
                 enemyMove(enemy);
             }
         }
     }
 
-    private void enemyMove(Enemy enemy){
+    private void enemyMove(Enemy enemy) {
         Thread enemyMove = new Thread(() -> {
             while (enemyList.contains(enemy)) {
-                if (enemyList.contains(enemy)){
+                if (enemyList.contains(enemy)) {
                     moveEnemy(enemy);
                 }
 
                 try {
-                    Thread.sleep((3000/enemy.getSpeed())-250*(difficulty));
+                    Thread.sleep((3000 / enemy.getSpeed()) - 250 * (difficulty));
                 } catch (InterruptedException e) {
                 }
             }
@@ -482,19 +479,19 @@ public class Board extends GameElement {
         threadList.add(enemyMove);
     }
 
-    private synchronized void clearThreads(){
-        for (Thread thread : threadList){
+    private synchronized void clearThreads() {
+        for (Thread thread : threadList) {
             thread.interrupt();
         }
         threadList.clear();
     }
 
-    private synchronized void clearEntities(){
-        for(Enemy enemy: enemyList){
+    private synchronized void clearEntities() {
+        for (Enemy enemy : enemyList) {
             board[enemy.getPosn().getRow()][enemy.getPosn().getCol()] = null;
             enemy.setPosn(null);
         }
-        for(Enemy bullet: bulletList){
+        for (Enemy bullet : bulletList) {
             board[bullet.getPosn().getRow()][bullet.getPosn().getCol()] = null;
             bullet.setPosn(null);
         }
@@ -522,9 +519,9 @@ public class Board extends GameElement {
     }
 
 
-
     /**
      * Returns a string representation of grid components that need to be drawn
+     *
      * @return
      */
     public String[] getToDraw(int verticalRadius, int horizontalRadius) {

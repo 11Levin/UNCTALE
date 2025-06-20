@@ -16,5 +16,7 @@ public abstract class ImmovablePiece extends APiece {
         this.collisionEvent = collisionEvent;
     }
 
-    public CollisionEvent getCollisionEvent() {return collisionEvent;}
+    public CollisionEvent getCollisionEvent() {
+        return collisionEvent;
+    }
 }

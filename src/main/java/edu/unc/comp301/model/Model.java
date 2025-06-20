@@ -33,6 +33,7 @@ public class Model implements Subject {
     // player stats
     private int score;
     private int highScore;
+    private int lastScore;
     private int level = 1;
     private int difficulty;
 
@@ -60,6 +61,10 @@ public class Model implements Subject {
         return highScore;
     }
 
+    public int getLastScore(){
+        return lastScore;
+    }
+
     public int getLevel() {
         return level;
     }
@@ -81,6 +86,7 @@ public class Model implements Subject {
 
     public void startGame(int difficulty) {
         this.difficulty = difficulty;
+        lastScore = score;
         score = 0;
         level = 1;
         board.init(level, defaultStats);
@@ -160,7 +166,7 @@ public class Model implements Subject {
     public void updateViews() {
         playerStats = board.getPlayerStats();
         for (Observer observer : views) {
-            observer.update(new GameStats(level, score, highScore, playerStats.getAttack(), playerStats.getHealth(), playerStats.getBuffs()));
+            observer.update(new GameStats(level, score, highScore,lastScore, playerStats.getAttack(), playerStats.getHealth(), playerStats.getBuffs()));
         }
     }
 

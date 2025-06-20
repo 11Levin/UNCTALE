@@ -23,10 +23,10 @@ public class GameBar extends GameElement implements FXComponent{
     private final HBox attackBar = new HBox();
     private final Map<String, Image> images = new HashMap<>();
     private final Controller controller;
-    private final Button right = new Button(">");
-    private final Button up = new Button("^");
-    private final Button left = new Button("<");
-    private final Button down = new Button("v");
+    private final Button right = new Button("D");
+    private final Button up = new Button("W");
+    private final Button left = new Button("A");
+    private final Button down = new Button("S");
 
     public GameBar(Controller controller){
         this.controller = controller;
@@ -36,13 +36,13 @@ public class GameBar extends GameElement implements FXComponent{
     public Parent render() {
         loadImages();
         HBox bar = new HBox();
-        bar.getStylesheets().add("main.css");
         bar.setPrefWidth((2 * getHorizontalRadius() + 1) * TILE_SIZE);
         bar.setPrefHeight(GAME_BAR_HEIGHT);
 
         // stats
         VBox statBox = new VBox();
         statBox.getChildren().addAll(healthBar,attackBar);
+        statBox.setSpacing(10);
 
         //arrows
         HBox arrowBoxT = new HBox();
@@ -69,12 +69,17 @@ public class GameBar extends GameElement implements FXComponent{
             controller.moveDown();
             System.out.println("Down");
         });
-        HBox leftSpacer = new HBox(TILE_SIZE / 2.0);
-        HBox rightSpacer = new HBox(TILE_SIZE / 2.0);
         arrowBoxT.getChildren().addAll(up);
         arrowBoxB.getChildren().addAll(left,down,right);
+        Label topInstrucLabel = new Label("Use W to move up");
+        Label bottomInstruc = new Label("Use A to move left | S to move down | D to move right");
+        topInstrucLabel.getStyleClass().add("instruction");
+        bottomInstruc.getStyleClass().add("instruction");
         VBox arrowBox = new VBox();
-        arrowBox.getChildren().addAll(arrowBoxT,arrowBoxB);
+        HBox topInstruc = new HBox();
+        topInstruc.getStyleClass().add("instruction-box");
+        topInstruc.getChildren().add(topInstrucLabel);
+        arrowBox.getChildren().addAll(topInstruc,arrowBoxT,arrowBoxB,bottomInstruc);
 
         HBox spacer = new HBox();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -94,13 +99,16 @@ public class GameBar extends GameElement implements FXComponent{
         levelBox.getChildren().addAll(levelLabel, levelNumber);
 
 
-        bar.getChildren().addAll(statBox,arrowBox, spacer,scoreBox,levelBox);
+        bar.getChildren().addAll(statBox,arrowBox,scoreBox,spacer,levelBox);
         return bar;
     }
 
     private void styleButton(Button button) {
-        button.setPrefSize(TILE_SIZE / 2.0, TILE_SIZE/2.0);
-        button.setFocusTraversable(false);
+        button.setMinWidth(30);
+        button.setMaxWidth(30);
+        button.setMinHeight(40);
+        button.setMaxHeight(40);
+        button.getStyleClass().add("arrow-Button");
     }
 
     public void setScore(int score) {
@@ -123,6 +131,10 @@ public class GameBar extends GameElement implements FXComponent{
 
     public synchronized void setHealth(int health) {
         healthBar.getChildren().clear();
+        healthBar.setPrefHeight(TILE_SIZE / 2.0);
+        healthBar.setMinHeight(TILE_SIZE / 2.0);
+        healthBar.setMaxHeight(TILE_SIZE / 2.0);
+        healthBar.setPrefWidth(TILE_SIZE * 5);
 
         int totalHearts = 10;
         if(health>100){

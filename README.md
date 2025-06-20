@@ -30,7 +30,7 @@ student enemies, and professors.
 
 - Pixel Font is not working.
 
-## KAdditional Features
+## Additional Features
 
 -5 levels instead of 3.
 -Difficulty setting that allows for harder playthrough for pros.

@@ -33,6 +33,7 @@ public class Board extends GameElement {
     private int width;
     private int height;
     private volatile int level = 0;
+    private int difficulty = 0;
 
     // entity info
     private PlayerDecorator player;
@@ -52,24 +53,21 @@ public class Board extends GameElement {
         board = new Piece[height][width];
     }
 
-    /**
-     * Initializes a board from a given 2D array of pieces
-     * @param board the 2D array of pieces
-     */
     public Board(Piece[][] board) {
         this.board = board;
         width = board[0].length;
         height = board.length;
     }
 
-    /**
-     * Call init for safe usage
-     */
+    public void setDifficulty(int difficulty){
+        this.difficulty = difficulty;
+    }
+
     public Board() {}
 
     /**
      * gives a Piece object from a string representing the piece.
-     * Ex: "player" will become a Player object.
+     * Ex: "player" will become a PlayerImpl object.
      *
      * @param name name of piece
      * @param posn position of piece
@@ -103,8 +101,6 @@ public class Board extends GameElement {
     public synchronized void init(int level, PlayerStats playerStats) {
         clearThreads();
         clearEntities();
-
-        // get input
         InputStream inputStream = Board.class.getClassLoader().getResourceAsStream("level/UNCLevel_" + level);
         if (inputStream == null) throw new LevelNotLoadedException("Error loading level");
         Scanner scanner = new Scanner(inputStream);
@@ -122,20 +118,32 @@ public class Board extends GameElement {
             for (int j = 0; j < width; j++) {
                 String name = fullName(line.charAt(j));
                 if (name.equals("player")) {
-                  if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
-                  playerFound = true;
-                  board[i][j] = new Player(new Posn(i, j), playerStats.getHealth(), playerStats.getAttack());
-                  player = new PlayerDecorator((Player)board[i][j]);
-                  continue;
+                    if (playerFound) throw new PlayerAlreadyFoundException("board cannot have two players");
+                    playerFound = true;
+                    board[i][j] = new Player(new Posn(i, j), playerStats.getHealth(), playerStats.getAttack());
+                    player = new PlayerDecorator((Player)board[i][j]);
+                    for (String buff : playerStats.getBuffs()) {
+                        switch (buff){
+                            case "apple_item":
+                                player = new ApplePlayer(player);
+                                break;
+                            case "pencil_item":
+                                player = new PencilPlayer(player);
+                                break;
+                            case "homework_item":
+                                player = new HomeworkPlayer(player);
+                                break;
+                            default:
+                        }
+                    }
+                    continue;
                 }
                 board[i][j] = nameToPiece(name, new Posn(i, j));
-
-                // check for special pieces
                 if (name.equals("portal")) {
                     portals.add((Portal) board[i][j]);
                 }
                 for (String enemyName : enemyNames) {
-                  if (enemyName.equals(name)) enemyList.add((Enemy) board[i][j]);
+                    if (enemyName.equals(name)) enemyList.add((Enemy) board[i][j]);
                 }
             }
         }
@@ -160,23 +168,20 @@ public class Board extends GameElement {
                 portals.get(b).setOther(portals.get(a));
             }
         }
+        //prevent any last second errors
         loadEnemies();
         scanner.close();
     }
 
     /**
-     * Gives the width or number of columns of the grid
-     *
-     * @return
+     * @return the width or number of columns of the grid
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Gives the height or number of rows of the grid
-     *
-     * @return
+     * @return the height or number of rows of the grid
      */
     public int getHeight() {
         return height;
@@ -195,18 +200,26 @@ public class Board extends GameElement {
         return board[posn.getRow()][posn.getCol()];
     }
 
-    private CollisionEvent moveMovable(MovableInterface movable, int drow, int dcol) {
-        int r = movable.getPosn().getRow();
-        int c = movable.getPosn().getCol();
-        int nr = r + drow;
-        int nc = c + dcol;
-        Posn nPos = new Posn(nr, nc);
+    private synchronized CollisionEvent moveMovable(MovableInterface movable, int drow, int dcol) {
+        int r;
+        int c;
+        int nr;
+        int nc;
+        Posn nPos;
+        try{
+            r = movable.getPosn().getRow();
+            c = movable.getPosn().getCol();
+            nr = r + drow;
+            nc = c + dcol;
+            nPos = new Posn(nr, nc);
+        } catch (NullPointerException e){
+            return null;
+        }
 
         // out of bounds
         if (nr < 0 || nr >= height || nc < 0 || nc >= width){
             if(movable.getName().equals("bullet")){
                 Bullet enemy = (Bullet) getPiece(new Posn(r,c));
-                player.attack(100, enemy);
                 board[r][c] = null;
                 bulletList.remove(enemy);
             }
@@ -264,15 +277,13 @@ public class Board extends GameElement {
             Enemy enemy;
             if(movable.getName().equals("player")){
                 enemy = (Bullet)getPiece(nPos);
-                player.attack(100, enemy);
-                player.setHealth(player.getHealth()-enemy.getAttack());
+                player.setHealth(player.getHealth()-enemy.getAttack()*(difficulty+1));
                 System.out.println("Player Hurt! Health is at: " + player.getHealth());
                 board[nr][nc] = null;
                 bulletList.remove(enemy);
             } else {
                 enemy = (Bullet)getPiece(new Posn(r,c));
-                player.attack(100, enemy);
-                player.setHealth(player.getHealth()-enemy.getAttack());
+                player.setHealth(player.getHealth()-enemy.getAttack()*(difficulty+1));
                 System.out.println("Player Hurt! Health is at: " + player.getHealth());
                 board[r][c] = null;
                 bulletList.remove(enemy);
@@ -280,10 +291,8 @@ public class Board extends GameElement {
             }
         }
 
-        // delete bullets upon hitting object
         if((movable.getName().equals("bullet")) && (!res.equals(CollisionEvent.Result.CONTINUE))){
             Enemy enemy = (Enemy)getPiece(new Posn(r,c));
-            player.attack(100, enemy);
             board[r][c] = null;
             bulletList.remove(enemy);
             return CollisionEvent.BLOCK;
@@ -316,25 +325,20 @@ public class Board extends GameElement {
         // check if game over
         if (player.getHealth() == 0) return new CollisionEvent(0, 0, 0, CollisionEvent.Result.GAME_OVER);
 
-        // check if player moved
         for (CollisionEvent.Result ig : ignore) {
             if (res == ig) updatePosition = false;
         }
+
+        // check if player moved
         if (updatePosition) {
-          movable.move(drow, dcol);
-          board[r][c] = null;
-          board[nr][nc] = movable;
+            movable.move(drow, dcol);
+            board[r][c] = null;
+            board[nr][nc] = movable;
         }
 
         return collisionEvent;
     }
 
-    /**
-     * Moves the player if possible
-     * @param drow the player's change in row position
-     * @param dcol the player's change in col position
-     * @return a CollisionEvent representing the result of the movement
-     */
     public CollisionEvent movePlayer(int drow, int dcol) {
         return moveMovable(player, drow, dcol);
     }
@@ -343,8 +347,6 @@ public class Board extends GameElement {
         int r = enemy.getPosn().getRow();
         int c = enemy.getPosn().getCol();
         ArrayList<int[]> dir = new ArrayList<>();
-
-        // find possible directions bullet can move
         if ((r-1) >= 0){
             if (board[r-1][c] == null || board[r-1][c].equals(player)){
                 dir.add(new int[] {-1, 0});
@@ -365,8 +367,6 @@ public class Board extends GameElement {
                 dir.add(new int[] {0, 1});
             }
         }
-
-        // spawn bullets
         for (int i = 0; i < pattern; i++){
             int idx = 1;
             if ((dir.isEmpty())){
@@ -383,7 +383,7 @@ public class Board extends GameElement {
                 board[r+dir.get(idx)[0]][c+dir.get(idx)[1]] = bullet;
                 moveBullet((Bullet) bullet);
             } else{
-                player.setHealth(player.getHealth()-enemy.getAttack());
+                player.setHealth(player.getHealth()-enemy.getAttack()*(difficulty+1));
                 bulletList.remove(bullet);
             }
             dir.remove(idx);
@@ -393,35 +393,29 @@ public class Board extends GameElement {
     }
 
     private void moveBullet(Bullet bullet){
-        int cur_level = level;
+        Thread moveBullet =
+                new Thread(
+                        () -> {
+                            try {
+                                Thread.sleep((3000 / bullet.getSpeed())-250*(difficulty));
+                            } catch (InterruptedException e) {
 
-        // create thread for each bullet
-    Thread moveBullet =
-        new Thread(
-            () -> {
-              try {
-                Thread.sleep(3000 / bullet.getSpeed());
-              } catch (InterruptedException e) {
+                            }
+                            while ((bulletList.contains(bullet))) {
+                                if (bulletList.contains(bullet)) {
+                                    moveMovable(bullet, bullet.getDirection()[0], bullet.getDirection()[1]);
+                                }
+                                try {
+                                    Thread.sleep((3000 / bullet.getSpeed())-250*(difficulty));
+                                } catch (InterruptedException e) {
 
-              }
-              while ((bullet.getHealth() > 0) && (this.level == cur_level)) {
-                if (bulletList.contains(bullet)) {
-                  moveMovable(bullet, bullet.getDirection()[0], bullet.getDirection()[1]);
-                }
-                try {
-                  Thread.sleep(3000 / bullet.getSpeed());
-                } catch (InterruptedException e) {
-
-                }
-              }
-            });
+                                }
+                            }
+                        });
         moveBullet.start();
         threadList.add(moveBullet);
     }
 
-    /**
-     * @param tick the Controller's game tick
-     */
     public void spawnBullet(int tick) {
         //System.out.println(tick);
         for (Enemy enemy: enemyList){
@@ -430,7 +424,7 @@ public class Board extends GameElement {
                 pattern = 1;
                 bullet(enemy,pattern);
             }
-            if ((enemy.getName().equals("professor")) && tick % 3 == 0){
+            if ((enemy.getName().equals("professor")) && tick % 4 == 0){
                 pattern = 2;
                 bullet(enemy,pattern);
             }
@@ -438,14 +432,11 @@ public class Board extends GameElement {
                 pattern = 4;
                 bullet(enemy,pattern);
             }
+
         }
 
     }
 
-    /**
-     * Moves enemies in random directions
-     * @param enemy the enemy to move
-     */
     private void moveEnemy(Enemy enemy) {
         ArrayList<int[]> dir = new ArrayList<>();
         dir.add(new int[] {-1, 0});
@@ -455,17 +446,18 @@ public class Board extends GameElement {
         for (int i = 0; i < 4; i++){
             int idx = Math.abs(random.nextInt()) % (dir.size());
             CollisionEvent res = moveMovable(enemy, dir.get(idx)[0], dir.get(idx)[1]);
-            if ((res.getResult().equals(CollisionEvent.Result.CONTINUE))||(res.getResult().equals(CollisionEvent.Result.HIT))){
+            try{
+                if ((res.getResult().equals(CollisionEvent.Result.CONTINUE))||(res.getResult().equals(CollisionEvent.Result.HIT))){
+                    break;
+                }
+            } catch(NullPointerException e){
                 break;
             }
             dir.remove(idx);
         }
     }
 
-    /**
-     * Ramses is immobile
-     */
-    private void loadEnemies(){
+    private synchronized void loadEnemies(){
         for (Enemy enemy: enemyList){
             if (!enemy.getName().equals("ramses")){
                 enemyMove(enemy);
@@ -474,15 +466,14 @@ public class Board extends GameElement {
     }
 
     private void enemyMove(Enemy enemy){
-        int cur_level = level;
         Thread enemyMove = new Thread(() -> {
-            while ((enemy.getHealth() > 0) && (this.level == cur_level)) {
+            while (enemyList.contains(enemy)) {
                 if (enemyList.contains(enemy)){
                     moveEnemy(enemy);
                 }
 
                 try {
-                    Thread.sleep(3000/enemy.getSpeed());
+                    Thread.sleep((3000/enemy.getSpeed())-250*(difficulty));
                 } catch (InterruptedException e) {
                 }
             }
@@ -498,28 +489,20 @@ public class Board extends GameElement {
         threadList.clear();
     }
 
-    /**
-     * Prevent buildup of entities
-     */
     private synchronized void clearEntities(){
         for(Enemy enemy: enemyList){
-            enemy.setHealth(0);
             board[enemy.getPosn().getRow()][enemy.getPosn().getCol()] = null;
+            enemy.setPosn(null);
         }
         for(Enemy bullet: bulletList){
-            bullet.setHealth(0);
             board[bullet.getPosn().getRow()][bullet.getPosn().getCol()] = null;
+            bullet.setPosn(null);
         }
         enemyList.clear();
         bulletList.clear();
     }
 
-    /**
-     * Gives a string representation of the board
-     * Rows are separated by new lines and piece single character representations are
-     * in resources/misc/entity_data.txt
-     * @return
-     */
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -528,8 +511,9 @@ public class Board extends GameElement {
                 if (piece == null) {
                     sb.append(" ");
                 } else {
-                    sb.append(shortName(piece.getName()));
+                    sb.append(piece.toString().charAt(0));
                 }
+
                 sb.append(' ');
             }
             sb.append('\n');
@@ -540,16 +524,16 @@ public class Board extends GameElement {
 
 
     /**
-     * Returns a string array representation of grid components that need to be drawn
+     * Returns a string representation of grid components that need to be drawn
      * @return
      */
-    public String[] getToDraw() {
-        String[] rtn = new String[2 * viewRadius + 1 + MAX_NUMBER_BUFFS];
+    public String[] getToDraw(int verticalRadius, int horizontalRadius) {
+        String[] rtn = new String[2 * verticalRadius + 1 + MAX_NUMBER_BUFFS];
         int r = player.getPosn().getRow();
         int c = player.getPosn().getCol();
-        for (int i = r - viewRadius; i <= r + viewRadius; i++) {
+        for (int i = r - verticalRadius; i <= r + verticalRadius; i++) {
             StringBuilder sb = new StringBuilder();
-            for (int j = c - viewRadius; j <= c + viewRadius; j++) {
+            for (int j = c - horizontalRadius; j <= c + horizontalRadius; j++) {
                 Character toAdd = 'w';
 
                 // Check piece at (i, j) is within board bounds
@@ -562,23 +546,20 @@ public class Board extends GameElement {
                 }
                 sb.append(toAdd);
             }
-            rtn[i + viewRadius - r] = sb.toString();
+            rtn[i + verticalRadius - r] = sb.toString();
         }
         List<String> buffs = player.getBuffs();
         Set<String> noDuplicates = new HashSet<>();
         noDuplicates.addAll(buffs);
         int buffCount = 0;
         for (String s : noDuplicates) {
-            rtn[2 * viewRadius + 1 + buffCount++] = s;
+            rtn[2 * verticalRadius + 1 + buffCount++] = s;
         }
         return rtn;
     }
 
-    /**
-     * Accesses the player's attack and health
-     * @return PlayerStats object encapsulating attack and health
-     */
-  public PlayerStats getPlayerStats() {
-      return new PlayerStats(player.getAttack(), player.getHealth());
+    public PlayerStats getPlayerStats() {
+        if (player == null) return new PlayerStats(0, 0, new HashSet<>());
+        return new PlayerStats(player.getAttack(), player.getHealth(), new HashSet<>(player.getBuffs()));
     }
 }

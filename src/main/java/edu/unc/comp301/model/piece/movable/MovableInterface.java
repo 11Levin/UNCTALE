@@ -4,17 +4,17 @@ import edu.unc.comp301.model.piece.CollisionEvent;
 import edu.unc.comp301.model.piece.Piece;
 
 public interface MovableInterface extends Piece {
-    int getHealth();
+  int getHealth();
 
-    void setHealth(int health);
+  void setHealth(int health);
 
-    int getAttack();
+  int getAttack();
 
-    void setAttack(int attack);
+  void setAttack(int attack);
 
-    CollisionEvent collide(Piece other);
+  CollisionEvent collide(Piece other);
 
-    void move(int drow, int dcol);
+  void move(int drow, int dcol);
 
-    void attack(int attack, MovablePiece other);
+  void attack(int attack, MovablePiece other);
 }

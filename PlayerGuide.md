@@ -41,7 +41,8 @@ forth, and will only shoot 1 bullet. Drops an apple (buff).
 Enemy - Medium - Professors (UNCProfessor_Enemy)- Despite being mind-controlled, the professors retain higher function,
 leading to them moving around randomly faster with a harder to predict 2 bullet attack pattern. Drops an pencil (buff)
 
-Enemy - Hard - Ramses (UNCRamses_Enemy)- As the final boss, Ramses sits on a throne and waits for the player to challenge
+Enemy - Hard - Ramses (UNCRamses_Enemy)- As the final boss, Ramses sits on a throne and waits for the player to
+challenge
 him. He has a difficult attack pattern, shooting from all sides, with a lot of health.
 
 Obstacle - Rams (UNCRam_Obstacle): Takes up space on the grid and cannot be interacted with (e.g., boulder, wall). Rams
@@ -60,7 +61,7 @@ free money? Picking up this item will increase the score
 Exit - An asset that ends the level when reached (e.g., door, castle): UNC Logo (UNCLogo_Exit): The exit will be marked
 by a UNC logo and signifies the end of a level.
 
-(BONUS) Dealer’s choice -Portal (UNC_Portal): Portals can send you have to Davis after it closed. 
+(BONUS) Dealer’s choice -Portal (UNC_Portal): Portals can send you have to Davis after it closed.
 
 Only the Rams/Doors can impede Movement, the rest are collectible items and you can walk through enemies.
 

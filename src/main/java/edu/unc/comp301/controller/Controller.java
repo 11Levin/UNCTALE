@@ -9,86 +9,88 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Controller {
-    private final Model model;
-    private volatile Set<KeyCode> pressed = new HashSet<>();
-    private Set<KeyCode> toQueue = new HashSet<>();
-    private int tick;
+  private final Model model;
+  private volatile Set<KeyCode> pressed = new HashSet<>();
+  private Set<KeyCode> toQueue = new HashSet<>();
+  private int tick;
 
-    public Controller(Model model) {
-        this.model = model;
-    }
+  public Controller(Model model) {
+    this.model = model;
+  }
 
-    public void moveUp() {
-        model.moveUp();
-    }
+  public void moveUp() {
+    model.moveUp();
+  }
 
-    public void moveDown() {
-        model.moveDown();
-    }
+  public void moveDown() {
+    model.moveDown();
+  }
 
-    public void moveLeft() {
-        model.moveLeft();
-    }
+  public void moveLeft() {
+    model.moveLeft();
+  }
 
-    public void moveRight() {
-        model.moveRight();
-    }
+  public void moveRight() {
+    model.moveRight();
+  }
 
-    public void startGame(int difficulty) {
-        model.startGame(difficulty);
-    }
+  public void startGame(int difficulty) {
+    model.startGame(difficulty);
+  }
 
-    public void queuePress(KeyCode keyCode) {
-        toQueue.add(keyCode);
-    }
+  public void queuePress(KeyCode keyCode) {
+    toQueue.add(keyCode);
+  }
 
-    public void init(Scene scene) {
-        // set keybinds
-        scene.setOnKeyPressed(keyEvent -> {
-            pressed.add(keyEvent.getCode());
+  public void init(Scene scene) {
+    // set keybinds
+    scene.setOnKeyPressed(
+        keyEvent -> {
+          pressed.add(keyEvent.getCode());
         });
 
-        Thread gameTick = new Thread(() -> {
-            while (true) {
+    Thread gameTick =
+        new Thread(
+            () -> {
+              while (true) {
                 pressed.addAll(toQueue);
                 toQueue = new HashSet<>();
                 if (model.getStatus() == Model.STATUS.GAME_CONTINUE) {
-                    // check for player input
-                    if (pressed.contains(KeyCode.UP) || pressed.contains(KeyCode.W)) {
-                        moveUp();
-                        pressed.remove(KeyCode.UP);
-                        pressed.remove(KeyCode.W);
-                    } else if (pressed.contains(KeyCode.LEFT) || pressed.contains(KeyCode.A)) {
-                        moveLeft();
-                        pressed.remove(KeyCode.LEFT);
-                        pressed.remove(KeyCode.A);
-                    } else if (pressed.contains(KeyCode.DOWN) || pressed.contains(KeyCode.S)) {
-                        moveDown();
-                        pressed.remove(KeyCode.DOWN);
-                        pressed.remove(KeyCode.S);
-                    } else if (pressed.contains(KeyCode.RIGHT) || pressed.contains(KeyCode.D)) {
-                        moveRight();
-                        pressed.remove(KeyCode.RIGHT);
-                        pressed.remove(KeyCode.D);
-                    }
+                  // check for player input
+                  if (pressed.contains(KeyCode.UP) || pressed.contains(KeyCode.W)) {
+                    moveUp();
+                    pressed.remove(KeyCode.UP);
+                    pressed.remove(KeyCode.W);
+                  } else if (pressed.contains(KeyCode.LEFT) || pressed.contains(KeyCode.A)) {
+                    moveLeft();
+                    pressed.remove(KeyCode.LEFT);
+                    pressed.remove(KeyCode.A);
+                  } else if (pressed.contains(KeyCode.DOWN) || pressed.contains(KeyCode.S)) {
+                    moveDown();
+                    pressed.remove(KeyCode.DOWN);
+                    pressed.remove(KeyCode.S);
+                  } else if (pressed.contains(KeyCode.RIGHT) || pressed.contains(KeyCode.D)) {
+                    moveRight();
+                    pressed.remove(KeyCode.RIGHT);
+                    pressed.remove(KeyCode.D);
+                  }
 
-                    // move enemies
-                    if (tick++ % 4 == 0) {
-                        //System.out.println("Enemies moved!");
-                        model.spawnBullet(tick / (5 - model.getDifficulty()));
-                    }
+                  // move enemies
+                  if (tick++ % 4 == 0) {
+                    // System.out.println("Enemies moved!");
+                    model.spawnBullet(tick / (5 - model.getDifficulty()));
+                  }
 
-
-                    // update views
-                    Platform.runLater(model::updateViews);
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                  // update views
+                  Platform.runLater(model::updateViews);
+                  try {
+                    Thread.sleep(200);
+                  } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                  }
                 }
-            }
-        });
-        gameTick.start();
-    }
+              }
+            });
+    gameTick.start();
+  }
 }

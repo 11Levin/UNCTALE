@@ -3,19 +3,19 @@ package edu.unc.comp301.model.piece;
 import edu.unc.comp301.model.board.Posn;
 
 public interface Piece {
-    enum Type {
-        MOVABLE,
-        IMMOVABLE,
-        BUFF,
-    }
+  enum Type {
+    MOVABLE,
+    IMMOVABLE,
+    BUFF,
+  }
 
-    String getName();
+  String getName();
 
-    Posn getPosn();
+  Posn getPosn();
 
-    void setPosn(Posn posn);
+  void setPosn(Posn posn);
 
-    String getResourcePath();
+  String getResourcePath();
 
-    Type getType();
+  Type getType();
 }

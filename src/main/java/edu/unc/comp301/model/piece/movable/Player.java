@@ -10,31 +10,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player extends MovablePiece implements PlayerInterface {
-    public Player(Posn posn, int health, int attack) {
-        super("player", "movable/UNCPlayer.png", posn, health, attack);
-    }
+  public Player(Posn posn, int health, int attack) {
+    super("player", "movable/UNCPlayer.png", posn, health, attack);
+  }
 
-    @Override
-    public CollisionEvent collide(Piece other) {
-        if (other == null) return CollisionEvent.CONTINUE;
-        switch (other.getType()) {
-            case IMMOVABLE:
-                ImmovablePiece temp = (ImmovablePiece) other;
-                return temp.getCollisionEvent();
-            case BUFF:
-                Buff buff = (Buff) other;
-                return buff.getCollisionEvent();
-            case MOVABLE:
-                if (other.getName().equals("bullet")) {
-                    return new CollisionEvent(0, 0, 0, CollisionEvent.Result.HIT);
-                }
-                return new CollisionEvent(0, 0, 0, CollisionEvent.Result.ATTACK);
-            default:
-                return CollisionEvent.CONTINUE;
+  @Override
+  public CollisionEvent collide(Piece other) {
+    if (other == null) return CollisionEvent.CONTINUE;
+    switch (other.getType()) {
+      case IMMOVABLE:
+        ImmovablePiece temp = (ImmovablePiece) other;
+        return temp.getCollisionEvent();
+      case BUFF:
+        Buff buff = (Buff) other;
+        return buff.getCollisionEvent();
+      case MOVABLE:
+        if (other.getName().equals("bullet")) {
+          return new CollisionEvent(0, 0, 0, CollisionEvent.Result.HIT);
         }
+        return new CollisionEvent(0, 0, 0, CollisionEvent.Result.ATTACK);
+      default:
+        return CollisionEvent.CONTINUE;
     }
+  }
 
-    public List<String> getBuffs() {
-        return new ArrayList<>();
-    }
+  public List<String> getBuffs() {
+    return new ArrayList<>();
+  }
 }

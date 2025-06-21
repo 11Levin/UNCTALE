@@ -9,20 +9,19 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-
 public abstract class View extends GameElement implements FXComponent, Observer {
-    protected final Controller controller;
-    protected final Model model;
-    protected final Stage stage;
+  protected final Controller controller;
+  protected final Model model;
+  protected final Stage stage;
 
-    public View(Controller controller, Model model, Stage stage) {
-        this.controller = controller;
-        this.model = model;
-        this.stage = stage;
-    }
+  public View(Controller controller, Model model, Stage stage) {
+    this.controller = controller;
+    this.model = model;
+    this.stage = stage;
+  }
 
-    @Override
-    public void update(GameStats gameStats) {
-        stage.getScene().setRoot(render());
-    }
+  @Override
+  public void update(GameStats gameStats) {
+    stage.getScene().setRoot(render());
+  }
 }

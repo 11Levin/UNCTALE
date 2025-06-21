@@ -6,15 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApplePlayer extends PlayerDecorator {
-    public ApplePlayer(PlayerInterface playerInterface) {
-        super(playerInterface);
-    }
+  public ApplePlayer(PlayerInterface playerInterface) {
+    super(playerInterface);
+  }
 
-    @Override
-    public List<String> getBuffs() {
-        List<String> rtn = new ArrayList<>(playerInterface.getBuffs());
-        rtn.add("apple_item");
-        return rtn;
-    }
-
+  @Override
+  public List<String> getBuffs() {
+    List<String> rtn = new ArrayList<>(playerInterface.getBuffs());
+    rtn.add("apple_item");
+    return rtn;
+  }
 }

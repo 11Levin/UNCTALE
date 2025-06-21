@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PencilPlayer extends PlayerDecorator {
-    public PencilPlayer(PlayerInterface playerInterface) {
-        super(playerInterface);
-    }
+  public PencilPlayer(PlayerInterface playerInterface) {
+    super(playerInterface);
+  }
 
-    @Override
-    public List<String> getBuffs() {
-        List<String> rtn = new ArrayList<>(playerInterface.getBuffs());
-        rtn.add("pencil_item");
-        return rtn;
-    }
+  @Override
+  public List<String> getBuffs() {
+    List<String> rtn = new ArrayList<>(playerInterface.getBuffs());
+    rtn.add("pencil_item");
+    return rtn;
+  }
 }

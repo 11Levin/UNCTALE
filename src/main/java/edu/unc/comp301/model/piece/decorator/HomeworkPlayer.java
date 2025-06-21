@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeworkPlayer extends PlayerDecorator {
-    public HomeworkPlayer(PlayerInterface playerInterface) {
-        super(playerInterface);
-    }
+  public HomeworkPlayer(PlayerInterface playerInterface) {
+    super(playerInterface);
+  }
 
-    @Override
-    public List<String> getBuffs() {
-        List<String> rtn = new ArrayList<>(playerInterface.getBuffs());
-        rtn.add("homework_item");
-        return rtn;
-    }
+  @Override
+  public List<String> getBuffs() {
+    List<String> rtn = new ArrayList<>(playerInterface.getBuffs());
+    rtn.add("homework_item");
+    return rtn;
+  }
 }

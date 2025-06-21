@@ -9,20 +9,14 @@ The player spawns in a grid representing the UNC campus. The school has been tak
 brainwashed students and professors. The player's goal is to avoid these enemies while collecting money
 to save their bank account.
 
-Board, CollisionEvent, and Character have been implemented. The board can generate a random level or a preset one
-stored in a text file. CollisionEvent handles collision logic. Character is the implementation of movable piece and will represent the player, 
-student enemies, and professors.
-
 ---
-
 ## Quickstart Guide
 
-- The player is trying to: rescue the school from Ramses by navigating the maze and collecting money along the way.
-- The player can move: by using WASD to play this side scroller.
-- Enemies will stop you by: shooting bullets that lower your health until you die.
-- This will happen when an enemy is successful: when you're health reaches 0, it will be game over.  
-- Other game mechanics include: pencils and apples can increase health and attack. Homework decreases attack and score.
-- Money increases score.
+- The player is trying to rescue the school from Ramses by navigating the maze and collecting money along the way.
+- The player can move by using WASD.
+- Enemies will stop you by shooting bullets that lower your health until you die.
+- When you're health reaches 0, it will be game over.  
+- Other game mechanics include: pencils and apples can increase health and attack, homework decreases attack and score, and money increases score.
 
 ## Compiling Instructions
 
@@ -40,8 +34,33 @@ Making custom levels for testing is recommended rather than initializing a rando
 
 Board has a toString() method that prints out a grid of the single-character representations of the board's pieces.
 If a board is loaded correctly, toString() should return the level_text file, not including the board's dimensions.
-
 ---
+## Design Patterns
+
+### MVC
+The entire project follows the Model-Controller-View architecture. Model handles all logic, controller sends user
+input to classes handling logic, and view displays the state of the game. 
+
+### Observer-Subject
+The model and views follow the observer-subject design pattern. The views are the observers responding to what happens
+in Model. The model updates the views with a GameStats object, containing relevant game information, such as score and
+level to display in the views. Depending on the Model's game state, a particular view will be shown on the screen.
+
+### Decorator
+The buff visual classes follow the decorator pattern. When a player picks up a buff, the player is wrapped in a decorator
+that changes how the player is displayed. Since the player can pick up many buffs, we decided to increment the base
+player's attack and health rather than add attack and health later through a decorator. This way, the player does not
+get wrapped in too many decorators, hurting performance. Also, at the end of each level, the player is
+unwrapped and rewrapped to prevent any duplicate decorators (since duplicate buffs have no visual changes).
+
+### Factory
+To make spawning enemies easier, an enemy factory was made. The EnemyFactoryClass has static methods that create enemies
+as needed.
+
+### Asynchronous Programming
+Multiple threads allow the player and enemies to move independently (rather than all at once. This makes the enemies less
+predictable and the game more enjoyable. A gameTick thread handles most of the game's logic and separate enemy threads
+handle enemy movement. JavaFX has a built-in thread to handle screen drawing. 
 
 ## Known Issues / Incomplete Features
 
@@ -53,17 +72,5 @@ If a board is loaded correctly, toString() should return the level_text file, no
 - Difficulty setting that allows for harder playthrough for pros.
 - Player gets to dodge bullets instead of just getting hit by enemies.
 - Instructions are also provided in-game.
-- Special portal item that can teleport you.
-
-## Notes
-Using OpenJDK 24. I (Vincent) tried to implement a basic UI to test the game features but ran into complications. In the
-process, I updated to JDK 24, though with the current game this is of no use. I later realized we are to test the game
-by using toString(). 
-
-## Sources Used
-Keybind demo: https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/uiswing/examples/events/KeyEventDemoProject/src/events/KeyEventDemo.java
-Java Swing Documentation
-KeyEvent: https://docs.oracle.com/javase/8/docs/api/java/awt/event/KeyEvent.html
-Canvas: https://docs.oracle.com/javase/8/docs/api/java/awt/Canvas.html
-KeyListener: https://docs.oracle.com/javase/tutorial/uiswing/events/keylistener.html
+- Portal that can teleport you.
 
